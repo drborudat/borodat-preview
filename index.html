@@ -14,13 +14,13 @@ margin:0;
 font-family:Tahoma,Arial,sans-serif;
 background:#fff;
 color:#102238;
-overflow-x:hidden;
+overflow-x:hidden
 }
 
 a{text-decoration:none;color:inherit}
 button,input,select,textarea{font-family:inherit}
 
-/* ================= HEADER ================= */
+/* HEADER */
 
 .header{
 height:78px;
@@ -30,7 +30,7 @@ display:flex;
 align-items:center;
 position:sticky;
 top:0;
-z-index:1000;
+z-index:1000
 }
 
 .header-inner{
@@ -38,17 +38,17 @@ width:92%;
 max-width:1280px;
 margin:auto;
 display:flex;
-align-items:center;
+align-items:center
 }
 
 .logo{
 display:flex;
 align-items:center;
-gap:10px;
+gap:9px;
 font-family:Arial,sans-serif;
-font-size:22px;
+font-size:20px;
 font-weight:800;
-color:#071b31;
+color:#071b31
 }
 
 .logo-mark{
@@ -60,14 +60,20 @@ display:flex;
 align-items:center;
 justify-content:center;
 color:#fff;
-font-size:20px;
+font-size:14px;
+font-weight:900
+}
+
+.logo-plus{
+font-size:19px;
+color:#0879bd
 }
 
 .header-tools{
 margin-right:auto;
 display:flex;
 align-items:center;
-gap:9px;
+gap:9px
 }
 
 .header-icon{
@@ -79,13 +85,7 @@ background:#fff;
 display:flex;
 align-items:center;
 justify-content:center;
-cursor:pointer;
-transition:.2s;
-}
-
-.header-icon:hover{
-background:#f1f7fa;
-border-color:#b9d4e2;
+cursor:pointer
 }
 
 .icon-svg{
@@ -95,10 +95,10 @@ fill:none;
 stroke:#071b31;
 stroke-width:1.8;
 stroke-linecap:round;
-stroke-linejoin:round;
+stroke-linejoin:round
 }
 
-/* ================= MENU ================= */
+/* MENU */
 
 .menu-panel{
 display:none;
@@ -108,7 +108,7 @@ right:0;
 left:0;
 background:#fff;
 border-bottom:1px solid #e4e9ed;
-box-shadow:0 20px 45px rgba(7,27,49,.12);
+box-shadow:0 20px 45px rgba(7,27,49,.12)
 }
 
 .menu-panel.open{display:block}
@@ -120,7 +120,7 @@ margin:auto;
 padding:22px 0;
 display:grid;
 grid-template-columns:repeat(6,1fr);
-gap:10px;
+gap:10px
 }
 
 .menu-item{
@@ -130,23 +130,22 @@ border-radius:8px;
 font-size:11px;
 font-weight:bold;
 color:#253c50;
-text-align:center;
-transition:.2s;
+text-align:center
 }
 
 .menu-item:hover{
 background:#071b31;
-color:#fff;
+color:#fff
 }
 
-/* ================= HERO ================= */
+/* HERO */
 
 .hero{
 height:calc(100vh - 78px);
 min-height:620px;
 position:relative;
 overflow:hidden;
-background:#071b31;
+background:#071b31
 }
 
 .hero-image{
@@ -155,19 +154,18 @@ inset:0;
 width:100%;
 height:100%;
 object-fit:cover;
-animation:heroZoom 12s ease-in-out infinite alternate;
+animation:heroZoom 12s ease-in-out infinite alternate
 }
 
 .hero-overlay{
 position:absolute;
 inset:0;
-background:
-linear-gradient(
+background:linear-gradient(
 90deg,
 rgba(3,16,31,.84),
 rgba(4,20,37,.58),
 rgba(4,20,37,.43)
-);
+)
 }
 
 .hero-content{
@@ -180,20 +178,20 @@ margin:auto;
 display:flex;
 align-items:center;
 justify-content:center;
-text-align:center;
+text-align:center
 }
 
 .hero-text{
 color:#fff;
 max-width:760px;
-animation:fadeUp .9s ease both;
+animation:fadeUp .9s ease both
 }
 
 .hero-line{
 width:55px;
 height:2px;
 background:#6bc9ee;
-margin:0 auto 20px;
+margin:0 auto 20px
 }
 
 .hero-logo{
@@ -201,7 +199,7 @@ font-family:Arial,sans-serif;
 font-size:58px;
 font-weight:800;
 letter-spacing:.5px;
-margin-bottom:12px;
+margin-bottom:12px
 }
 
 .hero-logo span{color:#70cff2}
@@ -210,7 +208,7 @@ margin-bottom:12px;
 font-size:18px;
 line-height:2;
 margin:0 auto 14px;
-font-weight:500;
+font-weight:500
 }
 
 .hero-description{
@@ -218,14 +216,14 @@ max-width:600px;
 margin:0 auto 30px;
 color:#e2edf4;
 font-size:12px;
-line-height:2.1;
+line-height:2.1
 }
 
 .hero-buttons{
 display:flex;
 justify-content:center;
 gap:12px;
-flex-wrap:wrap;
+flex-wrap:wrap
 }
 
 .glass-button{
@@ -243,60 +241,60 @@ display:flex;
 align-items:center;
 justify-content:center;
 gap:9px;
-transition:.25s;
+transition:.25s
 }
 
 .glass-button:hover{
-background:rgba(255,255,255,.92);
+background:#fff;
 color:#071b31;
-transform:translateY(-3px);
+transform:translateY(-3px)
 }
 
 .glass-button.primary{
 background:rgba(12,122,187,.72);
-border-color:#62c7ed;
+border-color:#62c7ed
 }
 
-/* ================= GENERAL ================= */
+/* GENERAL */
 
 section{padding:85px 0}
 
 .container{
 width:92%;
 max-width:1280px;
-margin:auto;
+margin:auto
 }
 
 .heading{
 text-align:center;
-margin-bottom:42px;
+margin-bottom:42px
 }
 
 .heading small{
 color:#0879bd;
 font-size:10px;
-font-weight:bold;
+font-weight:bold
 }
 
 .heading h2{
 color:#071b31;
 font-size:30px;
-margin:8px 0;
+margin:8px 0
 }
 
 .heading p{
 color:#718192;
-font-size:11px;
+font-size:11px
 }
 
-/* ================= SERVICES ================= */
+/* SERVICES */
 
 .services{background:#f5f7f9}
 
 .grid4{
 display:grid;
 grid-template-columns:repeat(4,1fr);
-gap:16px;
+gap:16px
 }
 
 .card{
@@ -304,12 +302,12 @@ background:#fff;
 border:1px solid #e1e7ec;
 border-radius:9px;
 padding:28px 22px;
-transition:.3s;
+transition:.3s
 }
 
 .card:hover{
 transform:translateY(-6px);
-box-shadow:0 20px 45px rgba(7,27,49,.08);
+box-shadow:0 20px 45px rgba(7,27,49,.08)
 }
 
 .service-icon{
@@ -319,7 +317,7 @@ border-radius:10px;
 background:#edf7fb;
 display:flex;
 align-items:center;
-justify-content:center;
+justify-content:center
 }
 
 .service-icon svg{
@@ -329,57 +327,55 @@ stroke:#0879bd;
 fill:none;
 stroke-width:1.7;
 stroke-linecap:round;
-stroke-linejoin:round;
+stroke-linejoin:round
 }
 
 .card h3{
 font-size:15px;
 color:#071b31;
-margin:15px 0 7px;
+margin:15px 0 7px
 }
 
 .card p{
 font-size:10px;
 color:#718192;
-line-height:1.9;
+line-height:1.9
 }
 
 .card a{
 color:#0879bd;
 font-size:10px;
-font-weight:bold;
+font-weight:bold
 }
 
-/* ================= WHY US ================= */
+/* WHY */
 
-.why{
-background:#fff;
-}
+.why{background:#fff}
 
 .why-grid{
 display:grid;
 grid-template-columns:1fr 1fr;
 gap:55px;
-align-items:center;
+align-items:center
 }
 
 .why-text h2{
 font-size:32px;
 color:#071b31;
-margin:8px 0 18px;
+margin:8px 0 18px
 }
 
 .why-text>p{
 font-size:12px;
 color:#718192;
-line-height:2;
+line-height:2
 }
 
 .why-items{
 display:grid;
 grid-template-columns:1fr 1fr;
 gap:13px;
-margin-top:25px;
+margin-top:25px
 }
 
 .why-item{
@@ -387,30 +383,30 @@ padding:18px;
 border:1px solid #e1e7ec;
 border-radius:9px;
 background:#fff;
-transition:.3s;
+transition:.3s
 }
 
 .why-item:hover{
 transform:translateY(-4px);
-box-shadow:0 15px 35px rgba(7,27,49,.07);
+box-shadow:0 15px 35px rgba(7,27,49,.07)
 }
 
 .why-icon{
 font-size:23px;
-margin-bottom:8px;
+margin-bottom:8px
 }
 
 .why-item h3{
 font-size:12px;
 margin:5px 0;
-color:#071b31;
+color:#071b31
 }
 
 .why-item p{
 font-size:9px;
 line-height:1.8;
 color:#718192;
-margin:0;
+margin:0
 }
 
 .stats-box{
@@ -418,45 +414,43 @@ background:#071b31;
 border-radius:14px;
 padding:38px 25px;
 color:#fff;
-box-shadow:0 25px 55px rgba(7,27,49,.16);
+box-shadow:0 25px 55px rgba(7,27,49,.16)
 }
 
 .stats-title{
 font-size:13px;
 color:#bcd0df;
-margin-bottom:25px;
+margin-bottom:25px
 }
 
 .stats{
 display:grid;
 grid-template-columns:1fr 1fr;
-gap:25px 10px;
+gap:25px 10px
 }
 
-.stat{
-text-align:center;
-}
+.stat{text-align:center}
 
 .stat strong{
 display:block;
 font-family:Arial,sans-serif;
 font-size:32px;
-color:#6cccf3;
+color:#6cccf3
 }
 
 .stat span{
 font-size:9px;
-color:#c5d3de;
+color:#c5d3de
 }
 
-/* ================= BRANDS ================= */
+/* BRANDS */
 
 .brands{background:#fff}
 
 .brand-grid{
 display:grid;
 grid-template-columns:repeat(6,1fr);
-gap:12px;
+gap:12px
 }
 
 .brand{
@@ -470,24 +464,22 @@ color:#617283;
 font-family:Arial,sans-serif;
 font-size:14px;
 font-weight:bold;
-transition:.25s;
+transition:.25s
 }
 
 .brand:hover{
 border-color:#8dcbe3;
-transform:translateY(-3px);
+transform:translateY(-3px)
 }
 
-/* ================= PRODUCTS ================= */
+/* PRODUCTS */
 
-.products{
-background:#f5f7f9;
-}
+.products{background:#f5f7f9}
 
 .product-grid{
 display:grid;
 grid-template-columns:repeat(4,1fr);
-gap:16px;
+gap:16px
 }
 
 .product{
@@ -495,12 +487,12 @@ background:#fff;
 border:1px solid #e1e7ec;
 border-radius:10px;
 overflow:hidden;
-transition:.3s;
+transition:.3s
 }
 
 .product:hover{
 transform:translateY(-5px);
-box-shadow:0 20px 45px rgba(7,27,49,.09);
+box-shadow:0 20px 45px rgba(7,27,49,.09)
 }
 
 .product-image{
@@ -509,28 +501,26 @@ background:linear-gradient(135deg,#edf5f8,#dcecf2);
 display:flex;
 align-items:center;
 justify-content:center;
-font-size:50px;
+font-size:50px
 }
 
-.product-info{
-padding:18px;
-}
+.product-info{padding:18px}
 
 .product-info small{
 font-size:9px;
-color:#0879bd;
+color:#0879bd
 }
 
 .product-info h3{
 font-size:12px;
 color:#071b31;
-margin:8px 0;
+margin:8px 0
 }
 
 .product-info p{
 font-size:9px;
 color:#718192;
-line-height:1.8;
+line-height:1.8
 }
 
 .product-btn{
@@ -541,15 +531,10 @@ color:#fff;
 padding:10px;
 border-radius:7px;
 font-size:9px;
-margin-top:12px;
-transition:.2s;
+margin-top:12px
 }
 
-.product-btn:hover{
-background:#0879bd;
-}
-
-/* ================= ABOUT ================= */
+/* ABOUT */
 
 .about{background:#fff}
 
@@ -557,19 +542,19 @@ background:#0879bd;
 display:grid;
 grid-template-columns:1fr 1fr;
 gap:55px;
-align-items:center;
+align-items:center
 }
 
 .about h2{
 color:#071b31;
 font-size:33px;
-line-height:1.5;
+line-height:1.5
 }
 
 .about p{
 color:#718192;
 font-size:12px;
-line-height:2;
+line-height:2
 }
 
 .about-panel{
@@ -577,101 +562,93 @@ min-height:320px;
 background:#071b31;
 border-radius:12px;
 padding:45px;
-color:#fff;
+color:#fff
 }
 
 .about-panel strong{
 font-family:Arial,sans-serif;
 font-size:60px;
-color:#6cccf3;
+color:#6cccf3
 }
 
 .about-panel h3{font-size:20px}
 
-.about-panel p{color:#bdcad5}
+/* REVIEWS */
 
-/* ================= REVIEWS ================= */
-
-.reviews{
-background:#f5f7f9;
-}
+.reviews{background:#f5f7f9}
 
 .review-grid{
 display:grid;
 grid-template-columns:repeat(3,1fr);
-gap:16px;
+gap:16px
 }
 
 .review{
 background:#fff;
 border:1px solid #e1e7ec;
 border-radius:10px;
-padding:25px;
+padding:25px
 }
 
 .stars{
 color:#e4a928;
 letter-spacing:2px;
-font-size:12px;
+font-size:12px
 }
 
 .review p{
 font-size:11px;
 color:#596d7e;
 line-height:2;
-margin:15px 0;
+margin:15px 0
 }
 
 .review strong{
 font-size:10px;
-color:#071b31;
+color:#071b31
 }
 
-/* ================= REQUEST FORM ================= */
+/* REQUEST */
 
 .request{
 background:#071b31;
-color:#fff;
+color:#fff
 }
 
 .request-grid{
 display:grid;
 grid-template-columns:.8fr 1.2fr;
 gap:50px;
-align-items:center;
+align-items:center
 }
 
 .request-text h2{
 font-size:30px;
-margin:8px 0 15px;
+margin:8px 0 15px
 }
 
 .request-text p{
 font-size:11px;
 color:#b9cbd8;
-line-height:2;
-}
-
-.request-list{
-margin-top:25px;
+line-height:2
 }
 
 .request-list div{
 font-size:10px;
 color:#d9e5ec;
-margin:12px 0;
+margin:12px 0
 }
 
 .request-form{
 background:#fff;
 padding:28px;
-border-radius:12px;
+border-radius:12px
 }
 
 .form-row{
 display:grid;
 grid-template-columns:1fr 1fr;
-gap:10px;
+gap:10px
 }
 
 .request-form input,
@@ -685,18 +662,12 @@ margin-bottom:10px;
 font-size:10px;
 outline:none;
 color:#263e52;
-background:#fff;
+background:#fff
 }
 
 .request-form textarea{
 height:100px;
-resize:none;
-}
-
-.request-form input:focus,
-.request-form select:focus,
-.request-form textarea:focus{
-border-color:#62bddf;
+resize:none
 }
 
 .submit-btn{
@@ -708,27 +679,47 @@ background:#0879bd;
 color:#fff;
 font-weight:bold;
 font-size:10px;
-cursor:pointer;
-transition:.25s;
+cursor:pointer
 }
 
-.submit-btn:hover{
-background:#075f91;
-transform:translateY(-2px);
+.submit-btn:disabled{
+opacity:.6;
+cursor:wait
 }
 
-/* ================= ARTICLES ================= */
+.form-message{
+display:none;
+margin-top:12px;
+padding:11px;
+border-radius:7px;
+font-size:10px;
+text-align:center
+}
+
+.form-message.success{
+display:block;
+background:#e8f8ef;
+color:#176b3b
+}
+
+.form-message.error{
+display:block;
+background:#fff0f0;
+color:#a22626
+}
+
+/* ARTICLES */
 
 .article-grid{
 display:grid;
 grid-template-columns:repeat(3,1fr);
-gap:17px;
+gap:17px
 }
 
 .article{
 border:1px solid #e2e8ed;
 border-radius:9px;
-overflow:hidden;
+overflow:hidden
 }
 
 .article-img{
@@ -737,28 +728,28 @@ background:#edf4f7;
 display:flex;
 align-items:center;
 justify-content:center;
-font-size:48px;
+font-size:48px
 }
 
 .article-body{padding:20px}
 
 .article-body small{
 color:#0879bd;
-font-size:9px;
+font-size:9px
 }
 
 .article-body h3{
 color:#071b31;
-font-size:14px;
+font-size:14px
 }
 
 .article-body p{
 color:#718192;
 font-size:10px;
-line-height:1.9;
+line-height:1.9
 }
 
-/* ================= CTA ================= */
+/* CTA */
 
 .cta{
 background:#071b31;
@@ -767,17 +758,17 @@ border-radius:10px;
 padding:45px;
 display:flex;
 justify-content:space-between;
-align-items:center;
+align-items:center
 }
 
 .cta h2{
 margin:0;
-font-size:25px;
+font-size:25px
 }
 
 .cta p{
 color:#bdcad5;
-font-size:11px;
+font-size:11px
 }
 
 .cta a{
@@ -785,27 +776,27 @@ background:#0879bd;
 padding:13px 25px;
 border-radius:8px;
 font-size:11px;
-font-weight:bold;
+font-weight:bold
 }
 
-/* ================= FOOTER ================= */
+/* FOOTER */
 
 footer{
 background:#06182c;
 color:#fff;
-padding:60px 0 90px;
+padding:60px 0 90px
 }
 
 .footer-grid{
 display:grid;
 grid-template-columns:2fr 1fr 1fr 1fr;
-gap:35px;
+gap:35px
 }
 
 .footer-logo{
 font-family:Arial,sans-serif;
 font-size:22px;
-font-weight:bold;
+font-weight:bold
 }
 
 .footer-logo span{color:#6cccf3}
@@ -816,7 +807,7 @@ footer p,
 footer a{
 color:#aebdca;
 font-size:10px;
-line-height:2;
+line-height:2
 }
 
 footer a{display:block}
@@ -827,10 +818,10 @@ margin-top:40px;
 padding-top:18px;
 text-align:center;
 color:#8193a5;
-font-size:9px;
+font-size:9px
 }
 
-/* ================= CHAT ================= */
+/* CHAT */
 
 .chat-button{
 position:fixed;
@@ -847,7 +838,7 @@ align-items:center;
 justify-content:center;
 cursor:pointer;
 z-index:9998;
-animation:pulse 3s infinite;
+animation:pulse 3s infinite
 }
 
 .chat-button svg{
@@ -857,7 +848,7 @@ fill:none;
 stroke:#fff;
 stroke-width:1.7;
 stroke-linecap:round;
-stroke-linejoin:round;
+stroke-linejoin:round
 }
 
 .chat-window{
@@ -871,7 +862,7 @@ overflow:hidden;
 box-shadow:0 20px 60px rgba(7,27,49,.25);
 border:1px solid #e3e9ed;
 z-index:9999;
-display:none;
+display:none
 }
 
 .chat-window.open{display:block}
@@ -882,7 +873,7 @@ color:#fff;
 padding:18px;
 display:flex;
 align-items:center;
-gap:12px;
+gap:12px
 }
 
 .chat-avatar{
@@ -892,17 +883,17 @@ border-radius:50%;
 background:#0879bd;
 display:flex;
 align-items:center;
-justify-content:center;
+justify-content:center
 }
 
 .chat-head strong{
 display:block;
-font-size:12px;
+font-size:12px
 }
 
 .chat-head small{
 color:#bcd0df;
-font-size:9px;
+font-size:9px
 }
 
 .chat-close{
@@ -911,7 +902,7 @@ border:0;
 background:transparent;
 color:#fff;
 font-size:20px;
-cursor:pointer;
+cursor:pointer
 }
 
 .chat-body{padding:18px}
@@ -923,13 +914,13 @@ padding:13px;
 font-size:10px;
 color:#334b60;
 line-height:1.9;
-margin-bottom:15px;
+margin-bottom:15px
 }
 
 .chat-options{
 display:grid;
 grid-template-columns:1fr 1fr;
-gap:7px;
+gap:7px
 }
 
 .chat-option{
@@ -939,12 +930,7 @@ border-radius:8px;
 padding:10px 5px;
 color:#263f54;
 font-size:9px;
-cursor:pointer;
-}
-
-.chat-option:hover{
-background:#edf7fb;
-border-color:#9ccde2;
+cursor:pointer
 }
 
 .chat-input{
@@ -953,27 +939,24 @@ width:100%;
 border:1px solid #dfe7ec;
 border-radius:8px;
 padding:11px;
-font-family:inherit;
 font-size:9px;
-outline:none;
+outline:none
 }
 
-/* ================= MOBILE BAR ================= */
+/* MOBILE BAR */
 
-.mobile-bar{
-display:none;
-}
+.mobile-bar{display:none}
 
-/* ================= ANIMATIONS ================= */
+/* ANIMATION */
 
 @keyframes fadeUp{
 from{
 opacity:0;
-transform:translateY(25px);
+transform:translateY(25px)
 }
 to{
 opacity:1;
-transform:translateY(0);
+transform:translateY(0)
 }
 }
 
@@ -987,7 +970,7 @@ to{transform:scale(1.05)}
 50%{box-shadow:0 12px 35px rgba(8,121,189,.42)}
 }
 
-/* ================= RESPONSIVE ================= */
+/* RESPONSIVE */
 
 @media(max-width:900px){
 
@@ -996,49 +979,49 @@ to{transform:scale(1.05)}
 .menu-panel{top:68px}
 
 .menu-inner{
-grid-template-columns:1fr 1fr;
+grid-template-columns:1fr 1fr
 }
 
 .hero{
 height:calc(100vh - 68px);
-min-height:600px;
+min-height:600px
 }
 
 .hero-logo{font-size:40px}
+
 .hero-subtitle{font-size:14px}
+
 .hero-description{font-size:10px}
 
 .grid4{
-grid-template-columns:1fr 1fr;
+grid-template-columns:1fr 1fr
 }
 
 .brand-grid{
-grid-template-columns:repeat(3,1fr);
+grid-template-columns:repeat(3,1fr)
 }
 
 .about-grid,
 .why-grid,
 .request-grid{
-grid-template-columns:1fr;
+grid-template-columns:1fr
 }
 
 .product-grid{
-grid-template-columns:1fr 1fr;
+grid-template-columns:1fr 1fr
 }
 
 .review-grid{
-grid-template-columns:1fr;
+grid-template-columns:1fr
 }
 
 .article-grid{
-grid-template-columns:1fr;
+grid-template-columns:1fr
 }
 
 .footer-grid{
-grid-template-columns:1fr 1fr;
+grid-template-columns:1fr 1fr
 }
-
-/* MOBILE BAR */
 
 .mobile-bar{
 position:fixed;
@@ -1050,7 +1033,7 @@ background:#fff;
 border-top:1px solid #dfe6eb;
 display:flex;
 z-index:9990;
-box-shadow:0 -10px 30px rgba(0,0,0,.10);
+box-shadow:0 -10px 30px rgba(0,0,0,.1)
 }
 
 .mobile-bar a{
@@ -1061,12 +1044,10 @@ align-items:center;
 justify-content:center;
 gap:4px;
 font-size:8px;
-color:#53697b;
+color:#53697b
 }
 
-.mobile-bar a.active{
-color:#0879bd;
-}
+.mobile-bar a.active{color:#0879bd}
 
 .mobile-bar svg{
 width:21px;
@@ -1075,112 +1056,95 @@ fill:none;
 stroke:currentColor;
 stroke-width:1.7;
 stroke-linecap:round;
-stroke-linejoin:round;
+stroke-linejoin:round
 }
 
-.chat-button{
-bottom:82px;
-}
+.chat-button{bottom:82px}
 
-.chat-window{
-bottom:150px;
-}
+.chat-window{bottom:150px}
 
 }
 
 @media(max-width:500px){
 
-.logo{
-font-size:17px;
-}
+.logo{font-size:17px}
 
 .logo-mark{
 width:35px;
-height:35px;
+height:35px
 }
 
 .header-icon{
 width:38px;
-height:38px;
+height:38px
 }
 
-.hero-content{
-align-items:center;
-}
+.hero-logo{font-size:34px}
 
-.hero-logo{
-font-size:34px;
-}
-
-.hero-subtitle{
-font-size:13px;
-}
+.hero-subtitle{font-size:13px}
 
 .hero-buttons{
 display:grid;
-grid-template-columns:1fr 1fr;
+grid-template-columns:1fr 1fr
 }
 
 .glass-button{
 min-width:0;
 padding:12px 7px;
-font-size:9px;
+font-size:9px
 }
 
 .grid4{
-grid-template-columns:1fr;
+grid-template-columns:1fr
 }
 
 .brand-grid{
-grid-template-columns:1fr 1fr;
+grid-template-columns:1fr 1fr
 }
 
 .product-grid{
-grid-template-columns:1fr 1fr;
+grid-template-columns:1fr 1fr
 }
 
 .why-items{
-grid-template-columns:1fr;
+grid-template-columns:1fr
 }
 
 .form-row{
-grid-template-columns:1fr;
+grid-template-columns:1fr
 }
 
 .cta{
 display:block;
-text-align:center;
+text-align:center
 }
 
 .cta a{
 display:inline-block;
-margin-top:15px;
+margin-top:15px
 }
 
 .footer-grid{
-grid-template-columns:1fr;
+grid-template-columns:1fr
 }
 
 .chat-window{
 left:12px;
 right:12px;
-width:auto;
+width:auto
 }
 
 .request-form{
-padding:20px;
+padding:20px
 }
 
 }
-
-/* ================= REDUCED MOTION ================= */
 
 @media(prefers-reduced-motion:reduce){
 
 *{
 animation:none!important;
-transition:none!important;
-scroll-behavior:auto!important;
+transition:none!important
 }
 
 }
@@ -1189,17 +1153,15 @@ scroll-behavior:auto!important;
 
 <body>
 
-<!-- ================= HEADER ================= -->
-
 <header class="header">
 
 <div class="header-inner">
 
 <a href="#home" class="logo">
 
-<div class="logo-mark">❄</div>
+<div class="logo-mark">DB</div>
 
-Dr Borodat
+<span class="logo-plus">+ ❄️</span>
 
 </a>
 
@@ -1255,8 +1217,6 @@ Dr Borodat
 </header>
 
 
-<!-- ================= HERO ================= -->
-
 <section class="hero" id="home">
 
 <img
@@ -1290,20 +1250,11 @@ Dr <span>Borodat</span>
 
 <a href="/shop" class="glass-button primary">
 
-<svg class="icon-svg" style="stroke:#fff" viewBox="0 0 24 24">
-<path d="M4 8h16l-1 11H5L4 8z"></path>
-<path d="M8 8V6a4 4 0 0 1 8 0v2"></path>
-</svg>
-
 مشاهده فروشگاه
 
 </a>
 
 <a href="tel:09197701790" class="glass-button">
-
-<svg class="icon-svg" style="stroke:#fff" viewBox="0 0 24 24">
-<path d="M6.5 4.5l3 2.5-2 3c1 2.2 2.3 3.5 4.5 4.5l3-2 2.5 3c.7.8.6 2-.2 2.6l-1.5 1c-.8.5-1.8.7-2.7.4-5.1-1.7-8.8-5.4-10.5-10.5-.3-.9-.1-1.9.4-2.7l1-1.5c.6-.8 1.8-.9 2.5-.3z"></path>
-</svg>
 
 ارتباط با مهندس
 
@@ -1317,8 +1268,6 @@ Dr <span>Borodat</span>
 
 </section>
 
-
-<!-- ================= SERVICES ================= -->
 
 <section class="services" id="services">
 
@@ -1338,85 +1287,47 @@ Dr <span>Borodat</span>
 
 <div class="card">
 
-<div class="service-icon">
-<svg viewBox="0 0 24 24">
-<path d="M12 3v18"></path>
-<path d="M5 7l7-4 7 4-7 4-7-4z"></path>
-<path d="M5 12l7 4 7-4"></path>
-</svg>
-</div>
+<div class="service-icon">❄️</div>
 
 <h3>نصب کولر گازی</h3>
 
-<p>
-نصب اصولی و راه‌اندازی انواع کولر گازی و اسپلیت.
-</p>
+<p>نصب اصولی و راه‌اندازی انواع کولر گازی و اسپلیت.</p>
 
 <a href="#request">درخواست خدمت ←</a>
 
 </div>
 
-
 <div class="card">
 
-<div class="service-icon">
-
-<svg viewBox="0 0 24 24">
-<path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L4 17v3h3l5.3-5.3a4 4 0 0 0 5.4-5.4l-2.1 2.1-2.1-2.1 2.2-2.2z"></path>
-</svg>
-
-</div>
+<div class="service-icon">🛠️</div>
 
 <h3>سرویس کولر</h3>
 
-<p>
-سرویس، شست‌وشو و بررسی عملکرد دستگاه.
-</p>
+<p>سرویس، شست‌وشو و بررسی عملکرد دستگاه.</p>
 
 <a href="#request">درخواست خدمت ←</a>
 
 </div>
 
-
 <div class="card">
 
-<div class="service-icon">
-
-<svg viewBox="0 0 24 24">
-<path d="M14 7l3-3 3 3-3 3"></path>
-<path d="M17 4l-6 6"></path>
-<path d="M8 13l-5 5 3 3 5-5"></path>
-<path d="M13 8l3 3"></path>
-</svg>
-
-</div>
+<div class="service-icon">🔧</div>
 
 <h3>تعمیر کولر</h3>
 
-<p>
-عیب‌یابی و تعمیر تخصصی انواع دستگاه.
-</p>
+<p>عیب‌یابی و تعمیر تخصصی انواع دستگاه.</p>
 
 <a href="#request">درخواست خدمت ←</a>
 
 </div>
 
-
 <div class="card">
 
-<div class="service-icon">
-
-<svg viewBox="0 0 24 24">
-<path d="M12 3c3 4 5 6.5 5 10a5 5 0 0 1-10 0c0-3.5 2-6 5-10z"></path>
-</svg>
-
-</div>
+<div class="service-icon">💧</div>
 
 <h3>شارژ گاز</h3>
 
-<p>
-بررسی و شارژ گاز کولر در صورت نیاز.
-</p>
+<p>بررسی و شارژ گاز کولر در صورت نیاز.</p>
 
 <a href="#request">درخواست خدمت ←</a>
 
@@ -1428,8 +1339,6 @@ Dr <span>Borodat</span>
 
 </section>
 
-
-<!-- ================= WHY BORODAT ================= -->
 
 <section class="why">
 
@@ -1451,102 +1360,57 @@ WHY DR BORODAT
 <div class="why-items">
 
 <div class="why-item">
-
 <div class="why-icon">⚙️</div>
-
 <h3>تخصص فنی</h3>
-
-<p>
-ارائه خدمات تخصصی نصب، سرویس و تعمیر.
-</p>
-
+<p>ارائه خدمات تخصصی نصب، سرویس و تعمیر.</p>
 </div>
 
-
 <div class="why-item">
-
 <div class="why-icon">⚡</div>
-
 <h3>پاسخگویی سریع</h3>
-
-<p>
-پیگیری درخواست‌ها با سرعت و نظم.
-</p>
-
+<p>پیگیری درخواست‌ها با سرعت و نظم.</p>
 </div>
 
-
 <div class="why-item">
-
 <div class="why-icon">🛠️</div>
-
 <h3>خدمات کامل</h3>
-
-<p>
-از مشاوره و نصب تا سرویس و تعمیر.
-</p>
-
+<p>از مشاوره و نصب تا سرویس و تعمیر.</p>
 </div>
-
 
 <div class="why-item">
-
 <div class="why-icon">✓</div>
-
 <h3>اعتماد و کیفیت</h3>
-
-<p>
-تمرکز بر کیفیت انجام کار و رضایت مشتری.
-</p>
-
+<p>تمرکز بر کیفیت انجام کار و رضایت مشتری.</p>
 </div>
 
 </div>
 
 </div>
-
 
 <div class="stats-box">
 
-<div class="stats-title">
-آمار دکتر برودت
-</div>
+<div class="stats-title">آمار دکتر برودت</div>
 
 <div class="stats">
 
 <div class="stat">
-
 <strong>+</strong>
-
 <span>خدمات انجام‌شده</span>
-
 </div>
 
-
 <div class="stat">
-
 <strong>+</strong>
-
 <span>سال تجربه</span>
-
 </div>
 
-
 <div class="stat">
-
 <strong>24/7</strong>
-
 <span>پشتیبانی</span>
-
 </div>
 
-
 <div class="stat">
-
 <strong>★</strong>
-
 <span>رضایت مشتری</span>
-
 </div>
 
 </div>
@@ -1557,8 +1421,6 @@ WHY DR BORODAT
 
 </section>
 
-
-<!-- ================= BRANDS ================= -->
 
 <section class="brands" id="brands">
 
@@ -1590,8 +1452,6 @@ WHY DR BORODAT
 </section>
 
 
-<!-- ================= PRODUCTS ================= -->
-
 <section class="products">
 
 <div class="container">
@@ -1602,103 +1462,50 @@ WHY DR BORODAT
 
 <h2>محصولات منتخب</h2>
 
-<p>
-برخی از محصولات و تجهیزات قابل ارائه توسط دکتر برودت
-</p>
+<p>برخی از محصولات و تجهیزات قابل ارائه توسط دکتر برودت</p>
 
 </div>
 
 <div class="product-grid">
 
 <div class="product">
-
 <div class="product-image">❄️</div>
-
 <div class="product-info">
-
 <small>کولر گازی</small>
-
 <h3>اسپلیت دیواری</h3>
-
-<p>
-مناسب برای فضاهای مسکونی و اداری.
-</p>
-
-<a class="product-btn" href="/shop">
-مشاهده محصول
-</a>
-
+<p>مناسب برای فضاهای مسکونی و اداری.</p>
+<a class="product-btn" href="/shop">مشاهده محصول</a>
 </div>
-
 </div>
-
 
 <div class="product">
-
 <div class="product-image">🌬️</div>
-
 <div class="product-info">
-
 <small>تجهیزات سرمایشی</small>
-
 <h3>تجهیزات تهویه</h3>
-
-<p>
-راهکارهای مناسب برای سیستم‌های سرمایشی.
-</p>
-
-<a class="product-btn" href="/shop">
-مشاهده محصول
-</a>
-
+<p>راهکارهای مناسب برای سیستم‌های سرمایشی.</p>
+<a class="product-btn" href="/shop">مشاهده محصول</a>
 </div>
-
 </div>
-
 
 <div class="product">
-
 <div class="product-image">🔧</div>
-
 <div class="product-info">
-
 <small>قطعات</small>
-
 <h3>قطعات و لوازم</h3>
-
-<p>
-قطعات مورد نیاز سرویس و تعمیر دستگاه.
-</p>
-
-<a class="product-btn" href="/shop">
-مشاهده فروشگاه
-</a>
-
+<p>قطعات مورد نیاز سرویس و تعمیر دستگاه.</p>
+<a class="product-btn" href="/shop">مشاهده فروشگاه</a>
 </div>
-
 </div>
-
 
 <div class="product">
-
 <div class="product-image">⚙️</div>
-
 <div class="product-info">
-
 <small>خدمات</small>
-
 <h3>خدمات تخصصی</h3>
-
-<p>
-درخواست خدمات تخصصی دکتر برودت.
-</p>
-
-<a class="product-btn" href="#request">
-درخواست خدمت
-</a>
-
+<p>درخواست خدمات تخصصی دکتر برودت.</p>
+<a class="product-btn" href="#request">درخواست خدمت</a>
 </div>
-
 </div>
 
 </div>
@@ -1707,8 +1514,6 @@ WHY DR BORODAT
 
 </section>
 
-
-<!-- ================= ABOUT ================= -->
 
 <section class="about" id="about">
 
@@ -1738,13 +1543,9 @@ ABOUT US
 
 <strong>360°</strong>
 
-<h3>
-یک مجموعه برای تمام نیازهای سرمایشی
-</h3>
+<h3>یک مجموعه برای تمام نیازهای سرمایشی</h3>
 
-<p>
-خدمات فنی، فروش تجهیزات و پشتیبانی مشتری در کنار یکدیگر.
-</p>
+<p>خدمات فنی، فروش تجهیزات و پشتیبانی مشتری در کنار یکدیگر.</p>
 
 </div>
 
@@ -1752,8 +1553,6 @@ ABOUT US
 
 </section>
 
-
-<!-- ================= REVIEWS ================= -->
 
 <section class="reviews">
 
@@ -1765,50 +1564,28 @@ ABOUT US
 
 <h2>رضایت مشتریان</h2>
 
-<p>
-تجربه مشتریان از خدمات دکتر برودت
-</p>
+<p>تجربه مشتریان از خدمات دکتر برودت</p>
 
 </div>
 
 <div class="review-grid">
 
 <div class="review">
-
 <div class="stars">★★★★★</div>
-
-<p>
-«از نصب کولر کاملاً راضی بودم؛ کار تمیز و با دقت انجام شد.»
-</p>
-
+<p>«از نصب کولر کاملاً راضی بودم؛ کار تمیز و با دقت انجام شد.»</p>
 <strong>مشتری دکتر برودت</strong>
-
 </div>
 
-
 <div class="review">
-
 <div class="stars">★★★★★</div>
-
-<p>
-«پاسخگویی خوب و برخورد حرفه‌ای. از خدمات راضی بودم.»
-</p>
-
+<p>«پاسخگویی خوب و برخورد حرفه‌ای. از خدمات راضی بودم.»</p>
 <strong>مشتری دکتر برودت</strong>
-
 </div>
 
-
 <div class="review">
-
 <div class="stars">★★★★★</div>
-
-<p>
-«سرویس کولر سریع انجام شد و دستگاه خیلی بهتر کار می‌کند.»
-</p>
-
+<p>«سرویس کولر سریع انجام شد و دستگاه خیلی بهتر کار می‌کند.»</p>
 <strong>مشتری دکتر برودت</strong>
-
 </div>
 
 </div>
@@ -1817,8 +1594,6 @@ ABOUT US
 
 </section>
 
-
-<!-- ================= REQUEST ================= -->
 
 <section class="request" id="request">
 
@@ -1830,9 +1605,7 @@ ABOUT US
 SERVICE REQUEST
 </small>
 
-<h2>
-درخواست خدمات
-</h2>
+<h2>درخواست خدمات</h2>
 
 <p>
 برای نصب، سرویس یا تعمیر کولر گازی اطلاعات خود را
@@ -1842,11 +1615,8 @@ SERVICE REQUEST
 <div class="request-list">
 
 <div>✓ نصب و راه‌اندازی</div>
-
 <div>✓ سرویس و شست‌وشو</div>
-
 <div>✓ تعمیر و عیب‌یابی</div>
-
 <div>✓ مشاوره و راهنمایی</div>
 
 </div>
@@ -1854,63 +1624,67 @@ SERVICE REQUEST
 </div>
 
 
-<div class="request-form">
+<form class="request-form" id="serviceForm">
 
 <div class="form-row">
 
 <input
+id="name"
+name="name"
 type="text"
 placeholder="نام و نام خانوادگی"
+required
 >
 
 <input
+id="phone"
+name="phone"
 type="tel"
 placeholder="شماره تماس"
 dir="rtl"
+required
 >
 
 </div>
 
+<select id="service" name="service" required>
 
-<select>
+<option value="">نوع خدمت را انتخاب کنید</option>
 
-<option value="">
-نوع خدمت را انتخاب کنید
-</option>
+<option value="🔧 نصب کولر گازی">نصب کولر گازی</option>
 
-<option>نصب کولر گازی</option>
+<option value="🛠️ سرویس کولر">سرویس کولر</option>
 
-<option>سرویس کولر</option>
+<option value="❄️ تعمیر کولر">تعمیر کولر</option>
 
-<option>تعمیر کولر</option>
+<option value="💧 شارژ گاز">شارژ گاز</option>
 
-<option>شارژ گاز</option>
-
-<option>مشاوره</option>
+<option value="📞 مشاوره">مشاوره</option>
 
 </select>
 
-
 <textarea
+id="description"
+name="description"
 placeholder="توضیحات درخواست..."
 ></textarea>
 
-
 <button
 class="submit-btn"
-onclick="submitRequest()"
+id="submitBtn"
+type="submit"
 >
 ثبت درخواست خدمات
 </button>
 
-</div>
+<div id="formMessage" class="form-message"></div>
+
+</form>
 
 </div>
 
 </section>
 
-
-<!-- ================= ARTICLES ================= -->
 
 <section>
 
@@ -1922,74 +1696,37 @@ onclick="submitRequest()"
 
 <h2>مقالات و آموزش‌ها</h2>
 
-<p>
-مطالب کاربردی درباره کولر گازی و سیستم‌های سرمایشی
-</p>
+<p>مطالب کاربردی درباره کولر گازی و سیستم‌های سرمایشی</p>
 
 </div>
 
 <div class="article-grid">
 
 <article class="article">
-
 <div class="article-img">❄</div>
-
 <div class="article-body">
-
 <small>آموزش</small>
-
-<h3>
-چه زمانی کولر گازی نیاز به سرویس دارد؟
-</h3>
-
-<p>
-نشانه‌های مهمی که زمان سرویس دستگاه را مشخص می‌کنند.
-</p>
-
+<h3>چه زمانی کولر گازی نیاز به سرویس دارد؟</h3>
+<p>نشانه‌های مهمی که زمان سرویس دستگاه را مشخص می‌کنند.</p>
 </div>
-
 </article>
 
-
 <article class="article">
-
 <div class="article-img">🔧</div>
-
 <div class="article-body">
-
 <small>تعمیرات</small>
-
-<h3>
-چرا کولر باد گرم می‌زند؟
-</h3>
-
-<p>
-دلایل رایج گرم شدن باد کولر گازی.
-</p>
-
+<h3>چرا کولر باد گرم می‌زند؟</h3>
+<p>دلایل رایج گرم شدن باد کولر گازی.</p>
 </div>
-
 </article>
 
-
 <article class="article">
-
 <div class="article-img">◌</div>
-
 <div class="article-body">
-
 <small>نگهداری</small>
-
-<h3>
-چطور مصرف کولر را کاهش دهیم؟
-</h3>
-
-<p>
-چند نکته ساده برای استفاده بهتر از کولر.
-</p>
-
+<h3>چطور مصرف کولر را کاهش دهیم؟</h3>
+<p>چند نکته ساده برای استفاده بهتر از کولر.</p>
 </div>
-
 </article>
 
 </div>
@@ -1999,8 +1736,6 @@ onclick="submitRequest()"
 </section>
 
 
-<!-- ================= CTA ================= -->
-
 <section>
 
 <div class="container">
@@ -2009,13 +1744,9 @@ onclick="submitRequest()"
 
 <div>
 
-<h2>
-نیاز به مشاوره دارید؟
-</h2>
+<h2>نیاز به مشاوره دارید؟</h2>
 
-<p>
-برای ارتباط مستقیم با مهندس با ما تماس بگیرید.
-</p>
+<p>برای ارتباط مستقیم با مهندس با ما تماس بگیرید.</p>
 
 </div>
 
@@ -2029,8 +1760,6 @@ onclick="submitRequest()"
 
 </section>
 
-
-<!-- ================= FOOTER ================= -->
 
 <footer id="contact">
 
@@ -2048,32 +1777,25 @@ Dr <span>Borodat</span>
 
 </div>
 
-
 <div>
 
 <h3>دسترسی سریع</h3>
 
 <a href="#home">خانه</a>
-
 <a href="/shop">فروشگاه</a>
-
 <a href="#services">خدمات</a>
 
 </div>
-
 
 <div>
 
 <h3>اطلاعات</h3>
 
 <a href="#brands">برندها</a>
-
 <a href="#about">درباره ما</a>
-
 <a href="#request">درخواست خدمات</a>
 
 </div>
-
 
 <div>
 
@@ -2091,98 +1813,49 @@ Dr <span>Borodat</span>
 
 </div>
 
-
 <div class="container copyright">
-
 © 2026 Dr Borodat — تمامی حقوق محفوظ است.
-
 </div>
 
 </footer>
 
 
-<!-- ================= MOBILE BAR ================= -->
-
 <div class="mobile-bar">
 
 <a href="#home" class="active">
-
-<svg viewBox="0 0 24 24">
-<path d="M3 11.5L12 4l9 7.5"></path>
-<path d="M5 10v9h14v-9"></path>
-<path d="M9 19v-5h6v5"></path>
-</svg>
-
+<span>⌂</span>
 خانه
-
 </a>
-
 
 <a href="#services">
-
-<svg viewBox="0 0 24 24">
-<path d="M12 3l2.2 5.1L20 10l-4.2 3.7L17 19l-5-2.8L7 19l1.2-5.3L12 3z"></path>
-</svg>
-
+<span>✦</span>
 خدمات
-
 </a>
-
 
 <a href="/shop">
-
-<svg viewBox="0 0 24 24">
-<path d="M4 8h16l-1 11H5L4 8z"></path>
-<path d="M8 8V6a4 4 0 0 1 8 0v2"></path>
-</svg>
-
+<span>🛒</span>
 فروشگاه
-
 </a>
-
 
 <a href="tel:09197701790">
-
-<svg viewBox="0 0 24 24">
-<path d="M6.5 4.5l3 2.5-2 3c1 2.2 2.3 3.5 4.5 4.5l3-2 2.5 3c.7.8.6 2-.2 2.6l-1.5 1c-.8.5-1.8.7-2.7.4-5.1-1.7-8.8-5.4-10.5-10.5-.3-.9-.1-1.9.4-2.7l1-1.5c.6-.8 1.8-.9 2.5-.3z"></path>
-</svg>
-
+<span>☎</span>
 تماس
-
 </a>
 
-
 <a href="javascript:void(0)" onclick="toggleChat()">
-
-<svg viewBox="0 0 24 24">
-<path d="M20 11.5a7.5 7.5 0 0 1-8 7.5 8.6 8.6 0 0 1-3.5-.7L4 20l1.6-3.3A7.3 7.3 0 0 1 4.5 12 7.5 7.5 0 0 1 12 4.5a7.5 7.5 0 0 1 8 7z"></path>
-<path d="M8 12h.01"></path>
-<path d="M12 12h.01"></path>
-<path d="M16 12h.01"></path>
-</svg>
-
+<span>💬</span>
 پشتیبانی
-
 </a>
 
 </div>
 
-
-<!-- ================= CHAT ================= -->
 
 <button
 class="chat-button"
 onclick="toggleChat()"
 aria-label="پشتیبانی آنلاین"
 >
-
-<svg viewBox="0 0 24 24">
-<path d="M20 11.5a7.5 7.5 0 0 1-8 7.5 8.6 8.6 0 0 1-3.5-.7L4 20l1.6-3.3A7.3 7.3 0 0 1 4.5 12 7.5 7.5 0 0 1 12 4.5a7.5 7.5 0 0 1 8 7z"></path>
-<path d="M8 12h.01"></path>
-<path d="M12 12h.01"></path>
-<path d="M16 12h.01"></path>
-</svg>
-
+💬
 </button>
 
 
@@ -2190,15 +1863,7 @@ aria-label="پشتیبانی آنلاین"
 
 <div class="chat-head">
 
-<div class="chat-avatar">
-
-<svg class="icon-svg" style="stroke:#fff" viewBox="0 0 24 24">
-<path d="M12 3a6 6 0 0 0-6 6v3a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V9a6 6 0 0 0-6-6z"></path>
-<path d="M6 12H4a2 2 0 0 0 0 4h2"></path>
-<path d="M18 12h2a2 2 0 0 1 0 4h-2"></path>
-</svg>
-
-</div>
+<div class="chat-avatar">🎧</div>
 
 <div>
 
@@ -2214,7 +1879,6 @@ aria-label="پشتیبانی آنلاین"
 
 </div>
 
-
 <div class="chat-body">
 
 <div class="chat-message">
@@ -2224,39 +1888,25 @@ aria-label="پشتیبانی آنلاین"
 
 </div>
 
-
 <div class="chat-options">
 
-<button
-class="chat-option"
-onclick="sendChat('تعمیر کولر')"
->
+<button class="chat-option" onclick="chatChoice('تعمیر کولر')">
 تعمیر کولر
 </button>
 
-<button
-class="chat-option"
-onclick="sendChat('سرویس کولر')"
->
+<button class="chat-option" onclick="chatChoice('سرویس کولر')">
 سرویس کولر
 </button>
 
-<button
-class="chat-option"
-onclick="sendChat('نصب کولر')"
->
+<button class="chat-option" onclick="chatChoice('نصب کولر')">
 نصب کولر
 </button>
 
-<button
-class="chat-option"
-onclick="sendChat('راهنمای خرید')"
->
+<button class="chat-option" onclick="chatChoice('راهنمای خرید')">
 راهنمای خرید
 </button>
 
 </div>
-
 
 <input
 class="chat-input"
@@ -2291,7 +1941,7 @@ document
 }
 
 
-function sendChat(text){
+function chatChoice(text){
 
 document
 .getElementById("chatInput")
@@ -2304,13 +1954,84 @@ document
 }
 
 
-function submitRequest(){
+document
+.getElementById("serviceForm")
+.addEventListener("submit",async function(e){
 
-alert(
-"درخواست شما آماده ارسال است ❤️\n\nدر مرحله بعد این فرم را به ربات بله دکتر برودت متصل می‌کنیم."
+e.preventDefault();
+
+const button=document.getElementById("submitBtn");
+const message=document.getElementById("formMessage");
+
+const data={
+
+name:document.getElementById("name").value.trim(),
+
+phone:document.getElementById("phone").value.trim(),
+
+service:document.getElementById("service").value,
+
+description:document.getElementById("description").value.trim()
+
+};
+
+message.className="form-message";
+message.textContent="";
+
+button.disabled=true;
+button.textContent="در حال ارسال...";
+
+try{
+
+const response=await fetch("/api/request",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify(data)
+
+});
+
+const result=await response.json();
+
+if(result.success){
+
+message.className="form-message success";
+
+message.textContent=
+"✅ "+result.message;
+
+document
+.getElementById("serviceForm")
+.reset();
+
+}else{
+
+throw new Error(
+result.message ||
+"ارسال درخواست انجام نشد."
 );
 
 }
+
+}catch(error){
+
+message.className="form-message error";
+
+message.textContent=
+"❌ "+error.message;
+
+}finally{
+
+button.disabled=false;
+button.textContent="ثبت درخواست خدمات";
+
+}
+
+});
 
 
 document.addEventListener("click",function(e){
@@ -2326,28 +2047,6 @@ menu.classList.contains("open") &&
 menu.classList.remove("open");
 
 }
-
-});
-
-
-/* فعال کردن گزینه نوار پایین هنگام کلیک */
-
-document.querySelectorAll(".mobile-bar a")
-.forEach(function(item){
-
-item.addEventListener("click",function(){
-
-document
-.querySelectorAll(".mobile-bar a")
-.forEach(function(x){
-
-x.classList.remove("active");
-
-});
-
-item.classList.add("active");
-
-});
 
 });
 
