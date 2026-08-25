@@ -40,10 +40,12 @@ margin:auto;
 display:flex;
 align-items:center
 }
+
+/* LOGO */
+
 .logo{
 display:flex;
 align-items:center;
-gap:9px;
 font-family:Arial,sans-serif;
 font-size:20px;
 font-weight:800;
@@ -52,34 +54,15 @@ direction:ltr;
 unicode-bidi:isolate;
 white-space:nowrap;
 flex-direction:row;
+text-decoration:none
 }
 
-.logo-mark{
-width:40px;
-height:40px;
-border-radius:10px;
-background:#071b31;
-display:flex;
-align-items:center;
-justify-content:center;
-color:#fff;
-font-size:14px;
-font-weight:900;
-direction:ltr;
-flex-shrink:0;
-}
-
-.logo-plus{
-font-size:19px;
-color:#0879bd;
+.logo-text{
+display:inline-block;
 direction:ltr;
 unicode-bidi:isolate;
-white-space:nowrap;
+white-space:nowrap
 }
-  
-
-
-
 
 .header-tools{
 margin-right:auto;
@@ -211,7 +194,9 @@ font-family:Arial,sans-serif;
 font-size:58px;
 font-weight:800;
 letter-spacing:.5px;
-margin-bottom:12px
+margin-bottom:12px;
+direction:ltr;
+unicode-bidi:isolate
 }
 
 .hero-logo span{color:#70cff2}
@@ -809,7 +794,9 @@ gap:35px
 .footer-logo{
 font-family:Arial,sans-serif;
 font-size:22px;
-font-weight:bold
+font-weight:bold;
+direction:ltr;
+unicode-bidi:isolate
 }
 
 .footer-logo span{color:#6cccf3}
@@ -853,16 +840,6 @@ cursor:pointer;
 z-index:9998;
 animation:pulse 3s infinite;
 font-size:25px
-}
-
-.chat-button svg{
-width:27px;
-height:27px;
-fill:none;
-stroke:#fff;
-stroke-width:1.7;
-stroke-linecap:round;
-stroke-linejoin:round
 }
 
 .chat-window{
@@ -960,8 +937,6 @@ outline:none
 /* MOBILE BAR */
 
 .mobile-bar{display:none}
-
-/* آیکون‌های پایین موبایل */
 
 @media(max-width:900px){
 
@@ -1095,12 +1070,14 @@ color:#53697b
 
 .logo{
 font-size:17px;
-direction:ltr
+direction:ltr;
+flex-direction:row
 }
 
-.logo-mark{
-width:35px;
-height:35px
+.logo-text{
+direction:ltr;
+unicode-bidi:isolate;
+white-space:nowrap
 }
 
 .header-icon{
@@ -1196,12 +1173,8 @@ transition:none!important
 
 <div class="header-inner">
 
-<a href="#home" class="logo">
-
-<div class="logo-mark">DB</div>
-
-<span class="logo-plus">+ ❄️</span>
-
+<a href="#home" class="logo" dir="ltr">
+<span class="logo-text">DB + ❄️</span>
 </a>
 
 <div class="header-tools">
@@ -1272,7 +1245,7 @@ alt="Dr Borodat"
 
 <div class="hero-line"></div>
 
-<div class="hero-logo">
+<div class="hero-logo" dir="ltr">
 Dr <span>Borodat</span>
 </div>
 
@@ -1860,7 +1833,7 @@ aria-label="پشتیبانی آنلاین"
 
 </div>
 
-<button class="chat-close" onclick="toggleChat">
+<button class="chat-close" onclick="toggleChat()">
 ×
 </button>
 
@@ -1917,7 +1890,6 @@ document
 
 }
 
-
 function toggleChat(){
 
 document
@@ -1926,7 +1898,6 @@ document
 .toggle("open");
 
 }
-
 
 function chatChoice(text){
 
@@ -1939,7 +1910,6 @@ document
 .focus();
 
 }
-
 
 document
 .getElementById("serviceForm")
@@ -2036,17 +2006,6 @@ menu.classList.remove("open");
 });
 
 </script>
-<style>
-.logo{
-direction:ltr !important;
-}
-.logo-mark{
-direction:ltr !important;
-}
-.logo-plus{
-direction:ltr !important;
-}
-</style>
 
 </body>
 </html>
