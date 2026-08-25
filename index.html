@@ -2,866 +2,687 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Dr Borodat | دکتر برودت</title>
 
 <style>
-*{
-  box-sizing:border-box;
-}
-
-html{
-  scroll-behavior:smooth;
-}
-
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
 body{
-  margin:0;
-  font-family:Tahoma,Arial,sans-serif;
-  background:#fff;
-  color:#102238;
+margin:0;
+font-family:Tahoma,Arial,sans-serif;
+background:#fff;
+color:#102238;
 }
+a{text-decoration:none;color:inherit}
+button{font-family:inherit}
 
-a{
-  text-decoration:none;
-  color:inherit;
-}
-
-/* =========================
-   HEADER
-========================= */
-
+/* HEADER */
 .header{
-  height:78px;
-  background:#fff;
-  border-bottom:1px solid #e8edf1;
-  display:flex;
-  align-items:center;
-  position:sticky;
-  top:0;
-  z-index:1000;
+height:78px;
+background:#fff;
+border-bottom:1px solid #e8edf1;
+display:flex;
+align-items:center;
+position:sticky;
+top:0;
+z-index:1000;
 }
-
 .header-inner{
-  width:92%;
-  max-width:1280px;
-  margin:auto;
-  display:flex;
-  align-items:center;
+width:92%;
+max-width:1280px;
+margin:auto;
+display:flex;
+align-items:center;
 }
-
 .logo{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  font-family:Arial,sans-serif;
-  font-size:22px;
-  font-weight:800;
-  color:#071b31;
-  letter-spacing:.2px;
+display:flex;
+align-items:center;
+gap:10px;
+font-family:Arial,sans-serif;
+font-size:22px;
+font-weight:800;
+color:#071b31;
 }
-
 .logo-mark{
-  width:40px;
-  height:40px;
-  border-radius:10px;
-  background:#071b31;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:#fff;
-  font-size:20px;
+width:40px;
+height:40px;
+border-radius:10px;
+background:#071b31;
+display:flex;
+align-items:center;
+justify-content:center;
+color:#fff;
+font-size:20px;
 }
-
 .header-tools{
-  margin-right:auto;
-  display:flex;
-  align-items:center;
-  gap:9px;
+margin-right:auto;
+display:flex;
+align-items:center;
+gap:9px;
 }
-
 .header-icon{
-  width:42px;
-  height:42px;
-  border:1px solid #e1e7ec;
-  border-radius:10px;
-  background:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-  transition:.2s;
+width:42px;
+height:42px;
+border:1px solid #e1e7ec;
+border-radius:10px;
+background:#fff;
+display:flex;
+align-items:center;
+justify-content:center;
+cursor:pointer;
+transition:.2s;
 }
-
 .header-icon:hover{
-  background:#f1f7fa;
-  border-color:#b9d4e2;
+background:#f1f7fa;
+border-color:#b9d4e2;
 }
-
-/* SVG ICONS */
-
 .icon-svg{
-  width:20px;
-  height:20px;
-  fill:none;
-  stroke:#071b31;
-  stroke-width:1.8;
-  stroke-linecap:round;
-  stroke-linejoin:round;
+width:20px;
+height:20px;
+fill:none;
+stroke:#071b31;
+stroke-width:1.8;
+stroke-linecap:round;
+stroke-linejoin:round;
 }
 
 /* MENU */
-
 .menu-panel{
-  display:none;
-  position:absolute;
-  top:78px;
-  right:0;
-  left:0;
-  background:#fff;
-  border-bottom:1px solid #e4e9ed;
-  box-shadow:0 20px 45px rgba(7,27,49,.12);
+display:none;
+position:absolute;
+top:78px;
+right:0;
+left:0;
+background:#fff;
+border-bottom:1px solid #e4e9ed;
+box-shadow:0 20px 45px rgba(7,27,49,.12);
 }
-
-.menu-panel.open{
-  display:block;
-}
-
+.menu-panel.open{display:block}
 .menu-inner{
-  width:92%;
-  max-width:1280px;
-  margin:auto;
-  padding:22px 0;
-  display:grid;
-  grid-template-columns:repeat(6,1fr);
-  gap:10px;
+width:92%;
+max-width:1280px;
+margin:auto;
+padding:22px 0;
+display:grid;
+grid-template-columns:repeat(6,1fr);
+gap:10px;
 }
-
 .menu-item{
-  padding:18px 14px;
-  border:1px solid #e4e9ed;
-  border-radius:8px;
-  font-size:11px;
-  font-weight:bold;
-  color:#253c50;
-  text-align:center;
-  transition:.2s;
+padding:18px 14px;
+border:1px solid #e4e9ed;
+border-radius:8px;
+font-size:11px;
+font-weight:bold;
+color:#253c50;
+text-align:center;
+transition:.2s;
 }
-
 .menu-item:hover{
-  background:#071b31;
-  color:#fff;
+background:#071b31;
+color:#fff;
 }
 
-/* =========================
-   HERO
-========================= */
-
+/* HERO */
 .hero{
-  height:calc(100vh - 78px);
-  min-height:620px;
-  position:relative;
-  overflow:hidden;
-  background:#071b31;
+height:calc(100vh - 78px);
+min-height:620px;
+position:relative;
+overflow:hidden;
+background:#071b31;
 }
-
 .hero-image{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  object-fit:cover;
+position:absolute;
+inset:0;
+width:100%;
+height:100%;
+object-fit:cover;
 }
-
-/* کدری روی کل عکس */
-
 .hero-overlay{
-  position:absolute;
-  inset:0;
-  background:
-    linear-gradient(
-      90deg,
-      rgba(4,19,35,.78),
-      rgba(4,19,35,.52),
-      rgba(4,19,35,.35)
-    );
+position:absolute;
+inset:0;
+background:
+linear-gradient(
+90deg,
+rgba(4,19,35,.78),
+rgba(4,19,35,.52),
+rgba(4,19,35,.35)
+);
 }
-
 .hero-content{
-  position:relative;
-  z-index:2;
-  width:92%;
-  max-width:1280px;
-  height:100%;
-  margin:auto;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
+position:relative;
+z-index:2;
+width:92%;
+max-width:1280px;
+height:100%;
+margin:auto;
+display:flex;
+align-items:center;
+justify-content:center;
+text-align:center;
 }
-
 .hero-text{
-  color:#fff;
-  max-width:720px;
+color:#fff;
+max-width:720px;
 }
-
 .hero-line{
-  width:55px;
-  height:2px;
-  background:#6bc9ee;
-  margin:0 auto 20px;
+width:55px;
+height:2px;
+background:#6bc9ee;
+margin:0 auto 20px;
 }
-
 .hero-logo{
-  font-family:Arial,sans-serif;
-  font-size:56px;
-  font-weight:800;
-  letter-spacing:.5px;
-  margin-bottom:12px;
+font-family:Arial,sans-serif;
+font-size:56px;
+font-weight:800;
+letter-spacing:.5px;
+margin-bottom:12px;
 }
-
-.hero-logo span{
-  color:#70cff2;
-}
-
+.hero-logo span{color:#70cff2}
 .hero-subtitle{
-  font-size:18px;
-  line-height:2;
-  margin:0 auto 14px;
-  font-weight:500;
+font-size:18px;
+line-height:2;
+margin:0 auto 14px;
+font-weight:500;
 }
-
 .hero-description{
-  max-width:600px;
-  margin:0 auto 30px;
-  color:#e2edf4;
-  font-size:12px;
-  line-height:2.1;
+max-width:600px;
+margin:0 auto 30px;
+color:#e2edf4;
+font-size:12px;
+line-height:2.1;
 }
-
 .hero-buttons{
-  display:flex;
-  justify-content:center;
-  gap:12px;
-  flex-wrap:wrap;
+display:flex;
+justify-content:center;
+gap:12px;
+flex-wrap:wrap;
 }
-
 .glass-button{
-  min-width:165px;
-  padding:14px 24px;
-  border-radius:9px;
-  border:1px solid rgba(255,255,255,.45);
-  background:rgba(255,255,255,.13);
-  color:#fff;
-  backdrop-filter:blur(10px);
-  -webkit-backdrop-filter:blur(10px);
-  font-size:11px;
-  font-weight:bold;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:9px;
-  transition:.25s;
+min-width:165px;
+padding:14px 24px;
+border-radius:9px;
+border:1px solid rgba(255,255,255,.45);
+background:rgba(255,255,255,.13);
+color:#fff;
+backdrop-filter:blur(10px);
+-webkit-backdrop-filter:blur(10px);
+font-size:11px;
+font-weight:bold;
+display:flex;
+align-items:center;
+justify-content:center;
+gap:9px;
+transition:.25s;
 }
-
 .glass-button:hover{
-  background:rgba(255,255,255,.92);
-  color:#071b31;
+background:rgba(255,255,255,.92);
+color:#071b31;
 }
-
 .glass-button.primary{
-  background:rgba(12,122,187,.72);
-  border-color:#62c7ed;
+background:rgba(12,122,187,.72);
+border-color:#62c7ed;
 }
 
-/* =========================
-   SECTIONS
-========================= */
-
-section{
-  padding:85px 0;
-}
-
+/* SECTIONS */
+section{padding:85px 0}
 .container{
-  width:92%;
-  max-width:1280px;
-  margin:auto;
+width:92%;
+max-width:1280px;
+margin:auto;
 }
-
 .heading{
-  text-align:center;
-  margin-bottom:42px;
+text-align:center;
+margin-bottom:42px;
 }
-
 .heading small{
-  color:#0879bd;
-  font-size:10px;
-  font-weight:bold;
+color:#0879bd;
+font-size:10px;
+font-weight:bold;
 }
-
 .heading h2{
-  color:#071b31;
-  font-size:30px;
-  margin:8px 0;
+color:#071b31;
+font-size:30px;
+margin:8px 0;
 }
-
 .heading p{
-  color:#718192;
-  font-size:11px;
+color:#718192;
+font-size:11px;
 }
 
 /* SERVICES */
-
-.services{
-  background:#f5f7f9;
-}
-
+.services{background:#f5f7f9}
 .grid4{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:16px;
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:16px;
 }
-
 .card{
-  background:#fff;
-  border:1px solid #e1e7ec;
-  border-radius:9px;
-  padding:28px 22px;
-  transition:.25s;
+background:#fff;
+border:1px solid #e1e7ec;
+border-radius:9px;
+padding:28px 22px;
+transition:.25s;
 }
-
 .card:hover{
-  transform:translateY(-5px);
-  box-shadow:0 20px 45px rgba(7,27,49,.08);
+transform:translateY(-5px);
+box-shadow:0 20px 45px rgba(7,27,49,.08);
 }
-
 .service-icon{
-  width:50px;
-  height:50px;
-  border-radius:10px;
-  background:#edf7fb;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+width:50px;
+height:50px;
+border-radius:10px;
+background:#edf7fb;
+display:flex;
+align-items:center;
+justify-content:center;
 }
-
 .service-icon svg{
-  width:25px;
-  height:25px;
-  stroke:#0879bd;
-  fill:none;
-  stroke-width:1.7;
-  stroke-linecap:round;
-  stroke-linejoin:round;
+width:25px;
+height:25px;
+stroke:#0879bd;
+fill:none;
+stroke-width:1.7;
+stroke-linecap:round;
+stroke-linejoin:round;
 }
-
 .card h3{
-  font-size:15px;
-  color:#071b31;
-  margin:15px 0 7px;
+font-size:15px;
+color:#071b31;
+margin:15px 0 7px;
 }
-
 .card p{
-  font-size:10px;
-  color:#718192;
-  line-height:1.9;
+font-size:10px;
+color:#718192;
+line-height:1.9;
 }
-
 .card a{
-  color:#0879bd;
-  font-size:10px;
-  font-weight:bold;
+color:#0879bd;
+font-size:10px;
+font-weight:bold;
 }
 
 /* BRANDS */
-
-.brands{
-  background:#fff;
-}
-
+.brands{background:#fff}
 .brand-grid{
-  display:grid;
-  grid-template-columns:repeat(6,1fr);
-  gap:12px;
+display:grid;
+grid-template-columns:repeat(6,1fr);
+gap:12px;
 }
-
 .brand{
-  height:75px;
-  border:1px solid #e1e7ec;
-  border-radius:8px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:#617283;
-  font-family:Arial,sans-serif;
-  font-size:14px;
-  font-weight:bold;
+height:75px;
+border:1px solid #e1e7ec;
+border-radius:8px;
+display:flex;
+align-items:center;
+justify-content:center;
+color:#617283;
+font-family:Arial,sans-serif;
+font-size:14px;
+font-weight:bold;
 }
 
 /* ABOUT */
-
-.about{
-  background:#f5f7f9;
-}
-
+.about{background:#f5f7f9}
 .about-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:55px;
-  align-items:center;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:55px;
+align-items:center;
 }
-
 .about h2{
-  color:#071b31;
-  font-size:33px;
-  line-height:1.5;
+color:#071b31;
+font-size:33px;
+line-height:1.5;
 }
-
 .about p{
-  color:#718192;
-  font-size:12px;
-  line-height:2;
+color:#718192;
+font-size:12px;
+line-height:2;
 }
-
 .about-panel{
-  min-height:320px;
-  background:#071b31;
-  border-radius:12px;
-  padding:45px;
-  color:#fff;
+min-height:320px;
+background:#071b31;
+border-radius:12px;
+padding:45px;
+color:#fff;
 }
-
 .about-panel strong{
-  font-family:Arial,sans-serif;
-  font-size:60px;
-  color:#6cccf3;
+font-family:Arial,sans-serif;
+font-size:60px;
+color:#6cccf3;
 }
-
-.about-panel h3{
-  font-size:20px;
-}
-
-.about-panel p{
-  color:#bdcad5;
-}
+.about-panel h3{font-size:20px}
+.about-panel p{color:#bdcad5}
 
 /* ARTICLES */
-
 .article-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:17px;
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:17px;
 }
-
 .article{
-  border:1px solid #e2e8ed;
-  border-radius:9px;
-  overflow:hidden;
+border:1px solid #e2e8ed;
+border-radius:9px;
+overflow:hidden;
 }
-
 .article-img{
-  height:150px;
-  background:#edf4f7;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+height:150px;
+background:#edf4f7;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:48px;
 }
-
-.article-body{
-  padding:20px;
-}
-
+.article-body{padding:20px}
 .article-body small{
-  color:#0879bd;
-  font-size:9px;
+color:#0879bd;
+font-size:9px;
 }
-
 .article-body h3{
-  color:#071b31;
-  font-size:14px;
+color:#071b31;
+font-size:14px;
 }
-
 .article-body p{
-  color:#718192;
-  font-size:10px;
-  line-height:1.9;
+color:#718192;
+font-size:10px;
+line-height:1.9;
 }
 
 /* CTA */
-
 .cta{
-  background:#071b31;
-  color:#fff;
-  border-radius:10px;
-  padding:45px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+background:#071b31;
+color:#fff;
+border-radius:10px;
+padding:45px;
+display:flex;
+justify-content:space-between;
+align-items:center;
 }
-
 .cta h2{
-  margin:0;
-  font-size:25px;
+margin:0;
+font-size:25px;
 }
-
 .cta p{
-  color:#bdcad5;
-  font-size:11px;
+color:#bdcad5;
+font-size:11px;
 }
-
 .cta a{
-  background:#0879bd;
-  padding:13px 25px;
-  border-radius:8px;
-  font-size:11px;
-  font-weight:bold;
+background:#0879bd;
+padding:13px 25px;
+border-radius:8px;
+font-size:11px;
+font-weight:bold;
 }
 
 /* FOOTER */
-
 footer{
-  background:#06182c;
-  color:#fff;
-  padding:60px 0 90px;
+background:#06182c;
+color:#fff;
+padding:60px 0 90px;
 }
-
 .footer-grid{
-  display:grid;
-  grid-template-columns:2fr 1fr 1fr 1fr;
-  gap:35px;
+display:grid;
+grid-template-columns:2fr 1fr 1fr 1fr;
+gap:35px;
 }
-
 .footer-logo{
-  font-family:Arial,sans-serif;
-  font-size:22px;
-  font-weight:bold;
+font-family:Arial,sans-serif;
+font-size:22px;
+font-weight:bold;
 }
-
-.footer-logo span{
-  color:#6cccf3;
+.footer-logo span{color:#6cccf3}
+footer h3{font-size:13px}
+footer p,footer a{
+color:#aebdca;
+font-size:10px;
+line-height:2;
 }
-
-footer h3{
-  font-size:13px;
-}
-
-footer p,
-footer a{
-  color:#aebdca;
-  font-size:10px;
-  line-height:2;
-}
-
-footer a{
-  display:block;
-}
-
+footer a{display:block}
 .copyright{
-  border-top:1px solid rgba(255,255,255,.1);
-  margin-top:40px;
-  padding-top:18px;
-  text-align:center;
-  color:#8193a5;
-  font-size:9px;
+border-top:1px solid rgba(255,255,255,.1);
+margin-top:40px;
+padding-top:18px;
+text-align:center;
+color:#8193a5;
+font-size:9px;
+}
+
+/* CHAT */
+.chat-button{
+position:fixed;
+left:22px;
+bottom:90px;
+width:58px;
+height:58px;
+border-radius:50%;
+border:0;
+background:#0879bd;
+box-shadow:0 12px 35px rgba(0,0,0,.25);
+display:flex;
+align-items:center;
+justify-content:center;
+cursor:pointer;
+z-index:9998;
+}
+.chat-button svg{
+width:27px;
+height:27px;
+fill:none;
+stroke:#fff;
+stroke-width:1.7;
+stroke-linecap:round;
+stroke-linejoin:round;
+}
+.chat-window{
+position:fixed;
+left:22px;
+bottom:158px;
+width:330px;
+background:#fff;
+border-radius:16px;
+overflow:hidden;
+box-shadow:0 20px 60px rgba(7,27,49,.25);
+border:1px solid #e3e9ed;
+z-index:9999;
+display:none;
+}
+.chat-window.open{display:block}
+.chat-head{
+background:#071b31;
+color:#fff;
+padding:18px;
+display:flex;
+align-items:center;
+gap:12px;
+}
+.chat-avatar{
+width:42px;
+height:42px;
+border-radius:50%;
+background:#0879bd;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+.chat-head strong{
+display:block;
+font-size:12px;
+}
+.chat-head small{
+color:#bcd0df;
+font-size:9px;
+}
+.chat-close{
+margin-right:auto;
+border:0;
+background:transparent;
+color:#fff;
+font-size:20px;
+cursor:pointer;
+}
+.chat-body{padding:18px}
+.chat-message{
+background:#f1f6f9;
+border-radius:12px 12px 12px 3px;
+padding:13px;
+font-size:10px;
+color:#334b60;
+line-height:1.9;
+margin-bottom:15px;
+}
+.chat-options{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:7px;
+}
+.chat-option{
+border:1px solid #dfe7ec;
+background:#fff;
+border-radius:8px;
+padding:10px 5px;
+color:#263f54;
+font-size:9px;
+cursor:pointer;
+}
+.chat-option:hover{
+background:#edf7fb;
+border-color:#9ccde2;
+}
+.chat-input{
+margin-top:12px;
+width:100%;
+border:1px solid #dfe7ec;
+border-radius:8px;
+padding:11px;
+font-family:inherit;
+font-size:9px;
+outline:none;
 }
 
 /* =========================
-   FLOATING CHAT
+   MOBILE BOTTOM BAR
 ========================= */
-
-.chat-button{
-  position:fixed;
-  left:22px;
-  bottom:22px;
-  width:58px;
-  height:58px;
-  border-radius:50%;
-  border:0;
-  background:#0879bd;
-  box-shadow:0 12px 35px rgba(0,0,0,.25);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-  z-index:9998;
-}
-
-.chat-button svg{
-  width:27px;
-  height:27px;
-  fill:none;
-  stroke:#fff;
-  stroke-width:1.7;
-  stroke-linecap:round;
-  stroke-linejoin:round;
-}
-
-.chat-window{
-  position:fixed;
-  left:22px;
-  bottom:92px;
-  width:330px;
-  background:#fff;
-  border-radius:16px;
-  overflow:hidden;
-  box-shadow:0 20px 60px rgba(7,27,49,.25);
-  border:1px solid #e3e9ed;
-  z-index:9999;
-  display:none;
-}
-
-.chat-window.open{
-  display:block;
-}
-
-.chat-head{
-  background:#071b31;
-  color:#fff;
-  padding:18px;
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
-
-.chat-avatar{
-  width:42px;
-  height:42px;
-  border-radius:50%;
-  background:#0879bd;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.chat-head strong{
-  display:block;
-  font-size:12px;
-}
-
-.chat-head small{
-  color:#bcd0df;
-  font-size:9px;
-}
-
-.chat-close{
-  margin-right:auto;
-  border:0;
-  background:transparent;
-  color:#fff;
-  font-size:20px;
-  cursor:pointer;
-}
-
-.chat-body{
-  padding:18px;
-}
-
-.chat-message{
-  background:#f1f6f9;
-  border-radius:12px 12px 12px 3px;
-  padding:13px;
-  font-size:10px;
-  color:#334b60;
-  line-height:1.9;
-  margin-bottom:15px;
-}
-
-.chat-options{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:7px;
-}
-
-.chat-option{
-  border:1px solid #dfe7ec;
-  background:#fff;
-  border-radius:8px;
-  padding:10px 5px;
-  color:#263f54;
-  font-size:9px;
-  cursor:pointer;
-}
-
-.chat-option:hover{
-  background:#edf7fb;
-  border-color:#9ccde2;
-}
-
-.chat-input{
-  margin-top:12px;
-  width:100%;
-  border:1px solid #dfe7ec;
-  border-radius:8px;
-  padding:11px;
-  font-family:inherit;
-  font-size:9px;
-  outline:none;
-}
-
-.chat-input:focus{
-  border-color:#0879bd;
-}
-
-/* MOBILE BAR */
 
 .mobile-bar{
-  display:none;
+display:none;
 }
-
-/* =========================
-   MOBILE
-========================= */
 
 @media(max-width:900px){
 
-  .header{
-    height:68px;
-  }
+.header{height:68px}
 
-  .menu-panel{
-    top:68px;
-  }
+.menu-panel{top:68px}
 
-  .menu-inner{
-    grid-template-columns:1fr 1fr;
-  }
+.menu-inner{
+grid-template-columns:1fr 1fr;
+}
 
-  .hero{
-    height:calc(100vh - 68px);
-    min-height:600px;
-  }
+.hero{
+height:calc(100vh - 68px);
+min-height:600px;
+}
 
-  .hero-logo{
-    font-size:40px;
-  }
+.hero-logo{font-size:40px}
+.hero-subtitle{font-size:14px}
+.hero-description{font-size:10px}
 
-  .hero-subtitle{
-    font-size:14px;
-  }
+.grid4{grid-template-columns:1fr 1fr}
+.brand-grid{grid-template-columns:repeat(3,1fr)}
+.about-grid{grid-template-columns:1fr}
+.article-grid{grid-template-columns:1fr}
+.footer-grid{grid-template-columns:1fr 1fr}
 
-  .hero-description{
-    font-size:10px;
-  }
+/* نوار پایین */
 
-  .grid4{
-    grid-template-columns:1fr 1fr;
-  }
+.mobile-bar{
+position:fixed;
+right:0;
+left:0;
+bottom:0;
+height:68px;
+background:#fff;
+border-top:1px solid #dfe6eb;
+display:flex;
+z-index:9990;
+box-shadow:0 -10px 30px rgba(0,0,0,.10);
+}
 
-  .brand-grid{
-    grid-template-columns:repeat(3,1fr);
-  }
+.mobile-bar a{
+flex:1;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+gap:4px;
+font-size:8px;
+color:#53697b;
+}
 
-  .about-grid{
-    grid-template-columns:1fr;
-  }
+.mobile-bar a.active{
+color:#0879bd;
+}
 
-  .article-grid{
-    grid-template-columns:1fr;
-  }
+.mobile-bar svg{
+width:21px;
+height:21px;
+fill:none;
+stroke:currentColor;
+stroke-width:1.7;
+stroke-linecap:round;
+stroke-linejoin:round;
+}
 
-  .footer-grid{
-    grid-template-columns:1fr 1fr;
-  }
+.chat-button{
+bottom:82px;
+}
 
-  .mobile-bar{
-    position:fixed;
-    right:0;
-    left:0;
-    bottom:0;
-    height:64px;
-    background:#fff;
-    border-top:1px solid #dfe6eb;
-    display:flex;
-    z-index:9990;
-    box-shadow:0 -10px 30px rgba(0,0,0,.08);
-  }
+.chat-window{
+bottom:150px;
+}
 
-  .mobile-bar a{
-    flex:1;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    gap:4px;
-    font-size:8px;
-    color:#53697b;
-  }
-
-  .mobile-bar svg{
-    width:20px;
-    height:20px;
-    stroke:#53697b;
-    fill:none;
-    stroke-width:1.7;
-    stroke-linecap:round;
-    stroke-linejoin:round;
-  }
-
-  .chat-button{
-    bottom:78px;
-  }
-
-  .chat-window{
-    bottom:145px;
-  }
 }
 
 @media(max-width:500px){
 
-  .logo{
-    font-size:17px;
-  }
+.logo{font-size:17px}
+.logo-mark{
+width:35px;
+height:35px;
+}
 
-  .logo-mark{
-    width:35px;
-    height:35px;
-  }
+.header-icon{
+width:38px;
+height:38px;
+}
 
-  .header-icon{
-    width:38px;
-    height:38px;
-  }
+.hero-content{
+align-items:center;
+}
 
-  .hero-content{
-    align-items:center;
-  }
+.hero-logo{font-size:34px}
+.hero-subtitle{font-size:13px}
 
-  .hero-logo{
-    font-size:34px;
-  }
+.hero-buttons{
+display:grid;
+grid-template-columns:1fr 1fr;
+}
 
-  .hero-subtitle{
-    font-size:13px;
-  }
+.glass-button{
+min-width:0;
+padding:12px 7px;
+font-size:9px;
+}
 
-  .hero-buttons{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-  }
+.grid4{grid-template-columns:1fr}
+.brand-grid{grid-template-columns:1fr 1fr}
+.footer-grid{grid-template-columns:1fr}
 
-  .glass-button{
-    min-width:0;
-    padding:12px 7px;
-    font-size:9px;
-  }
-
-  .grid4{
-    grid-template-columns:1fr;
-  }
-
-  .brand-grid{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .footer-grid{
-    grid-template-columns:1fr;
-  }
-
-  .chat-window{
-    left:12px;
-    right:12px;
-    width:auto;
-  }
+.chat-window{
+left:12px;
+right:12px;
+width:auto;
+}
 
 }
 </style>
@@ -876,16 +697,11 @@ footer a{
 <div class="header-inner">
 
 <a href="#home" class="logo">
-
 <div class="logo-mark">❄</div>
-
 Dr Borodat
-
 </a>
 
 <div class="header-tools">
-
-<!-- SEARCH -->
 
 <button class="header-icon" aria-label="جستجو">
 
@@ -896,8 +712,6 @@ Dr Borodat
 
 </button>
 
-<!-- SHOP -->
-
 <a href="/shop" class="header-icon" aria-label="فروشگاه">
 
 <svg class="icon-svg" viewBox="0 0 24 24">
@@ -906,8 +720,6 @@ Dr Borodat
 </svg>
 
 </a>
-
-<!-- MENU -->
 
 <button class="header-icon" onclick="toggleMenu()" aria-label="منو">
 
@@ -1033,9 +845,7 @@ Dr <span>Borodat</span>
 </div>
 
 <h3>نصب کولر گازی</h3>
-
 <p>نصب اصولی و راه‌اندازی انواع کولر گازی و اسپلیت.</p>
-
 <a href="#contact">درخواست خدمت ←</a>
 
 </div>
@@ -1050,9 +860,7 @@ Dr <span>Borodat</span>
 </div>
 
 <h3>سرویس کولر</h3>
-
 <p>سرویس، شست‌وشو و بررسی عملکرد دستگاه.</p>
-
 <a href="#contact">درخواست خدمت ←</a>
 
 </div>
@@ -1070,9 +878,7 @@ Dr <span>Borodat</span>
 </div>
 
 <h3>تعمیر کولر</h3>
-
 <p>عیب‌یابی و تعمیر تخصصی انواع دستگاه.</p>
-
 <a href="#contact">درخواست خدمت ←</a>
 
 </div>
@@ -1087,9 +893,7 @@ Dr <span>Borodat</span>
 </div>
 
 <h3>شارژ گاز</h3>
-
 <p>بررسی و شارژ گاز کولر در صورت نیاز.</p>
-
 <a href="#contact">درخواست خدمت ←</a>
 
 </div>
@@ -1197,47 +1001,33 @@ ABOUT US
 <div class="article-img">❄</div>
 
 <div class="article-body">
-
 <small>آموزش</small>
-
 <h3>چه زمانی کولر گازی نیاز به سرویس دارد؟</h3>
-
 <p>نشانه‌های مهمی که زمان سرویس دستگاه را مشخص می‌کنند.</p>
-
 </div>
 
 </article>
-
 
 <article class="article">
 
 <div class="article-img">🔧</div>
 
 <div class="article-body">
-
 <small>تعمیرات</small>
-
 <h3>چرا کولر باد گرم می‌زند؟</h3>
-
 <p>دلایل رایج گرم شدن باد کولر گازی.</p>
-
 </div>
 
 </article>
-
 
 <article class="article">
 
 <div class="article-img">◌</div>
 
 <div class="article-body">
-
 <small>نگهداری</small>
-
 <h3>چطور مصرف کولر را کاهش دهیم؟</h3>
-
 <p>چند نکته ساده برای استفاده بهتر از کولر.</p>
-
 </div>
 
 </article>
@@ -1258,11 +1048,8 @@ ABOUT US
 <div class="cta">
 
 <div>
-
 <h2>نیاز به مشاوره دارید؟</h2>
-
 <p>برای ارتباط مستقیم با مهندس با ما تماس بگیرید.</p>
-
 </div>
 
 <a href="tel:09197701790" dir="ltr">
@@ -1336,6 +1123,75 @@ Dr <span>Borodat</span>
 </footer>
 
 
+<!-- =========================
+     MOBILE BOTTOM BAR
+========================= -->
+
+<div class="mobile-bar">
+
+<a href="#home" class="active">
+
+<svg viewBox="0 0 24 24">
+<path d="M3 11.5L12 4l9 7.5"></path>
+<path d="M5 10v9h14v-9"></path>
+<path d="M9 19v-5h6v5"></path>
+</svg>
+
+خانه
+
+</a>
+
+
+<a href="#services">
+
+<svg viewBox="0 0 24 24">
+<path d="M12 3l2.2 5.1L20 10l-4.2 3.7L17 19l-5-2.8L7 19l1.2-5.3L4 10l5.8-1.9L12 3z"></path>
+</svg>
+
+خدمات
+
+</a>
+
+
+<a href="/shop">
+
+<svg viewBox="0 0 24 24">
+<path d="M4 8h16l-1 11H5L4 8z"></path>
+<path d="M8 8V6a4 4 0 0 1 8 0v2"></path>
+</svg>
+
+فروشگاه
+
+</a>
+
+
+<a href="tel:09197701790">
+
+<svg viewBox="0 0 24 24">
+<path d="M6.5 4.5l3 2.5-2 3c1 2.2 2.3 3.5 4.5 4.5l3-2 2.5 3c.7.8.6 2-.2 2.6l-1.5 1c-.8.5-1.8.7-2.7.4-5.1-1.7-8.8-5.4-10.5-10.5-.3-.9-.1-1.9.4-2.7l1-1.5c.6-.8 1.8-.9 2.5-.3z"></path>
+</svg>
+
+تماس
+
+</a>
+
+
+<a href="javascript:void(0)" onclick="toggleChat()">
+
+<svg viewBox="0 0 24 24">
+<path d="M20 11.5a7.5 7.5 0 0 1-8 7.5 8.6 8.6 0 0 1-3.5-.7L4 20l1.6-3.3A7.3 7.3 0 0 1 4.5 12 7.5 7.5 0 0 1 12 4.5a7.5 7.5 0 0 1 8 7z"></path>
+<path d="M8 12h.01"></path>
+<path d="M12 12h.01"></path>
+<path d="M16 12h.01"></path>
+</svg>
+
+پشتیبانی
+
+</a>
+
+</div>
+
+
 <!-- FLOATING CHAT -->
 
 <button class="chat-button" onclick="toggleChat()" aria-label="پشتیبانی آنلاین">
@@ -1365,16 +1221,13 @@ Dr <span>Borodat</span>
 </div>
 
 <div>
-
 <strong>پشتیبانی آنلاین</strong>
-<small>دکتر برودت</small>
-
+<small>Dr Borodat</small>
 </div>
 
 <button class="chat-close" onclick="toggleChat()">×</button>
 
 </div>
-
 
 <div class="chat-body">
 
@@ -1418,19 +1271,13 @@ placeholder="پیامتان را بنویسید..."
 
 function toggleMenu(){
 
-document
-.getElementById("menu")
-.classList
-.toggle("open");
+document.getElementById("menu").classList.toggle("open");
 
 }
 
 function toggleChat(){
 
-document
-.getElementById("chatWindow")
-.classList
-.toggle("open");
+document.getElementById("chatWindow").classList.toggle("open");
 
 }
 
@@ -1449,9 +1296,7 @@ menu.classList.contains("open") &&
 !e.target.closest(".menu-panel") &&
 !e.target.closest(".header-icon")
 ){
-
 menu.classList.remove("open");
-
 }
 
 });
