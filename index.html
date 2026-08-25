@@ -2,11 +2,787 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>دکتر برودت</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>دکتر برودت | متخصص سیستم‌های سرمایشی</title>
+
+<style>
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+margin:0;
+font-family:Tahoma,Arial,sans-serif;
+color:#102b43;
+background:#fff;
+line-height:1.8
+}
+a{text-decoration:none;color:inherit}
+.container{width:min(1180px,92%);margin:auto}
+
+/* HEADER */
+.header{
+height:78px;
+border-bottom:1px solid #e9eff4;
+background:#fff;
+position:sticky;
+top:0;
+z-index:100
+}
+.nav{
+height:100%;
+display:flex;
+align-items:center;
+gap:35px
+}
+.logo{
+font-size:21px;
+font-weight:900;
+margin-left:auto;
+color:#092d49
+}
+.logo span{color:#087bd1}
+
+.menu{
+display:flex;
+gap:28px;
+font-size:14px;
+font-weight:600
+}
+.menu a:hover{color:#087bd1}
+
+.header-btn{
+background:#087bd1;
+color:#fff;
+padding:10px 20px;
+border-radius:8px;
+font-size:13px
+}
+
+/* HERO */
+.hero{
+background:
+linear-gradient(120deg,#f2faff 0%,#fff 65%);
+padding:90px 0
+}
+.hero-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:65px;
+align-items:center
+}
+.label{
+color:#087bd1;
+font-size:13px;
+font-weight:bold;
+letter-spacing:.2px
+}
+.hero h1{
+font-size:47px;
+line-height:1.4;
+margin:15px 0;
+color:#082c49
+}
+.hero h1 span{color:#087bd1}
+.hero p{
+font-size:17px;
+color:#667d8f;
+max-width:570px
+}
+.buttons{
+display:flex;
+gap:12px;
+margin-top:28px
+}
+.btn{
+padding:13px 24px;
+border-radius:8px;
+font-size:14px;
+font-weight:bold
+}
+.primary{
+background:#087bd1;
+color:#fff
+}
+.secondary{
+border:1px solid #dbe6ed;
+color:#345269
+}
+.hero-visual{
+height:390px;
+border-radius:22px;
+background:
+linear-gradient(145deg,#dff4ff,#f8fcff);
+display:flex;
+align-items:center;
+justify-content:center;
+position:relative;
+box-shadow:0 25px 70px #0b507b15
+}
+.ac-icon{
+font-size:105px
+}
+.visual-card{
+position:absolute;
+bottom:25px;
+right:25px;
+background:#fff;
+padding:15px 20px;
+border-radius:12px;
+box-shadow:0 12px 35px #123b5718;
+font-size:13px
+}
+.visual-card b{display:block;color:#087bd1}
+
+/* TRUST */
+.trust{
+border-bottom:1px solid #edf2f6;
+padding:25px 0
+}
+.trust-grid{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+text-align:center
+}
+.trust-item{
+border-left:1px solid #e5edf2;
+font-size:13px;
+color:#647b8c
+}
+.trust-item:last-child{border:0}
+.trust-item b{
+display:block;
+font-size:20px;
+color:#087bd1
+}
+
+/* BRANDS */
+.brands{
+padding:55px 0
+}
+.section-title{
+text-align:center;
+margin-bottom:38px
+}
+.section-title small{
+color:#087bd1;
+font-weight:bold
+}
+.section-title h2{
+font-size:31px;
+margin:5px 0;
+color:#092d49
+}
+.section-title p{
+color:#718697;
+font-size:14px
+}
+.brand-list{
+display:flex;
+justify-content:center;
+gap:14px;
+flex-wrap:wrap
+}
+.brand{
+border:1px solid #e2ebf1;
+border-radius:9px;
+padding:15px 34px;
+font-weight:bold;
+color:#60788a;
+background:#fff
+}
+
+/* SERVICES */
+.services{
+background:#f7fbfd;
+padding:85px 0
+}
+.service-grid{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:18px
+}
+.service{
+background:#fff;
+border:1px solid #e4edf3;
+padding:28px 22px;
+border-radius:14px;
+transition:.25s
+}
+.service:hover{
+transform:translateY(-5px);
+box-shadow:0 18px 40px #123e5b12
+}
+.service-icon{
+width:50px;
+height:50px;
+display:grid;
+place-items:center;
+background:#eaf7ff;
+border-radius:11px;
+font-size:24px;
+margin-bottom:18px
+}
+.service h3{
+margin:0 0 7px;
+font-size:18px
+}
+.service p{
+color:#708697;
+font-size:13px
+}
+.service a{
+color:#087bd1;
+font-size:13px;
+font-weight:bold
+}
+
+/* ABOUT */
+.about{
+padding:90px 0
+}
+.about-grid{
+display:grid;
+grid-template-columns:1.2fr .8fr;
+gap:70px;
+align-items:center
+}
+.about h2{
+font-size:34px;
+line-height:1.5;
+margin:8px 0
+}
+.about p{
+color:#687f91
+}
+.about-box{
+background:#082d4b;
+color:#fff;
+border-radius:18px;
+padding:35px
+}
+.about-box strong{
+font-size:45px;
+color:#66c9ff;
+display:block
+}
+.about-box span{
+color:#bdd2df;
+font-size:13px
+}
+
+/* WHY */
+.why{
+background:#f7fbfd;
+padding:85px 0
+}
+.why-grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:20px
+}
+.why-card{
+background:#fff;
+padding:28px;
+border-radius:13px;
+border:1px solid #e4edf3
+}
+.why-card b{
+color:#087bd1;
+font-size:18px
+}
+.why-card p{
+font-size:13px;
+color:#718697
+}
+
+/* CTA */
+.cta-section{
+padding:80px 0
+}
+.cta{
+background:#087bd1;
+border-radius:20px;
+padding:50px 55px;
+color:#fff;
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:30px
+}
+.cta h2{
+margin:0;
+font-size:29px
+}
+.cta p{
+margin:8px 0 0;
+opacity:.9
+}
+.cta a{
+background:#fff;
+color:#087bd1;
+padding:13px 24px;
+border-radius:8px;
+font-weight:bold;
+white-space:nowrap
+}
+
+/* FOOTER */
+footer{
+background:#082d4b;
+color:#fff;
+padding:55px 0 20px
+}
+.footer-grid{
+display:grid;
+grid-template-columns:1.5fr 1fr 1fr;
+gap:50px
+}
+footer p,footer a{
+color:#a9bfce;
+font-size:13px
+}
+footer h3{font-size:18px}
+.copyright{
+border-top:1px solid #ffffff18;
+margin-top:40px;
+padding-top:20px;
+text-align:center;
+font-size:11px;
+color:#8fa8b8
+}
+
+/* MOBILE */
+@media(max-width:850px){
+
+.menu{display:none}
+
+.header-btn{display:none}
+
+.hero{
+padding:55px 0
+}
+
+.hero-grid{
+grid-template-columns:1fr;
+gap:35px
+}
+
+.hero h1{
+font-size:34px
+}
+
+.hero-visual{
+height:280px
+}
+
+.trust-grid{
+grid-template-columns:1fr 1fr;
+gap:20px
+}
+
+.trust-item{
+border:0
+}
+
+.service-grid{
+grid-template-columns:1fr 1fr
+}
+
+.about-grid{
+grid-template-columns:1fr;
+gap:35px
+}
+
+.why-grid{
+grid-template-columns:1fr
+}
+
+.cta{
+display:block;
+padding:35px 25px
+}
+
+.cta a{
+display:inline-block;
+margin-top:18px
+}
+
+.footer-grid{
+grid-template-columns:1fr
+}
+
+}
+
+@media(max-width:520px){
+
+.hero h1{
+font-size:29px
+}
+
+.service-grid{
+grid-template-columns:1fr
+}
+
+.brand{
+padding:12px 20px
+}
+
+}
+</style>
 </head>
+
 <body>
-<h1>دکتر برودت ❄️</h1>
-<p>نسخه آزمایشی سایت در حال ساخت است.</p>
+
+<header class="header">
+<div class="container nav">
+
+<a class="logo" href="#">
+دکتر <span>برودت</span> ❄️
+</a>
+
+<nav class="menu">
+<a href="#services">خدمات</a>
+<a href="#brands">برندها</a>
+<a href="#about">درباره ما</a>
+<a href="#why">چرا ما؟</a>
+<a href="/shop">فروشگاه</a>
+<a href="#contact">تماس</a>
+</nav>
+
+<a class="header-btn" href="#request">
+درخواست خدمات
+</a>
+
+</div>
+</header>
+
+
+<section class="hero">
+
+<div class="container hero-grid">
+
+<div>
+
+<div class="label">
+تخصص در سیستم‌های سرمایشی
+</div>
+
+<h1>
+راهکار حرفه‌ای برای
+<span>خنکای مطمئن</span>
+</h1>
+
+<p>
+دکتر برودت ارائه‌دهنده خدمات تخصصی نصب، سرویس و تعمیر کولر گازی؛ با تمرکز بر کیفیت، تخصص و رضایت مشتری.
+</p>
+
+<div class="buttons">
+<a class="btn primary" href="#request">
+ثبت درخواست
+</a>
+
+<a class="btn secondary" href="#services">
+مشاهده خدمات
+</a>
+</div>
+
+</div>
+
+
+<div class="hero-visual">
+
+<div class="ac-icon">❄️</div>
+
+<div class="visual-card">
+<b>دکتر برودت</b>
+تخصص در سرمایش و تهویه
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<section class="trust">
+
+<div class="container trust-grid">
+
+<div class="trust-item">
+<b>✓</b>
+خدمات تخصصی
+</div>
+
+<div class="trust-item">
+<b>✓</b>
+پاسخ‌گویی سریع
+</div>
+
+<div class="trust-item">
+<b>✓</b>
+ثبت درخواست آنلاین
+</div>
+
+<div class="trust-item">
+<b>✓</b>
+پشتیبانی مشتریان
+</div>
+
+</div>
+
+</section>
+
+
+<section class="brands" id="brands">
+
+<div class="container">
+
+<div class="section-title">
+<small>BRANDS</small>
+<h2>برندهای تحت پوشش</h2>
+<p>خدمات تخصصی برای برندهای مختلف سیستم‌های سرمایشی</p>
+</div>
+
+<div class="brand-list">
+
+<div class="brand">LG</div>
+<div class="brand">GREE</div>
+<div class="brand">Samsung</div>
+<div class="brand">Daikin</div>
+<div class="brand">Midea</div>
+<div class="brand">General</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<section class="services" id="services">
+
+<div class="container">
+
+<div class="section-title">
+<small>SERVICES</small>
+<h2>خدمات تخصصی دکتر برودت</h2>
+<p>از نصب تا تعمیر و نگهداری سیستم سرمایش</p>
+</div>
+
+
+<div class="service-grid">
+
+<div class="service">
+<div class="service-icon">❄️</div>
+<h3>نصب کولر گازی</h3>
+<p>نصب اصولی انواع کولر گازی و اسپلیت.</p>
+<a href="#request">درخواست نصب ←</a>
+</div>
+
+
+<div class="service">
+<div class="service-icon">🛠️</div>
+<h3>سرویس کولر</h3>
+<p>سرویس و شست‌وشوی تخصصی دستگاه.</p>
+<a href="#request">درخواست سرویس ←</a>
+</div>
+
+
+<div class="service">
+<div class="service-icon">🔧</div>
+<h3>تعمیرات</h3>
+<p>عیب‌یابی و تعمیر تخصصی کولر گازی.</p>
+<a href="#request">درخواست تعمیر ←</a>
+</div>
+
+
+<div class="service">
+<div class="service-icon">💨</div>
+<h3>شارژ گاز</h3>
+<p>بررسی گاز و شارژ سیستم در صورت نیاز.</p>
+<a href="#request">درخواست شارژ ←</a>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<section class="about" id="about">
+
+<div class="container about-grid">
+
+<div>
+
+<div class="label">
+ABOUT US
+</div>
+
+<h2>
+دکتر برودت؛
+متخصص خدمات سرمایش
+</h2>
+
+<p>
+ما در دکتر برودت تلاش می‌کنیم خدمات سیستم‌های سرمایشی را با رویکردی حرفه‌ای و قابل اعتماد ارائه کنیم.
+</p>
+
+<p>
+از نصب و راه‌اندازی تا سرویس، تعمیر و نگهداری؛ هدف ما این است که مشتری یک مجموعه کامل و متخصص در کنار خود داشته باشد.
+</p>
+
+</div>
+
+
+<div class="about-box">
+
+<strong>360°</strong>
+
+<span>
+راهکار کامل خدمات سرمایشی
+</span>
+
+</div>
+
+</div>
+
+</section>
+
+
+<section class="why" id="why">
+
+<div class="container">
+
+<div class="section-title">
+
+<small>WHY US</small>
+
+<h2>چرا دکتر برودت؟</h2>
+
+</div>
+
+
+<div class="why-grid">
+
+<div class="why-card">
+<b>تخصص</b>
+<p>
+تمرکز تخصصی روی سیستم‌های سرمایشی و کولر گازی.
+</p>
+</div>
+
+
+<div class="why-card">
+<b>پاسخ‌گویی</b>
+<p>
+ثبت درخواست و پیگیری سریع خدمات مشتریان.
+</p>
+</div>
+
+
+<div class="why-card">
+<b>یک مجموعه کامل</b>
+<p>
+نصب، سرویس، تعمیر و فروش محصولات مرتبط.
+</p>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<section class="cta-section" id="request">
+
+<div class="container">
+
+<div class="cta">
+
+<div>
+
+<h2>
+کولرت رو به متخصص بسپار
+</h2>
+
+<p>
+برای دریافت خدمات، درخواست خود را ثبت کنید.
+</p>
+
+</div>
+
+<a href="https://wa.me/989197701790">
+پشتیبانی و تماس
+</a>
+
+</div>
+
+</div>
+
+</section>
+
+
+<footer id="contact">
+
+<div class="container footer-grid">
+
+<div>
+
+<h3>
+دکتر برودت ❄️
+</h3>
+
+<p>
+خدمات تخصصی نصب، سرویس و تعمیر کولر گازی.
+</p>
+
+</div>
+
+
+<div>
+
+<h3>
+دسترسی سریع
+</h3>
+
+<a href="#services">خدمات</a><br>
+<a href="#brands">برندها</a><br>
+<a href="/shop">فروشگاه</a><br>
+<a href="#about">درباره ما</a>
+
+</div>
+
+
+<div>
+
+<h3>
+تماس با ما
+</h3>
+
+<a href="tel:09197701790">
+0919 770 1790
+</a>
+
+<br>
+
+<a href="tel:09120704028">
+0912 070 4028
+</a>
+
+</div>
+
+</div>
+
+
+<div class="copyright">
+© 2026 دکتر برودت — تمامی حقوق محفوظ است.
+</div>
+
+</footer>
+
 </body>
 </html>
