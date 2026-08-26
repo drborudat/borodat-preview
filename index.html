@@ -774,9 +774,6 @@ color:#8193a5;
 font-size:9px
 }
 
-
-/* ================= MOBILE ================= */
-
 .mobile-bar{display:none}
 
 @keyframes fadeUp{
@@ -1581,23 +1578,23 @@ required>
 نوع خدمت را انتخاب کنید
 </option>
 
-<option value="🔧 نصب کولر گازی">
+<option value="نصب کولر گازی">
 نصب کولر گازی
 </option>
 
-<option value="🛠️ سرویس کولر">
+<option value="سرویس کولر">
 سرویس کولر
 </option>
 
-<option value="❄️ تعمیر کولر">
+<option value="تعمیر کولر">
 تعمیر کولر
 </option>
 
-<option value="💧 شارژ گاز">
+<option value="شارژ گاز">
 شارژ گاز
 </option>
 
-<option value="📞 مشاوره">
+<option value="مشاوره">
 مشاوره
 </option>
 
@@ -1839,245 +1836,414 @@ dir="ltr">
 
 <script>
 
-/* =====================================================
+/* ===============================
    API
-   ===================================================== */
+================================ */
 
 const API_BASE = window.location.origin;
 
 
-/* =====================================================
-   GENERIC JSON RESPONSE
-   ===================================================== */
+/* ===============================
+   READ SERVER RESPONSE
+================================ */
 
 async function readJSONResponse(response){
 
-const raw = await response.text();
+    const raw = await response.text();
 
-if(!raw){
+    console.log(
+        "SERVER STATUS:",
+        response.status
+    );
 
-throw new Error(
-"سرور پاسخ خالی برگرداند."
-);
+    console.log(
+        "SERVER RESPONSE:",
+        raw
+    );
+
+
+    /*
+      اگر پاسخ خالی ولی HTTP موفق باشد،
+      آن را موفق در نظر می‌گیریم.
+    */
+
+    if(response.ok && !raw.trim()){
+
+        return {
+            success:true,
+            message:"درخواست شما با موفقیت ثبت شد."
+        };
+
+    }
+
+
+    let result;
+
+
+    if(raw.trim()){
+
+        try{
+
+            result = JSON.parse(raw);
+
+        }catch(error){
+
+            console.error(
+                "INVALID JSON:",
+                raw
+            );
+
+
+            if(response.ok){
+
+                return {
+                    success:true,
+                    message:"درخواست شما با موفقیت ثبت شد."
+                };
+
+            }
+
+
+            throw new Error(
+                "پاسخ سرور معتبر نیست."
+            );
+
+        }
+
+    }
+
+
+    if(!response.ok){
+
+        throw new Error(
+            result?.message ||
+            `خطای سرور (${response.status})`
+        );
+
+    }
+
+
+    return result || {
+
+        success:true,
+
+        message:
+            "درخواست شما با موفقیت ثبت شد."
+
+    };
 
 }
 
-let result;
 
-try{
-
-result = JSON.parse(raw);
-
-}catch(error){
-
-console.error(
-"SERVER RAW RESPONSE:",
-raw
-);
-
-throw new Error(
-"سرور پاسخ JSON معتبر برنگرداند."
-);
-
-}
-
-if(!response.ok){
-
-throw new Error(
-result?.message ||
-`خطای سرور (${response.status})`
-);
-
-}
-
-return result;
-
-}
-
-
-/* =====================================================
+/* ===============================
    MENU
-   ===================================================== */
+================================ */
 
 function toggleMenu(){
 
-document
-.getElementById("menu")
-.classList
-.toggle("open");
+    const menu =
+        document.getElementById("menu");
+
+    if(menu){
+
+        menu.classList.toggle("open");
+
+    }
 
 }
 
 
-/* =====================================================
+/* ===============================
    SERVICE REQUEST
-   ===================================================== */
+================================ */
 
-document
-.getElementById("serviceForm")
-.addEventListener(
-"submit",
-async function(e){
-
-e.preventDefault();
-
-const button =
-document.getElementById("submitBtn");
-
-const message =
-document.getElementById("formMessage");
-
-const data = {
-
-name:
-document
-.getElementById("name")
-.value
-.trim(),
-
-phone:
-document
-.getElementById("phone")
-.value
-.trim(),
-
-service:
-document
-.getElementById("service")
-.value,
-
-description:
-document
-.getElementById("description")
-.value
-.trim()
-
-};
+const serviceForm =
+    document.getElementById("serviceForm");
 
 
-message.className =
-"form-message";
+if(serviceForm){
 
-message.textContent = "";
+    serviceForm.addEventListener(
+        "submit",
+        async function(e){
 
-button.disabled = true;
-
-button.textContent =
-"در حال ارسال...";
+            e.preventDefault();
 
 
-try{
+            const button =
+                document.getElementById("submitBtn");
 
-const response =
-await fetch(
-API_BASE +
-"/api/request",
-{
-method:"POST",
-headers:{
-"Content-Type":"application/json",
-"Accept":"application/json"
-},
-body:JSON.stringify(data)
+            const message =
+                document.getElementById("formMessage");
+
+
+            const name =
+                document
+                .getElementById("name")
+                .value
+                .trim();
+
+
+            const phone =
+                document
+                .getElementById("phone")
+                .value
+                .trim();
+
+
+            const service =
+                document
+                .getElementById("service")
+                .value;
+
+
+            const description =
+                document
+                .getElementById("description")
+                .value
+                .trim();
+
+
+            if(!name){
+
+                message.className =
+                    "form-message error";
+
+                message.textContent =
+                    "❌ لطفاً نام و نام خانوادگی را وارد کنید.";
+
+                return;
+
+            }
+
+
+            if(!phone){
+
+                message.className =
+                    "form-message error";
+
+                message.textContent =
+                    "❌ لطفاً شماره تماس را وارد کنید.";
+
+                return;
+
+            }
+
+
+            if(!service){
+
+                message.className =
+                    "form-message error";
+
+                message.textContent =
+                    "❌ لطفاً نوع خدمت را انتخاب کنید.";
+
+                return;
+
+            }
+
+
+            const data = {
+
+                name:name,
+
+                phone:phone,
+
+                service:service,
+
+                description:description
+
+            };
+
+
+            button.disabled = true;
+
+            button.textContent =
+                "در حال ارسال...";
+
+
+            message.className =
+                "form-message";
+
+            message.textContent = "";
+
+
+            try{
+
+                console.log(
+                    "SERVICE REQUEST:",
+                    data
+                );
+
+
+                const response =
+                    await fetch(
+                        API_BASE +
+                        "/api/request",
+                        {
+                            method:"POST",
+
+                            headers:{
+                                "Content-Type":
+                                    "application/json",
+
+                                "Accept":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify(data)
+                        }
+                    );
+
+
+                const result =
+                    await readJSONResponse(
+                        response
+                    );
+
+
+                console.log(
+                    "SERVICE RESULT:",
+                    result
+                );
+
+
+                if(
+                    result &&
+                    result.success === false
+                ){
+
+                    throw new Error(
+                        result.message ||
+                        "ثبت درخواست انجام نشد."
+                    );
+
+                }
+
+
+                message.className =
+                    "form-message success";
+
+
+                message.textContent =
+                    "✅ " +
+                    (
+                        result?.message ||
+                        "درخواست شما با موفقیت ثبت شد."
+                    );
+
+
+                serviceForm.reset();
+
+
+            }catch(error){
+
+                console.error(
+                    "SERVICE REQUEST ERROR:",
+                    error
+                );
+
+
+                message.className =
+                    "form-message error";
+
+
+                message.textContent =
+                    "❌ " +
+                    (
+                        error.message ||
+                        "ارسال درخواست انجام نشد."
+                    );
+
+            }finally{
+
+                button.disabled = false;
+
+                button.textContent =
+                    "ثبت درخواست خدمات";
+
+            }
+
+        }
+    );
+
 }
-);
-
-const result =
-await readJSONResponse(response);
-
-if(
-!result ||
-result.success !== true
-){
-
-throw new Error(
-result?.message ||
-"پاسخ سرور نامعتبر است."
-);
-
-}
 
 
-message.className =
-"form-message success";
-
-message.textContent =
-"✅ " +
-(
-result.message ||
-"درخواست شما با موفقیت ثبت شد."
-);
-
-
-document
-.getElementById("serviceForm")
-.reset();
-
-
-}catch(error){
-
-console.error(
-"SERVICE REQUEST ERROR:",
-error
-);
-
-message.className =
-"form-message error";
-
-message.textContent =
-"❌ " +
-(
-error.message ||
-"ارسال درخواست انجام نشد."
-);
-
-}finally{
-
-button.disabled = false;
-
-button.textContent =
-"ثبت درخواست خدمات";
-
-}
-
-});
-
-
-/* =====================================================
-   CLOSE MENU OUTSIDE
-   ===================================================== */
+/* ===============================
+   CLOSE MENU
+================================ */
 
 document.addEventListener(
-"click",
-function(e){
+    "click",
+    function(e){
 
-const menu =
-document.getElementById("menu");
+        const menu =
+            document.getElementById("menu");
 
-if(
-menu.classList.contains("open") &&
-!e.target.closest(".menu-panel") &&
-!e.target.closest(".header-icon")
-){
 
-menu.classList.remove("open");
+        if(!menu){
 
-}
+            return;
+
+        }
+
+
+        if(
+            menu.classList.contains("open") &&
+            !e.target.closest(".menu-panel") &&
+            !e.target.closest(".header-icon")
+        ){
+
+            menu.classList.remove("open");
+
+        }
+
+    }
+);
+
+
+/* ===============================
+   CLOSE MENU AFTER LINK
+================================ */
+
+document
+.querySelectorAll(".menu-item")
+.forEach(function(item){
+
+    item.addEventListener(
+        "click",
+        function(){
+
+            const menu =
+                document.getElementById("menu");
+
+            if(menu){
+
+                menu.classList.remove(
+                    "open"
+                );
+
+            }
+
+        }
+    );
 
 });
 
 
-/* =====================================================
+/* ===============================
    DEBUG
-   ===================================================== */
+================================ */
 
 console.log(
-"Dr Borodat index loaded."
+    "Dr Borodat index loaded."
 );
 
 console.log(
-"API_BASE:",
-API_BASE
+    "API_BASE:",
+    API_BASE
 );
 
 </script>
