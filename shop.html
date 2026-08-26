@@ -7,10 +7,7 @@
 
 <style>
 *{box-sizing:border-box}
-
-html{
-scroll-behavior:smooth
-}
+html{scroll-behavior:smooth}
 
 body{
 margin:0;
@@ -25,12 +22,11 @@ text-decoration:none;
 color:inherit
 }
 
-button,input,select{
+button{
 font-family:inherit
 }
 
-/* ================= HEADER ================= */
-
+/* HEADER */
 .header{
 height:78px;
 background:#fff;
@@ -49,8 +45,6 @@ margin:auto;
 display:flex;
 align-items:center
 }
-
-/* LOGO */
 
 .logo{
 display:flex;
@@ -91,8 +85,6 @@ direction:ltr!important;
 unicode-bidi:isolate
 }
 
-/* HEADER TOOLS */
-
 .header-tools{
 margin-right:auto;
 display:flex;
@@ -110,13 +102,7 @@ display:flex;
 align-items:center;
 justify-content:center;
 cursor:pointer;
-padding:0;
-transition:.25s
-}
-
-.header-icon:hover{
-background:#f4f8fa;
-border-color:#bcd7e4
+padding:0
 }
 
 .icon-svg{
@@ -130,7 +116,6 @@ stroke-linejoin:round
 }
 
 /* MENU */
-
 .menu-panel{
 display:none;
 position:absolute;
@@ -163,8 +148,7 @@ border-radius:8px;
 font-size:11px;
 font-weight:bold;
 color:#253c50;
-text-align:center;
-transition:.2s
+text-align:center
 }
 
 .menu-item:hover{
@@ -172,8 +156,7 @@ background:#071b31;
 color:#fff
 }
 
-/* ================= HERO SLIDER ================= */
-
+/* HERO SLIDER */
 .slider{
 position:relative;
 height:500px;
@@ -211,12 +194,7 @@ transform:scale(1.07)
 .slide-overlay{
 position:absolute;
 inset:0;
-background:linear-gradient(
-90deg,
-rgba(3,16,31,.82),
-rgba(4,20,37,.60),
-rgba(4,20,37,.38)
-)
+background:rgba(3,16,31,.62)
 }
 
 .slide-content{
@@ -266,17 +244,8 @@ background:#0879bd;
 border:1px solid #65c9ed;
 color:#fff;
 font-size:11px;
-font-weight:bold;
-transition:.25s
+font-weight:bold
 }
-
-.slide-button:hover{
-background:#fff;
-color:#071b31;
-transform:translateY(-2px)
-}
-
-/* SLIDER ARROWS */
 
 .slider-arrow{
 position:absolute;
@@ -293,24 +262,11 @@ display:flex;
 align-items:center;
 justify-content:center;
 font-size:23px;
-cursor:pointer;
-backdrop-filter:blur(6px);
-transition:.2s
+cursor:pointer
 }
 
-.slider-arrow:hover{
-background:#0879bd
-}
-
-.slider-arrow.prev{
-right:25px
-}
-
-.slider-arrow.next{
-left:25px
-}
-
-/* DOTS */
+.slider-arrow.prev{right:25px}
+.slider-arrow.next{left:25px}
 
 .slider-dots{
 position:absolute;
@@ -330,8 +286,7 @@ border-radius:50%;
 border:0;
 padding:0;
 background:rgba(255,255,255,.5);
-cursor:pointer;
-transition:.25s
+cursor:pointer
 }
 
 .slider-dot.active{
@@ -340,8 +295,7 @@ border-radius:8px;
 background:#6cccf3
 }
 
-/* ================= GENERAL ================= */
-
+/* GENERAL */
 .container{
 width:92%;
 max-width:1280px;
@@ -349,7 +303,7 @@ margin:auto
 }
 
 section{
-padding:75px 0
+padding:70px 0
 }
 
 .heading{
@@ -374,8 +328,7 @@ font-size:11px;
 color:#718192
 }
 
-/* ================= QUICK CATEGORIES ================= */
-
+/* CATEGORIES */
 .categories{
 background:#fff;
 padding:45px 0
@@ -394,13 +347,7 @@ border-radius:10px;
 padding:22px;
 display:flex;
 align-items:center;
-gap:15px;
-transition:.25s
-}
-
-.category:hover{
-transform:translateY(-4px);
-box-shadow:0 15px 35px rgba(7,27,49,.08)
+gap:15px
 }
 
 .category-icon{
@@ -428,8 +375,7 @@ margin:0;
 line-height:1.8
 }
 
-/* ================= SPECIAL OFFER ================= */
-
+/* SPECIAL OFFER */
 .special{
 background:#f5f7f9
 }
@@ -507,13 +453,7 @@ padding:20px
 border:1px solid #e1e7ec;
 border-radius:9px;
 overflow:hidden;
-background:#fff;
-transition:.25s
-}
-
-.deal-card:hover{
-transform:translateY(-4px);
-box-shadow:0 15px 30px rgba(7,27,49,.08)
+background:#fff
 }
 
 .deal-image{
@@ -575,16 +515,10 @@ background:#0879bd;
 color:#fff;
 font-size:9px;
 font-weight:bold;
-cursor:pointer;
-transition:.2s
+cursor:pointer
 }
 
-.cart-btn:hover{
-background:#071b31
-}
-
-/* ================= PRODUCTS ================= */
-
+/* PRODUCTS */
 .products{
 background:#fff
 }
@@ -599,13 +533,7 @@ gap:17px
 background:#fff;
 border:1px solid #e1e7ec;
 border-radius:10px;
-overflow:hidden;
-transition:.3s
-}
-
-.product:hover{
-transform:translateY(-5px);
-box-shadow:0 18px 40px rgba(7,27,49,.09)
+overflow:hidden
 }
 
 .product-image{
@@ -671,137 +599,7 @@ cursor:pointer;
 font-size:16px
 }
 
-/* ================= WHY ================= */
-
-.why{
-background:#f5f7f9
-}
-
-.why-grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:55px;
-align-items:center
-}
-
-.why-text h2{
-font-size:30px;
-color:#071b31;
-margin:8px 0 15px
-}
-
-.why-text>p{
-font-size:11px;
-color:#718192;
-line-height:2
-}
-
-.why-items{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:12px;
-margin-top:22px
-}
-
-.why-item{
-padding:17px;
-background:#fff;
-border:1px solid #e1e7ec;
-border-radius:9px
-}
-
-.why-icon{
-font-size:21px;
-margin-bottom:7px
-}
-
-.why-item h3{
-font-size:11px;
-color:#071b31;
-margin:5px 0
-}
-
-.why-item p{
-font-size:9px;
-line-height:1.8;
-color:#718192;
-margin:0
-}
-
-.stats-box{
-background:#071b31;
-border-radius:14px;
-padding:38px 25px;
-color:#fff;
-box-shadow:0 25px 55px rgba(7,27,49,.15)
-}
-
-.stats-title{
-font-size:13px;
-color:#bcd0df;
-margin-bottom:25px
-}
-
-.stats{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:25px 10px
-}
-
-.stat{
-text-align:center
-}
-
-.stat strong{
-display:block;
-font-family:Arial,sans-serif;
-font-size:30px;
-color:#6cccf3
-}
-
-.stat span{
-font-size:9px;
-color:#c5d3de
-}
-
-/* ================= CTA ================= */
-
-.cta-section{
-background:#fff
-}
-
-.cta{
-background:#071b31;
-color:#fff;
-border-radius:12px;
-padding:42px;
-display:flex;
-justify-content:space-between;
-align-items:center
-}
-
-.cta h2{
-margin:0 0 7px;
-font-size:24px
-}
-
-.cta p{
-margin:0;
-font-size:10px;
-color:#bdcad5
-}
-
-.cta-button{
-background:#0879bd;
-color:#fff;
-padding:13px 24px;
-border-radius:8px;
-font-size:10px;
-font-weight:bold
-}
-
-/* ================= FOOTER ================= */
-
+/* FOOTER */
 footer{
 background:#06182c;
 color:#fff;
@@ -851,13 +649,10 @@ color:#8193a5;
 font-size:9px
 }
 
-/* ================= MOBILE BAR ================= */
-
+/* MOBILE */
 .mobile-bar{
 display:none
 }
-
-/* ================= CART MESSAGE ================= */
 
 .cart-message{
 position:fixed;
@@ -870,7 +665,6 @@ padding:13px 22px;
 border-radius:9px;
 font-size:10px;
 z-index:9999;
-box-shadow:0 15px 35px rgba(0,0,0,.2);
 transition:.3s
 }
 
@@ -878,8 +672,7 @@ transition:.3s
 transform:translate(-50%,0)
 }
 
-/* ================= RESPONSIVE ================= */
-
+/* RESPONSIVE */
 @media(max-width:900px){
 
 .header{
@@ -898,10 +691,6 @@ grid-template-columns:1fr 1fr
 height:450px
 }
 
-.slide-text{
-max-width:500px
-}
-
 .slide-text h1{
 font-size:30px
 }
@@ -916,10 +705,6 @@ grid-template-columns:1fr 1fr
 
 .product-grid{
 grid-template-columns:1fr 1fr
-}
-
-.why-grid{
-grid-template-columns:1fr
 }
 
 .footer-grid{
@@ -960,7 +745,6 @@ height:27px;
 display:flex;
 align-items:center
 }
-
 }
 
 @media(max-width:500px){
@@ -998,13 +782,8 @@ justify-content:center
 max-width:100%
 }
 
-.slide-tag{
-font-size:9px
-}
-
 .slide-text h1{
-font-size:27px;
-line-height:1.6
+font-size:27px
 }
 
 .slide-text p{
@@ -1022,13 +801,8 @@ height:36px;
 font-size:19px
 }
 
-.slider-arrow.prev{
-right:12px
-}
-
-.slider-arrow.next{
-left:12px
-}
+.slider-arrow.prev{right:12px}
+.slider-arrow.next{left:12px}
 
 .category-grid{
 grid-template-columns:1fr 1fr;
@@ -1082,8 +856,7 @@ gap:9px
 }
 
 .deal-image{
-height:125px;
-font-size:45px
+height:125px
 }
 
 .deal-info{
@@ -1104,8 +877,7 @@ gap:9px
 }
 
 .product-image{
-height:135px;
-font-size:45px
+height:135px
 }
 
 .product-info{
@@ -1124,21 +896,6 @@ font-size:8px
 font-size:9px
 }
 
-.why-items{
-grid-template-columns:1fr
-}
-
-.cta{
-display:block;
-text-align:center;
-padding:30px 20px
-}
-
-.cta-button{
-display:inline-block;
-margin-top:18px
-}
-
 .footer-grid{
 grid-template-columns:1fr
 }
@@ -1146,90 +903,52 @@ grid-template-columns:1fr
 footer{
 padding-bottom:100px
 }
-
-}
-
-/* REDUCED MOTION */
-
-@media(prefers-reduced-motion:reduce){
-
-*{
-animation:none!important;
-transition:none!important
-}
-
 }
 </style>
 </head>
 
 <body>
 
-<!-- ================= HEADER ================= -->
-
+<!-- HEADER -->
 <header class="header">
 
 <div class="header-inner">
 
 <a href="/" class="logo" dir="ltr">
-
 <div class="logo-mark">DB</div>
-
 <span class="logo-plus">+ ❄️</span>
-
 </a>
 
 <div class="header-tools">
 
 <!-- SEARCH -->
-
 <button class="header-icon" aria-label="جستجو" onclick="showSearch()">
-
 <svg class="icon-svg" viewBox="0 0 24 24">
-
 <circle cx="11" cy="11" r="6.5"></circle>
-
 <path d="M16 16l5 5"></path>
-
 </svg>
-
 </button>
 
 <!-- CART -->
-
 <button class="header-icon" aria-label="سبد خرید" onclick="showCart()">
-
 <svg class="icon-svg" viewBox="0 0 24 24">
-
 <path d="M4 8h16l-1 11H5L4 8z"></path>
-
 <path d="M8 8V6a4 4 0 0 1 8 0v2"></path>
-
 <circle cx="9" cy="21" r="1"></circle>
-
 <circle cx="17" cy="21" r="1"></circle>
-
 </svg>
-
 </button>
 
 <!-- MENU -->
-
 <button class="header-icon" aria-label="منو" onclick="toggleMenu()">
-
 <svg class="icon-svg" viewBox="0 0 24 24">
-
 <path d="M4 7h16"></path>
-
 <path d="M4 12h16"></path>
-
 <path d="M4 17h16"></path>
-
 </svg>
-
 </button>
 
 </div>
-
 </div>
 
 <div class="menu-panel" id="menu">
@@ -1237,36 +956,25 @@ transition:none!important
 <div class="menu-inner">
 
 <a class="menu-item" href="/">خانه</a>
-
 <a class="menu-item" href="shop.html">فروشگاه</a>
-
 <a class="menu-item" href="#categories">دسته‌بندی‌ها</a>
-
 <a class="menu-item" href="#special">پیشنهاد ویژه</a>
-
 <a class="menu-item" href="#products">محصولات</a>
-
 <a class="menu-item" href="#contact">تماس با ما</a>
 
 </div>
-
 </div>
 
 </header>
 
 
-<!-- ================= SLIDER ================= -->
-
+<!-- HERO SLIDER -->
 <section class="slider" id="home">
-
-<!-- SLIDE 1 -->
 
 <div class="slide active">
 
-<img
-src="IMG_20260826_104130_790.jpg"
-alt="فروشگاه کولر گازی دکتر برودت"
->
+<img src="IMG_20260826_104130_790.jpg"
+alt="فروشگاه کولر گازی دکتر برودت">
 
 <div class="slide-overlay"></div>
 
@@ -1274,13 +982,9 @@ alt="فروشگاه کولر گازی دکتر برودت"
 
 <div class="slide-text">
 
-<span class="slide-tag">
-DR BORODAT SHOP
-</span>
+<span class="slide-tag">DR BORODAT SHOP</span>
 
-<h1>
-خرید عمده دارید؟
-</h1>
+<h1>خرید عمده دارید؟</h1>
 
 <p>
 برای خرید عمده تجهیزات سرمایشی و کولر گازی،
@@ -1292,20 +996,14 @@ DR BORODAT SHOP
 </a>
 
 </div>
-
+</div>
 </div>
 
-</div>
-
-
-<!-- SLIDE 2 -->
 
 <div class="slide">
 
-<img
-src="IMG_20260826_104132_325.jpg"
-alt="قطعات کولر گازی"
->
+<img src="IMG_20260826_104132_325.jpg"
+alt="قطعات کولر گازی">
 
 <div class="slide-overlay"></div>
 
@@ -1313,13 +1011,9 @@ alt="قطعات کولر گازی"
 
 <div class="slide-text">
 
-<span class="slide-tag">
-AIR CONDITIONER PARTS
-</span>
+<span class="slide-tag">AIR CONDITIONER PARTS</span>
 
-<h1>
-قطعات کولر گازی
-</h1>
+<h1>قطعات کولر گازی</h1>
 
 <p>
 تأمین و ارسال قطعات کولر گازی
@@ -1331,38 +1025,34 @@ AIR CONDITIONER PARTS
 </a>
 
 </div>
-
+</div>
 </div>
 
-</div>
 
+<button class="slider-arrow prev"
+onclick="changeSlide(-1)"
+aria-label="قبلی">›</button>
 
-<!-- ARROWS -->
-
-<button class="slider-arrow prev" onclick="changeSlide(-1)" aria-label="قبلی">
-›
-</button>
-
-<button class="slider-arrow next" onclick="changeSlide(1)" aria-label="بعدی">
-‹
-</button>
-
-
-<!-- DOTS -->
+<button class="slider-arrow next"
+onclick="changeSlide(1)"
+aria-label="بعدی">‹</button>
 
 <div class="slider-dots">
 
-<button class="slider-dot active" onclick="goToSlide(0)"></button>
+<button class="slider-dot active"
+onclick="goToSlide(0)"
+aria-label="اسلاید اول"></button>
 
-<button class="slider-dot" onclick="goToSlide(1)"></button>
+<button class="slider-dot"
+onclick="goToSlide(1)"
+aria-label="اسلاید دوم"></button>
 
 </div>
 
 </section>
 
 
-<!-- ================= CATEGORIES ================= -->
-
+<!-- CATEGORIES -->
 <section class="categories" id="categories">
 
 <div class="container">
@@ -1370,73 +1060,44 @@ AIR CONDITIONER PARTS
 <div class="category-grid">
 
 <a class="category" href="#products">
-
 <div class="category-icon">❄️</div>
-
 <div>
-
 <h3>کولر گازی</h3>
-
 <p>انواع سیستم‌های سرمایشی</p>
-
 </div>
-
 </a>
 
-
 <a class="category" href="#products">
-
 <div class="category-icon">🔧</div>
-
 <div>
-
 <h3>قطعات کولر</h3>
-
 <p>قطعات و لوازم مورد نیاز</p>
-
 </div>
-
 </a>
-
 
 <a class="category" href="#products">
-
 <div class="category-icon">⚙️</div>
-
 <div>
-
 <h3>تجهیزات تهویه</h3>
-
 <p>تجهیزات تخصصی سرمایش</p>
-
 </div>
-
 </a>
 
-
-<a class="category" href="#contact">
-
+<a class="category" href="tel:09197701790">
 <div class="category-icon">📞</div>
-
 <div>
-
 <h3>مشاوره خرید</h3>
-
 <p>ارتباط با کارشناس</p>
-
 </div>
-
 </a>
 
 </div>
-
 </div>
 
 </section>
 
 
-<!-- ================= SPECIAL OFFER ================= -->
-
+<!-- SPECIAL OFFER -->
 <section class="special" id="special">
 
 <div class="container">
@@ -1451,216 +1112,144 @@ AIR CONDITIONER PARTS
 
 </div>
 
-
 <div class="special-box">
 
 <div class="special-head">
 
 <div class="special-title">
 
-<div class="special-badge">
-ویژه
-</div>
+<div class="special-badge">ویژه</div>
 
-<h2>
-پیشنهادهای امروز
-</h2>
+<h2>پیشنهادهای امروز</h2>
 
 </div>
-
 
 <div class="countdown">
 
 <div class="time-box">
-
 <strong id="hours">08</strong>
-
 <span>ساعت</span>
-
 </div>
 
 <div class="time-box">
-
 <strong id="minutes">45</strong>
-
 <span>دقیقه</span>
-
 </div>
 
 <div class="time-box">
-
 <strong id="seconds">00</strong>
-
 <span>ثانیه</span>
-
 </div>
 
 </div>
-
 </div>
 
 
 <div class="special-products">
 
-
-<!-- DEAL 1 -->
-
 <div class="deal-card">
 
-<div class="deal-image">
-❄️
-</div>
+<div class="deal-image">❄️</div>
 
 <div class="deal-info">
 
 <small>کولر گازی</small>
 
-<h3>
-اسپلیت دیواری
-</h3>
+<h3>اسپلیت دیواری</h3>
 
 <div class="deal-price">
-
-<strong>
-تماس بگیرید
-</strong>
-
-<span>
-قیمت روز
-</span>
-
+<strong>تماس بگیرید</strong>
+<span>قیمت روز</span>
 </div>
 
-<button class="cart-btn" onclick="addCart('اسپلیت دیواری')">
+<button class="cart-btn"
+onclick="addCart('اسپلیت دیواری')">
 🛒 افزودن به سبد
 </button>
 
 </div>
-
 </div>
 
-
-<!-- DEAL 2 -->
 
 <div class="deal-card">
 
-<div class="deal-image">
-🌬️
-</div>
+<div class="deal-image">🌬️</div>
 
 <div class="deal-info">
 
 <small>تهویه</small>
 
-<h3>
-تجهیزات تهویه
-</h3>
+<h3>تجهیزات تهویه</h3>
 
 <div class="deal-price">
-
-<strong>
-تماس بگیرید
-</strong>
-
-<span>
-قیمت روز
-</span>
-
+<strong>تماس بگیرید</strong>
+<span>قیمت روز</span>
 </div>
 
-<button class="cart-btn" onclick="addCart('تجهیزات تهویه')">
+<button class="cart-btn"
+onclick="addCart('تجهیزات تهویه')">
 🛒 افزودن به سبد
 </button>
 
 </div>
-
 </div>
 
-
-<!-- DEAL 3 -->
 
 <div class="deal-card">
 
-<div class="deal-image">
-🔧
-</div>
+<div class="deal-image">🔧</div>
 
 <div class="deal-info">
 
 <small>قطعات</small>
 
-<h3>
-قطعات کولر گازی
-</h3>
+<h3>قطعات کولر گازی</h3>
 
 <div class="deal-price">
-
-<strong>
-تماس بگیرید
-</strong>
-
-<span>
-قیمت روز
-</span>
-
+<strong>تماس بگیرید</strong>
+<span>قیمت روز</span>
 </div>
 
-<button class="cart-btn" onclick="addCart('قطعات کولر گازی')">
+<button class="cart-btn"
+onclick="addCart('قطعات کولر گازی')">
 🛒 افزودن به سبد
 </button>
 
 </div>
-
 </div>
 
-
-<!-- DEAL 4 -->
 
 <div class="deal-card">
 
-<div class="deal-image">
-⚙️
-</div>
+<div class="deal-image">⚙️</div>
 
 <div class="deal-info">
 
 <small>تجهیزات</small>
 
-<h3>
-لوازم و متعلقات
-</h3>
+<h3>لوازم و متعلقات</h3>
 
 <div class="deal-price">
-
-<strong>
-تماس بگیرید
-</strong>
-
-<span>
-قیمت روز
-</span>
-
+<strong>تماس بگیرید</strong>
+<span>قیمت روز</span>
 </div>
 
-<button class="cart-btn" onclick="addCart('لوازم و متعلقات')">
+<button class="cart-btn"
+onclick="addCart('لوازم و متعلقات')">
 🛒 افزودن به سبد
 </button>
 
 </div>
-
 </div>
 
 </div>
-
 </div>
-
 </div>
 
 </section>
 
 
-<!-- ================= NEW PRODUCTS ================= -->
-
+<!-- NEW PRODUCTS -->
 <section class="products" id="products">
 
 <div class="container">
@@ -1680,527 +1269,215 @@ AIR CONDITIONER PARTS
 
 <div class="product-grid">
 
-
-<!-- PRODUCT 1 -->
-
 <div class="product">
 
-<div class="product-image">
-❄️
-</div>
+<div class="product-image">❄️</div>
 
 <div class="product-info">
 
 <small>کولر گازی</small>
 
-<h3>
-اسپلیت دیواری
-</h3>
+<h3>اسپلیت دیواری</h3>
 
-<p>
-مناسب برای فضاهای مسکونی و اداری.
-</p>
+<p>مناسب برای فضاهای مسکونی و اداری.</p>
 
 <div class="product-bottom">
 
-<div class="product-price">
-تماس بگیرید
-</div>
+<div class="product-price">تماس بگیرید</div>
 
-<button
-class="product-cart"
+<button class="product-cart"
 onclick="addCart('اسپلیت دیواری')"
-aria-label="افزودن به سبد"
->
-🛒
-</button>
+aria-label="افزودن به سبد">🛒</button>
 
 </div>
-
+</div>
 </div>
 
-</div>
-
-
-<!-- PRODUCT 2 -->
 
 <div class="product">
 
-<div class="product-image">
-🌬️
-</div>
+<div class="product-image">🌬️</div>
 
 <div class="product-info">
 
 <small>تجهیزات سرمایشی</small>
 
-<h3>
-تجهیزات تهویه
-</h3>
+<h3>تجهیزات تهویه</h3>
 
-<p>
-تجهیزات مورد نیاز سیستم‌های سرمایشی.
-</p>
+<p>تجهیزات مورد نیاز سیستم‌های سرمایشی.</p>
 
 <div class="product-bottom">
 
-<div class="product-price">
-تماس بگیرید
-</div>
+<div class="product-price">تماس بگیرید</div>
 
-<button
-class="product-cart"
+<button class="product-cart"
 onclick="addCart('تجهیزات تهویه')"
-aria-label="افزودن به سبد"
->
-🛒
-</button>
+aria-label="افزودن به سبد">🛒</button>
 
 </div>
-
+</div>
 </div>
 
-</div>
-
-
-<!-- PRODUCT 3 -->
 
 <div class="product">
 
-<div class="product-image">
-🔧
-</div>
+<div class="product-image">🔧</div>
 
 <div class="product-info">
 
 <small>قطعات</small>
 
-<h3>
-قطعات و لوازم کولر
-</h3>
+<h3>قطعات و لوازم کولر</h3>
 
-<p>
-قطعات مورد نیاز سرویس و تعمیر دستگاه.
-</p>
+<p>قطعات مورد نیاز سرویس و تعمیر دستگاه.</p>
 
 <div class="product-bottom">
 
-<div class="product-price">
-تماس بگیرید
-</div>
+<div class="product-price">تماس بگیرید</div>
 
-<button
-class="product-cart"
+<button class="product-cart"
 onclick="addCart('قطعات و لوازم کولر')"
-aria-label="افزودن به سبد"
->
-🛒
-</button>
+aria-label="افزودن به سبد">🛒</button>
 
 </div>
-
+</div>
 </div>
 
-</div>
-
-
-<!-- PRODUCT 4 -->
 
 <div class="product">
 
-<div class="product-image">
-⚙️
-</div>
+<div class="product-image">⚙️</div>
 
 <div class="product-info">
 
 <small>قطعات</small>
 
-<h3>
-برد کولر گازی
-</h3>
+<h3>برد کولر گازی</h3>
 
-<p>
-قطعات و تجهیزات مورد نیاز تعمیرات.
-</p>
+<p>قطعات و تجهیزات مورد نیاز تعمیرات.</p>
 
 <div class="product-bottom">
 
-<div class="product-price">
-تماس بگیرید
-</div>
+<div class="product-price">تماس بگیرید</div>
 
-<button
-class="product-cart"
+<button class="product-cart"
 onclick="addCart('برد کولر گازی')"
-aria-label="افزودن به سبد"
->
-🛒
-</button>
+aria-label="افزودن به سبد">🛒</button>
 
 </div>
-
+</div>
 </div>
 
-</div>
-
-
-<!-- PRODUCT 5 -->
 
 <div class="product">
 
-<div class="product-image">
-💨
-</div>
+<div class="product-image">💨</div>
 
 <div class="product-info">
 
 <small>قطعات</small>
 
-<h3>
-موتور فن
-</h3>
+<h3>موتور فن</h3>
 
-<p>
-مناسب برای انواع سیستم‌های سرمایشی.
-</p>
+<p>مناسب برای انواع سیستم‌های سرمایشی.</p>
 
 <div class="product-bottom">
 
-<div class="product-price">
-تماس بگیرید
-</div>
+<div class="product-price">تماس بگیرید</div>
 
-<button
-class="product-cart"
+<button class="product-cart"
 onclick="addCart('موتور فن')"
-aria-label="افزودن به سبد"
->
-🛒
-</button>
+aria-label="افزودن به سبد">🛒</button>
 
 </div>
-
+</div>
 </div>
 
-</div>
-
-
-<!-- PRODUCT 6 -->
 
 <div class="product">
 
-<div class="product-image">
-🔩
-</div>
+<div class="product-image">🔩</div>
 
 <div class="product-info">
 
 <small>لوازم</small>
 
-<h3>
-قطعات مصرفی
-</h3>
+<h3>قطعات مصرفی</h3>
 
-<p>
-لوازم مورد نیاز سرویس و نگهداری.
-</p>
+<p>لوازم مورد نیاز سرویس و نگهداری.</p>
 
 <div class="product-bottom">
 
-<div class="product-price">
-تماس بگیرید
-</div>
+<div class="product-price">تماس بگیرید</div>
 
-<button
-class="product-cart"
+<button class="product-cart"
 onclick="addCart('قطعات مصرفی')"
-aria-label="افزودن به سبد"
->
-🛒
-</button>
+aria-label="افزودن به سبد">🛒</button>
 
 </div>
-
+</div>
 </div>
 
-</div>
-
-
-<!-- PRODUCT 7 -->
 
 <div class="product">
 
-<div class="product-image">
-🎛️
-</div>
+<div class="product-image">🎛️</div>
 
 <div class="product-info">
 
 <small>لوازم جانبی</small>
 
-<h3>
-ریموت کنترل
-</h3>
+<h3>ریموت کنترل</h3>
 
-<p>
-ریموت و متعلقات سیستم‌های سرمایشی.
-</p>
+<p>ریموت و متعلقات سیستم‌های سرمایشی.</p>
 
 <div class="product-bottom">
 
-<div class="product-price">
-تماس بگیرید
-</div>
+<div class="product-price">تماس بگیرید</div>
 
-<button
-class="product-cart"
+<button class="product-cart"
 onclick="addCart('ریموت کنترل')"
-aria-label="افزودن به سبد"
->
-🛒
-</button>
+aria-label="افزودن به سبد">🛒</button>
 
 </div>
-
+</div>
 </div>
 
-</div>
-
-
-<!-- PRODUCT 8 -->
 
 <div class="product">
 
-<div class="product-image">
-🧰
-</div>
+<div class="product-image">🧰</div>
 
 <div class="product-info">
 
 <small>تجهیزات</small>
 
-<h3>
-ابزار و تجهیزات فنی
-</h3>
+<h3>ابزار و تجهیزات فنی</h3>
 
-<p>
-ابزار مورد نیاز خدمات تخصصی سرمایش.
-</p>
+<p>ابزار مورد نیاز خدمات تخصصی سرمایش.</p>
 
 <div class="product-bottom">
 
-<div class="product-price">
-تماس بگیرید
-</div>
+<div class="product-price">تماس بگیرید</div>
 
-<button
-class="product-cart"
+<button class="product-cart"
 onclick="addCart('ابزار و تجهیزات فنی')"
-aria-label="افزودن به سبد"
->
-🛒
-</button>
+aria-label="افزودن به سبد">🛒</button>
 
+</div>
+</div>
 </div>
 
 </div>
-
-</div>
-
-
-</div>
-
 </div>
 
 </section>
 
 
-<!-- ================= WHY ================= -->
-
-<section class="why">
-
-<div class="container why-grid">
-
-<div class="why-text">
-
-<small style="color:#0879bd;font-weight:bold">
-WHY DR BORODAT
-</small>
-
-<h2>
-چرا از دکتر برودت خرید کنیم؟
-</h2>
-
-<p>
-هدف ما این است که مشتری از انتخاب محصول تا دریافت خدمات،
-تجربه‌ای مطمئن و حرفه‌ای داشته باشد.
-</p>
-
-<div class="why-items">
-
-<div class="why-item">
-
-<div class="why-icon">✓</div>
-
-<h3>
-مشاوره تخصصی
-</h3>
-
-<p>
-راهنمایی برای انتخاب مناسب تجهیزات.
-</p>
-
-</div>
-
-
-<div class="why-item">
-
-<div class="why-icon">⚡</div>
-
-<h3>
-ارسال سریع
-</h3>
-
-<p>
-تلاش برای تأمین و ارسال سریع قطعات.
-</p>
-
-</div>
-
-
-<div class="why-item">
-
-<div class="why-icon">🔧</div>
-
-<h3>
-تخصص فنی
-</h3>
-
-<p>
-پشتیبانی توسط مجموعه متخصص سرمایش.
-</p>
-
-</div>
-
-
-<div class="why-item">
-
-<div class="why-icon">🛡️</div>
-
-<h3>
-اعتماد و کیفیت
-</h3>
-
-<p>
-تمرکز بر کیفیت محصول و رضایت مشتری.
-</p>
-
-</div>
-
-</div>
-
-</div>
-
-
-<div class="stats-box">
-
-<div class="stats-title">
-دکتر برودت در یک نگاه
-</div>
-
-<div class="stats">
-
-<div class="stat">
-
-<strong>24/7</strong>
-
-<span>
-پشتیبانی
-</span>
-
-</div>
-
-<div class="stat">
-
-<strong>⚡</strong>
-
-<span>
-ارسال سریع
-</span>
-
-</div>
-
-<div class="stat">
-
-<strong>✓</strong>
-
-<span>
-خدمات تخصصی
-</span>
-
-</div>
-
-<div class="stat">
-
-<strong>★</strong>
-
-<span>
-رضایت مشتری
-</span>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-
-<!-- ================= CONTACT CTA ================= -->
-
-<section class="cta-section" id="contact">
-
-<div class="container">
-
-<div class="cta">
-
-<div>
-
-<h2>
-برای خرید یا مشاوره آماده‌ایم
-</h2>
-
-<p>
-برای اطلاع از قیمت، موجودی و خرید عمده با کارشناس ما تماس بگیرید.
-</p>
-
-</div>
-
-<a
-class="cta-button"
-href="tel:09197701790"
-dir="ltr"
->
-0919 770 1790
-</a>
-
-</div>
-
-</div>
-
-</section>
-
-
-<!-- ================= FOOTER ================= -->
-
-<footer>
+<!-- FOOTER -->
+<footer id="contact">
 
 <div class="container footer-grid">
-
 
 <div>
 
@@ -2221,59 +1498,31 @@ Dr <span>Borodat</span>
 
 <div>
 
-<h3>
-دسترسی سریع
-</h3>
+<h3>دسترسی سریع</h3>
 
-<a href="/">
-خانه
-</a>
-
-<a href="shop.html">
-فروشگاه
-</a>
-
-<a href="#categories">
-دسته‌بندی‌ها
-</a>
-
-<a href="#products">
-محصولات
-</a>
+<a href="/">خانه</a>
+<a href="shop.html">فروشگاه</a>
+<a href="#categories">دسته‌بندی‌ها</a>
+<a href="#products">محصولات</a>
 
 </div>
 
 
 <div>
 
-<h3>
-خدمات
-</h3>
+<h3>خدمات</h3>
 
-<a href="/">
-نصب کولر گازی
-</a>
-
-<a href="/">
-سرویس کولر
-</a>
-
-<a href="/">
-تعمیر کولر
-</a>
-
-<a href="/">
-شارژ گاز
-</a>
+<a href="/">نصب کولر گازی</a>
+<a href="/">سرویس کولر</a>
+<a href="/">تعمیر کولر</a>
+<a href="/">شارژ گاز</a>
 
 </div>
 
 
 <div>
 
-<h3>
-تماس با ما
-</h3>
+<h3>تماس با ما</h3>
 
 <a href="tel:09197701790" dir="ltr">
 0919 770 1790
@@ -2289,97 +1538,68 @@ Dr <span>Borodat</span>
 
 </div>
 
-
 </div>
 
 
 <div class="container copyright">
-
 © 2026 Dr Borodat — تمامی حقوق محفوظ است.
-
 </div>
 
 </footer>
 
 
-<!-- ================= MOBILE BAR ================= -->
-
+<!-- MOBILE BAR -->
 <div class="mobile-bar">
 
-<a href="/" class="active">
-
+<a href="/">
 <span>⌂</span>
-
 خانه
-
 </a>
-
 
 <a href="#categories">
-
 <span>✦</span>
-
 دسته‌بندی
-
 </a>
 
-
-<a href="shop.html">
-
+<a href="shop.html" class="active">
 <span>🛒</span>
-
 فروشگاه
-
 </a>
-
 
 <a href="#products">
-
 <span>▦</span>
-
 محصولات
-
 </a>
 
-
 <a href="tel:09197701790">
-
 <span>☎</span>
-
 تماس
-
 </a>
 
 </div>
 
 
 <!-- CART MESSAGE -->
-
 <div class="cart-message" id="cartMessage"></div>
 
 
 <script>
 
-/* ================= MENU ================= */
+/* MENU */
 
 function toggleMenu(){
 
-document
-.getElementById("menu")
-.classList
-.toggle("open");
+document.getElementById("menu").classList.toggle("open");
 
 }
 
 
-/* ================= SLIDER ================= */
+/* SLIDER */
 
 let currentSlide=0;
 
 const slides=document.querySelectorAll(".slide");
-
 const dots=document.querySelectorAll(".slider-dot");
-
 
 function showSlide(index){
 
@@ -2394,71 +1614,45 @@ index=0;
 currentSlide=index;
 
 slides.forEach(function(slide,i){
-
-slide.classList.toggle(
-"active",
-i===currentSlide
-);
-
+slide.classList.toggle("active",i===currentSlide);
 });
 
 dots.forEach(function(dot,i){
-
-dot.classList.toggle(
-"active",
-i===currentSlide
-);
-
+dot.classList.toggle("active",i===currentSlide);
 });
 
 }
 
-
 function changeSlide(direction){
-
 showSlide(currentSlide+direction);
-
 }
-
 
 function goToSlide(index){
-
 showSlide(index);
-
 }
 
-
-/* AUTO SLIDE */
-
 setInterval(function(){
-
 changeSlide(1);
-
 },6000);
 
 
-/* ================= COUNTDOWN ================= */
+/* COUNTDOWN */
 
 let totalSeconds=(8*60*60)+(45*60);
 
 function updateCountdown(){
 
 if(totalSeconds<=0){
-
 totalSeconds=(8*60*60)+(45*60);
-
 }
 
-let hours=Math.floor(
-totalSeconds/3600
-);
+let hours=Math.floor(totalSeconds/3600);
 
 let minutes=Math.floor(
 (totalSeconds%3600)/60
 );
 
 let seconds=totalSeconds%60;
-
 
 document.getElementById("hours").textContent=
 String(hours).padStart(2,"0");
@@ -2478,7 +1672,7 @@ updateCountdown();
 setInterval(updateCountdown,1000);
 
 
-/* ================= CART ================= */
+/* CART */
 
 function addCart(product){
 
@@ -2491,15 +1685,13 @@ message.textContent=
 message.classList.add("show");
 
 setTimeout(function(){
-
 message.classList.remove("show");
-
 },2200);
 
 }
 
 
-/* ================= HEADER CART ================= */
+/* HEADER CART */
 
 function showCart(){
 
@@ -2512,15 +1704,13 @@ message.textContent=
 message.classList.add("show");
 
 setTimeout(function(){
-
 message.classList.remove("show");
-
 },2200);
 
 }
 
 
-/* ================= SEARCH ================= */
+/* SEARCH */
 
 function showSearch(){
 
@@ -2529,10 +1719,9 @@ prompt("نام محصول یا قطعه مورد نظر را وارد کنید:"
 
 if(search && search.trim()!==""){
 
-const productsSection=
-document.getElementById("products");
-
-productsSection.scrollIntoView({
+document
+.getElementById("products")
+.scrollIntoView({
 behavior:"smooth"
 });
 
@@ -2541,17 +1730,13 @@ behavior:"smooth"
 }
 
 
-/* ================= CLOSE MENU ================= */
+/* CLOSE MENU */
 
-document.addEventListener(
-"click",
-function(e){
+document.addEventListener("click",function(e){
 
-const menu=
-document.getElementById("menu");
+const menu=document.getElementById("menu");
 
-const insideMenu=
-e.target.closest(".menu-panel");
+const insideMenu=e.target.closest(".menu-panel");
 
 const menuButton=
 e.target.closest('[aria-label="منو"]');
@@ -2566,8 +1751,7 @@ menu.classList.remove("open");
 
 }
 
-}
-);
+});
 
 </script>
 
