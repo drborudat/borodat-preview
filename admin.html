@@ -1,1 +1,718 @@
+<!doctype html>
 
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>پنل مدیریت | Dr Borodat</title><style>
+*{box-sizing:border-box}
+
+body{
+margin:0;
+font-family:Tahoma,Arial,sans-serif;
+background:#f4f7fa;
+color:#102238
+}
+
+button,input,textarea,select{font-family:inherit}
+
+.topbar{
+height:72px;
+background:#071b31;
+color:#fff;
+display:flex;
+align-items:center;
+padding:0 5%;
+justify-content:space-between;
+position:sticky;
+top:0;
+z-index:10
+}
+
+.logo{
+font-family:Arial,sans-serif;
+font-size:20px;
+font-weight:800;
+direction:ltr
+}
+
+.logo span{color:#6cccf3}
+
+.status{
+font-size:10px;
+color:#8de0a9
+}
+
+.container{
+width:92%;
+max-width:1200px;
+margin:30px auto
+}
+
+.title{
+margin-bottom:25px
+}
+
+.title h1{
+margin:0 0 8px;
+font-size:24px
+}
+
+.title p{
+margin:0;
+font-size:11px;
+color:#718192
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:16px;
+margin-bottom:25px
+}
+
+.stat-card{
+background:#fff;
+border:1px solid #e1e7ec;
+border-radius:12px;
+padding:22px
+}
+
+.stat-card small{
+font-size:10px;
+color:#718192
+}
+
+.stat-card strong{
+display:block;
+font-family:Arial,sans-serif;
+font-size:30px;
+margin-top:10px;
+color:#0879bd
+}
+
+.panel{
+background:#fff;
+border:1px solid #e1e7ec;
+border-radius:12px;
+margin-bottom:20px;
+overflow:hidden
+}
+
+.panel-head{
+padding:18px 20px;
+border-bottom:1px solid #e8edf1;
+display:flex;
+align-items:center;
+justify-content:space-between
+}
+
+.panel-head h2{
+margin:0;
+font-size:15px
+}
+
+.panel-head span{
+font-size:9px;
+color:#718192
+}
+
+.panel-body{
+padding:20px
+}
+
+.empty{
+text-align:center;
+padding:35px 15px;
+color:#8796a4;
+font-size:11px
+}
+
+.chat-layout{
+display:grid;
+grid-template-columns:280px 1fr;
+min-height:400px
+}
+
+.chat-list{
+border-left:1px solid #e8edf1;
+background:#f8fafc
+}
+
+.chat-item{
+padding:15px;
+border-bottom:1px solid #e8edf1;
+cursor:pointer
+}
+
+.chat-item:hover{
+background:#edf7fb
+}
+
+.chat-item strong{
+display:block;
+font-size:11px;
+margin-bottom:5px
+}
+
+.chat-item small{
+font-size:9px;
+color:#718192
+}
+
+.chat-area{
+display:flex;
+flex-direction:column
+}
+
+.chat-messages{
+flex:1;
+padding:20px;
+min-height:280px;
+background:#f7fafc
+}
+
+.message{
+max-width:75%;
+padding:10px 13px;
+border-radius:12px;
+font-size:10px;
+line-height:1.8;
+margin-bottom:10px
+}
+
+.message.customer{
+background:#fff;
+border:1px solid #e0e7ec;
+margin-left:auto
+}
+
+.message.admin{
+background:#0879bd;
+color:#fff;
+margin-right:auto
+}
+
+.reply{
+display:flex;
+gap:8px;
+padding:12px;
+border-top:1px solid #e8edf1
+}
+
+.reply textarea{
+flex:1;
+height:55px;
+resize:none;
+border:1px solid #dce5eb;
+border-radius:8px;
+padding:10px;
+font-size:10px;
+outline:none
+}
+
+.reply button{
+border:0;
+background:#0879bd;
+color:#fff;
+border-radius:8px;
+padding:0 18px;
+font-size:10px;
+font-weight:bold;
+cursor:pointer
+}
+
+.product-form{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:10px
+}
+
+.product-form input,
+.product-form select,
+.product-form textarea{
+width:100%;
+border:1px solid #dce5eb;
+border-radius:8px;
+padding:11px;
+font-size:10px;
+outline:none
+}
+
+.product-form textarea{
+grid-column:1/-1;
+height:90px;
+resize:none
+}
+
+.product-form button{
+grid-column:1/-1;
+border:0;
+border-radius:8px;
+padding:12px;
+background:#071b31;
+color:#fff;
+font-size:10px;
+font-weight:bold;
+cursor:pointer
+}
+
+.notice{
+padding:12px;
+background:#edf7fb;
+border-radius:8px;
+font-size:10px;
+color:#31536a;
+margin-bottom:15px
+}
+
+@media(max-width:800px){
+
+.grid{
+grid-template-columns:1fr
+}
+
+.chat-layout{
+grid-template-columns:1fr
+}
+
+.chat-list{
+border-left:0;
+border-bottom:1px solid #e8edf1
+}
+
+.product-form{
+grid-template-columns:1fr
+}
+
+}
+
+@media(max-width:500px){
+
+.topbar{
+padding:0 4%;
+height:64px
+}
+
+.logo{
+font-size:17px
+}
+
+.container{
+width:94%;
+margin:20px auto
+}
+
+.title h1{
+font-size:20px
+}
+
+.panel-body{
+padding:14px
+}
+
+}
+</style></head><body><header class="topbar"><div class="logo">
+Dr <span>Borodat</span>
+</div><div class="status">
+● پنل مدیریت
+</div></header><main class="container"><div class="title">
+<h1>پنل مدیریت دکتر برودت</h1>
+<p>مدیریت درخواست‌ها، پشتیبانی، محصولات و سفارش‌ها</p>
+</div><div class="grid"><div class="stat-card">
+<small>گفتگوهای پشتیبانی</small>
+<strong id="chatCount">0</strong>
+</div><div class="stat-card">
+<small>محصولات</small>
+<strong id="productCount">0</strong>
+</div><div class="stat-card">
+<small>سفارش‌ها</small>
+<strong id="orderCount">0</strong>
+</div></div><section class="panel"><div class="panel-head">
+<h2>💬 چت آنلاین پشتیبانی</h2>
+<span>گفتگوهای مشتریان</span>
+</div><div class="chat-layout"><div class="chat-list" id="chatList"><div class="empty">
+هنوز گفتگویی دریافت نشده است.
+</div></div><div class="chat-area"><div class="chat-messages" id="chatMessages"><div class="empty">
+💬 یک گفتگو را انتخاب کنید
+</div></div><div class="reply"><textarea
+id="replyText"
+placeholder="پاسخ خود را بنویسید..."
+></textarea><button onclick="sendReply()">
+ارسال پاسخ
+</button></div></div></div></section><section class="panel"><div class="panel-head"><h2>📦 محصولات</h2><span>مدیریت محصولات فروشگاه</span>
+
+</div><div class="panel-body"><div class="notice">
+محصولات ثبت‌شده در این قسمت نمایش داده می‌شوند.
+</div><div id="productsList" class="empty">
+هنوز محصولی ثبت نشده است.
+</div></div></section><section class="panel"><div class="panel-head"><h2>➕ افزودن محصول جدید</h2><span>ثبت محصول</span>
+
+</div><div class="panel-body"><form class="product-form" id="productForm"><input
+id="productName"
+placeholder="نام محصول"
+required
+
+«»
+
+<input
+id="productPrice"
+placeholder="قیمت"
+required
+
+«»
+
+<input
+id="productStock"
+placeholder="موجودی"
+type="number"
+required
+
+«»
+
+<select id="productCategory" required><option value="">
+دسته‌بندی
+</option><option>کولر گازی</option>
+<option>قطعات</option>
+<option>لوازم جانبی</option>
+<option>سایر</option></select><input
+id="productImage"
+type="file"
+accept="image/*"
+
+«»
+
+<textarea
+id="productDescription"
+placeholder="توضیحات محصول"
+></textarea><button type="submit">
+ثبت محصول
+</button></form></div></section><section class="panel"><div class="panel-head"><h2>📦 سفارش‌ها</h2><span id="ordersTitle">0 سفارش</span>
+
+</div><div class="panel-body"><div id="ordersList" class="empty">
+هنوز سفارشی ثبت نشده است.
+</div></div></section></main><script>
+
+let selectedChatId=null;
+
+
+/* =========================
+   LOAD DASHBOARD
+========================= */
+
+async function loadDashboard(){
+
+try{
+
+const response=await fetch("/api/admin/dashboard");
+
+if(!response.ok) return;
+
+const data=await response.json();
+
+if(data.success){
+
+document.getElementById("chatCount").textContent=
+data.chats?.length || 0;
+
+document.getElementById("productCount").textContent=
+data.products?.length || 0;
+
+document.getElementById("orderCount").textContent=
+data.orders?.length || 0;
+
+renderChats(data.chats || []);
+renderProducts(data.products || []);
+renderOrders(data.orders || []);
+
+}
+
+}catch(error){
+
+console.log("Dashboard error:",error);
+
+}
+
+}
+
+
+/* =========================
+   CHATS
+========================= */
+
+function renderChats(chats){
+
+const list=document.getElementById("chatList");
+
+if(!chats.length){
+
+list.innerHTML=
+'<div class="empty">هنوز گفتگویی دریافت نشده است.</div>';
+
+return;
+
+}
+
+list.innerHTML="";
+
+chats.forEach(chat=>{
+
+const item=document.createElement("div");
+
+item.className="chat-item";
+
+item.onclick=()=>selectChat(chat);
+
+item.innerHTML=
+"<strong>"+
+(chat.name || "مشتری")+
+"</strong>"+
+"<small>"+
+(chat.phone || "")+
+"</small>";
+
+list.appendChild(item);
+
+});
+
+}
+
+
+function selectChat(chat){
+
+selectedChatId=chat.id;
+
+const box=document.getElementById("chatMessages");
+
+box.innerHTML="";
+
+(chat.messages || []).forEach(message=>{
+
+const div=document.createElement("div");
+
+div.className=
+"message "+
+(message.sender==="admin"?"admin":"customer");
+
+div.textContent=message.message;
+
+box.appendChild(div);
+
+});
+
+box.scrollTop=box.scrollHeight;
+
+}
+
+
+async function sendReply(){
+
+if(!selectedChatId) return;
+
+const textarea=document.getElementById("replyText");
+
+const text=textarea.value.trim();
+
+if(!text) return;
+
+try{
+
+const response=await fetch("/api/admin/chat/reply",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+
+chat_id:selectedChatId,
+message:text
+
+})
+
+});
+
+const result=await response.json();
+
+if(result.success){
+
+textarea.value="";
+
+loadDashboard();
+
+}
+
+}catch(error){
+
+console.log("Reply error:",error);
+
+}
+
+}
+
+
+/* =========================
+   PRODUCTS
+========================= */
+
+function renderProducts(products){
+
+const box=document.getElementById("productsList");
+
+if(!products.length){
+
+box.className="empty";
+
+box.textContent=
+"هنوز محصولی ثبت نشده است.";
+
+return;
+
+}
+
+box.className="";
+
+box.innerHTML=products.map(product=>`
+
+<div style="
+padding:12px;
+border:1px solid #e1e7ec;
+border-radius:8px;
+margin-bottom:8px;
+font-size:10px;
+">
+
+<strong>${product.name || ""}</strong>
+
+<br>
+
+<span style="color:#718192">
+${product.price || ""} تومان
+—
+موجودی: ${product.stock || 0}
+</span>
+
+</div>
+
+`).join("");
+
+}
+
+
+document
+.getElementById("productForm")
+.addEventListener("submit",async function(e){
+
+e.preventDefault();
+
+const data={
+
+name:document.getElementById("productName").value.trim(),
+
+price:document.getElementById("productPrice").value.trim(),
+
+stock:document.getElementById("productStock").value,
+
+category:document.getElementById("productCategory").value,
+
+description:
+document.getElementById("productDescription").value.trim()
+
+};
+
+try{
+
+const response=await fetch("/api/admin/products",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify(data)
+
+});
+
+const result=await response.json();
+
+if(result.success){
+
+this.reset();
+
+loadDashboard();
+
+}
+
+}catch(error){
+
+console.log("Product error:",error);
+
+}
+
+});
+
+
+/* =========================
+   ORDERS
+========================= */
+
+function renderOrders(orders){
+
+const box=document.getElementById("ordersList");
+
+document.getElementById("ordersTitle").textContent=
+(orders.length || 0)+" سفارش";
+
+if(!orders.length){
+
+box.className="empty";
+
+box.textContent=
+"هنوز سفارشی ثبت نشده است.";
+
+return;
+
+}
+
+box.className="";
+
+box.innerHTML=orders.map(order=>`
+
+<div style="
+padding:13px;
+border:1px solid #e1e7ec;
+border-radius:8px;
+margin-bottom:8px;
+font-size:10px;
+">
+
+<strong>
+${order.name || "مشتری"}
+</strong>
+
+<br>
+
+<span style="color:#718192">
+${order.phone || ""}
+</span>
+
+</div>
+
+`).join("");
+
+}
+
+
+/* =========================
+   START
+========================= */
+
+loadDashboard();
+
+setInterval(loadDashboard,5000);
+
+</script></body>
+</html>
