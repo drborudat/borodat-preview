@@ -79,9 +79,13 @@ def send_bale_message(text):
         return False
 
 
+# =====================================================
+# PAGES
+# =====================================================
+
 @app.route("/")
 def home():
-    return send_from_directory(BASE_DIR, "admin.html")
+    return send_from_directory(BASE_DIR, "index.html")
 
 
 @app.route("/admin")
@@ -104,6 +108,10 @@ def shop_html():
     return send_from_directory(BASE_DIR, "shop.html")
 
 
+# =====================================================
+# HEALTH
+# =====================================================
+
 @app.route("/health")
 def health():
     return jsonify({
@@ -111,6 +119,10 @@ def health():
         "status": "online"
     })
 
+
+# =====================================================
+# SERVICE REQUEST
+# =====================================================
 
 @app.route("/api/request", methods=["POST"])
 def service_request():
@@ -157,6 +169,10 @@ def service_request():
         "request": item
     })
 
+
+# =====================================================
+# CHAT
+# =====================================================
 
 @app.route("/chat", methods=["GET"])
 def get_chat():
@@ -263,6 +279,10 @@ def send_chat():
     })
 
 
+# =====================================================
+# ADMIN DASHBOARD
+# =====================================================
+
 @app.route("/api/admin/dashboard", methods=["GET"])
 def admin_dashboard():
 
@@ -276,6 +296,10 @@ def admin_dashboard():
         "orders": database["orders"]
     })
 
+
+# =====================================================
+# ADMIN CHAT REPLY
+# =====================================================
 
 @app.route("/api/admin/chat/reply", methods=["POST"])
 def admin_chat_reply():
@@ -326,6 +350,10 @@ def admin_chat_reply():
         "reply": admin_message
     })
 
+
+# =====================================================
+# PRODUCTS
+# =====================================================
 
 @app.route("/api/admin/products", methods=["POST"])
 def add_product():
@@ -446,6 +474,10 @@ def delete_product(product_id):
     })
 
 
+# =====================================================
+# ORDERS
+# =====================================================
+
 @app.route("/api/order", methods=["POST"])
 def create_order():
 
@@ -545,6 +577,10 @@ def update_order(order_id):
     })
 
 
+# =====================================================
+# ADMIN REQUESTS
+# =====================================================
+
 @app.route("/api/admin/requests", methods=["GET"])
 def admin_requests():
 
@@ -594,8 +630,13 @@ def update_service_request(request_id):
     })
 
 
+# =====================================================
+# ERRORS
+# =====================================================
+
 @app.errorhandler(404)
 def not_found(error):
+
     return jsonify({
         "success": False,
         "message": "مسیر موردنظر پیدا نشد."
@@ -604,6 +645,7 @@ def not_found(error):
 
 @app.errorhandler(405)
 def method_not_allowed(error):
+
     return jsonify({
         "success": False,
         "message": "متد درخواست مجاز نیست."
@@ -612,15 +654,22 @@ def method_not_allowed(error):
 
 @app.errorhandler(500)
 def internal_error(error):
+
     return jsonify({
         "success": False,
         "message": "خطای داخلی سرور."
     }), 500
 
 
+# =====================================================
+# RUN
+# =====================================================
+
 if __name__ == "__main__":
 
-    port = int(os.environ.get("PORT", 10000))
+    port = int(
+        os.environ.get("PORT", 10000)
+    )
 
     app.run(
         host="0.0.0.0",
