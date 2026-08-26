@@ -440,6 +440,7 @@ Dr <span>Borodat</span>
 
 </header>
 
+
 <main class="container">
 
 <div class="cards">
@@ -498,13 +499,29 @@ Dr <span>Borodat</span>
 
 <div class="form-grid">
 
-<input id="productName" placeholder="نام محصول" required>
+<input
+id="productName"
+placeholder="نام محصول"
+required
+>
 
-<input id="productPrice" placeholder="قیمت" required>
+<input
+id="productPrice"
+placeholder="قیمت"
+required
+>
 
-<input id="productStock" placeholder="موجودی" value="0">
+<input
+id="productStock"
+placeholder="موجودی"
+value="0"
+>
 
-<input id="productCategory" placeholder="دسته‌بندی" required>
+<input
+id="productCategory"
+placeholder="دسته‌بندی"
+required
+>
 
 <input
 class="form-full"
@@ -520,7 +537,10 @@ placeholder="توضیحات محصول"
 
 <div class="form-full">
 
-<button class="add-btn" type="submit">
+<button
+class="add-btn"
+type="submit"
+>
 ➕ افزودن محصول
 </button>
 
@@ -530,7 +550,10 @@ placeholder="توضیحات محصول"
 
 </form>
 
-<div id="productMessage" class="message"></div>
+<div
+id="productMessage"
+class="message">
+</div>
 
 </section>
 
@@ -569,7 +592,10 @@ placeholder="توضیحات محصول"
 
 <h2>💬 پشتیبانی آنلاین</h2>
 
-<button class="refresh" onclick="loadDashboard()">
+<button
+class="refresh"
+onclick="loadDashboard()"
+>
 ↻ بروزرسانی
 </button>
 
@@ -577,7 +603,10 @@ placeholder="توضیحات محصول"
 
 <div class="chat-list">
 
-<div class="chat-users" id="chatUsers">
+<div
+class="chat-users"
+id="chatUsers"
+>
 
 <div class="empty">
 هنوز گفتگویی ثبت نشده است.
@@ -587,11 +616,17 @@ placeholder="توضیحات محصول"
 
 <div class="chat-box">
 
-<div class="chat-header" id="chatHeader">
+<div
+class="chat-header"
+id="chatHeader"
+>
 یک گفتگو را انتخاب کنید
 </div>
 
-<div class="messages" id="messages">
+<div
+class="messages"
+id="messages"
+>
 
 <div class="no-chat">
 برای مشاهده پیام‌ها یک گفتگو را انتخاب کنید.
@@ -634,11 +669,13 @@ onclick="sendReply()"
 ===================================================== */
 
 /*
-   پنل روی borodat-panel است.
-   سایت preview فقط Frontend است.
+   خیلی مهم:
+   داده‌های سایت اصلی روی borodat-preview هستند.
+   بنابراین پنل باید API را از همان سرور بخواند.
 */
 
-const API_BASE = "https://borodat-panel.onrender.com";
+const API_BASE =
+"https://borodat-preview.onrender.com";
 
 
 /* =====================================================
@@ -673,7 +710,8 @@ return API_BASE + path;
 
 async function readJson(response){
 
-const text = await response.text();
+const text =
+await response.text();
 
 if(!text){
 
@@ -683,9 +721,12 @@ throw new Error(
 
 }
 
+let data;
+
 try{
 
-return JSON.parse(text);
+data =
+JSON.parse(text);
 
 }catch(error){
 
@@ -699,6 +740,17 @@ throw new Error(
 );
 
 }
+
+if(!response.ok){
+
+throw new Error(
+data.message ||
+("خطای سرور: " + response.status)
+);
+
+}
+
+return data;
 
 }
 
@@ -732,15 +784,6 @@ headers:{
 const data =
 await readJson(response);
 
-if(!response.ok){
-
-throw new Error(
-data.message ||
-("خطای سرور: " + response.status)
-);
-
-}
-
 if(data.success !== true){
 
 throw new Error(
@@ -752,19 +795,23 @@ data.message ||
 
 dashboardData = {
 
-requests:Array.isArray(data.requests)
+requests:
+Array.isArray(data.requests)
 ? data.requests
 :[],
 
-chats:Array.isArray(data.chats)
+chats:
+Array.isArray(data.chats)
 ? data.chats
 :[],
 
-products:Array.isArray(data.products)
+products:
+Array.isArray(data.products)
 ? data.products
 :[],
 
-orders:Array.isArray(data.orders)
+orders:
+Array.isArray(data.orders)
 ? data.orders
 :[]
 
@@ -772,20 +819,19 @@ orders:Array.isArray(data.orders)
 
 renderAll();
 
-status.textContent="● آنلاین";
-status.style.color="#78e08f";
+status.textContent =
+"● آنلاین";
 
+status.style.color =
+"#78e08f";
 
-/*
-   اگر گفتگوی انتخاب‌شده هنوز وجود دارد،
-   همان گفتگو را دوباره نمایش بده.
-*/
 
 if(selectedChat){
 
 const exists =
 dashboardData.chats.some(
-chat=>chat.id===selectedChat
+chat =>
+chat.id === selectedChat
 );
 
 if(exists){
@@ -806,10 +852,11 @@ console.error(
 error
 );
 
-status.textContent=
+status.textContent =
 "● خطا در اتصال";
 
-status.style.color="#ff8b8b";
+status.style.color =
+"#ff8b8b";
 
 }
 
@@ -843,8 +890,11 @@ document.getElementById(
 dashboardData.orders.length;
 
 renderRequests();
+
 renderProducts();
+
 renderOrders();
+
 renderChats();
 
 }
@@ -857,23 +907,27 @@ renderChats();
 function renderRequests(){
 
 const box =
-document.getElementById("requests");
+document.getElementById(
+"requests"
+);
 
 if(!dashboardData.requests.length){
 
-box.innerHTML=
+box.innerHTML =
 '<div class="empty">درخواستی ثبت نشده است.</div>';
 
 return;
 
 }
 
-box.innerHTML=`
+box.innerHTML = `
 
 <table>
 
 <thead>
+
 <tr>
+
 <th>نام</th>
 <th>شماره</th>
 <th>خدمت</th>
@@ -881,16 +935,20 @@ box.innerHTML=`
 <th>زمان</th>
 <th>وضعیت</th>
 <th>عملیات</th>
+
 </tr>
+
 </thead>
 
 <tbody>
 
-${dashboardData.requests.map(item=>`
+${dashboardData.requests.map(item => `
 
 <tr>
 
-<td>${escapeHtml(item.name)}</td>
+<td>
+${escapeHtml(item.name)}
+</td>
 
 <td dir="ltr">
 ${escapeHtml(item.phone)}
@@ -909,9 +967,11 @@ ${escapeHtml(item.created_at)}
 </td>
 
 <td>
+
 <span class="badge">
 ${escapeHtml(item.status || "new")}
 </span>
+
 </td>
 
 <td>
@@ -919,12 +979,14 @@ ${escapeHtml(item.status || "new")}
 <div class="actions">
 
 <button
-onclick="updateRequest('${item.id}','done')">
+onclick="updateRequest('${item.id}','done')"
+>
 انجام شد
 </button>
 
 <button
-onclick="updateRequest('${item.id}','processing')">
+onclick="updateRequest('${item.id}','processing')"
+>
 در حال انجام
 </button>
 
@@ -952,36 +1014,40 @@ onclick="updateRequest('${item.id}','processing')">
 function renderProducts(){
 
 const box =
-document.getElementById("products");
+document.getElementById(
+"products"
+);
 
 if(!dashboardData.products.length){
 
-box.innerHTML=
+box.innerHTML =
 '<div class="empty">محصولی ثبت نشده است.</div>';
 
 return;
 
 }
 
-box.innerHTML=`
+box.innerHTML = `
 
 <table>
 
 <thead>
 
 <tr>
+
 <th>نام</th>
 <th>دسته‌بندی</th>
 <th>قیمت</th>
 <th>موجودی</th>
 <th>عملیات</th>
+
 </tr>
 
 </thead>
 
 <tbody>
 
-${dashboardData.products.map(product=>`
+${dashboardData.products.map(product => `
 
 <tr>
 
@@ -1006,12 +1072,14 @@ ${escapeHtml(product.stock)}
 <div class="actions">
 
 <button
-onclick="editProduct('${product.id}')">
+onclick="editProduct('${product.id}')"
+>
 ویرایش
 </button>
 
 <button
-onclick="deleteProduct('${product.id}')">
+onclick="deleteProduct('${product.id}')"
+>
 حذف
 </button>
 
@@ -1039,24 +1107,27 @@ onclick="deleteProduct('${product.id}')">
 function renderOrders(){
 
 const box =
-document.getElementById("orders");
+document.getElementById(
+"orders"
+);
 
 if(!dashboardData.orders.length){
 
-box.innerHTML=
+box.innerHTML =
 '<div class="empty">سفارشی ثبت نشده است.</div>';
 
 return;
 
 }
 
-box.innerHTML=`
+box.innerHTML = `
 
 <table>
 
 <thead>
 
 <tr>
+
 <th>نام</th>
 <th>شماره</th>
 <th>محصول</th>
@@ -1064,13 +1135,14 @@ box.innerHTML=`
 <th>زمان</th>
 <th>وضعیت</th>
 <th>عملیات</th>
+
 </tr>
 
 </thead>
 
 <tbody>
 
-${dashboardData.orders.map(order=>`
+${dashboardData.orders.map(order => `
 
 <tr>
 
@@ -1107,12 +1179,14 @@ ${escapeHtml(order.status || "new")}
 <div class="actions">
 
 <button
-onclick="updateOrder('${order.id}','processing')">
+onclick="updateOrder('${order.id}','processing')"
+>
 در حال انجام
 </button>
 
 <button
-onclick="updateOrder('${order.id}','done')">
+onclick="updateOrder('${order.id}','done')"
+>
 تکمیل شد
 </button>
 
@@ -1140,11 +1214,13 @@ onclick="updateOrder('${order.id}','done')">
 function renderChats(){
 
 const box =
-document.getElementById("chatUsers");
+document.getElementById(
+"chatUsers"
+);
 
 if(!dashboardData.chats.length){
 
-box.innerHTML=
+box.innerHTML =
 '<div class="empty">هنوز گفتگویی ثبت نشده است.</div>';
 
 return;
@@ -1153,7 +1229,7 @@ return;
 
 const sortedChats =
 [...dashboardData.chats].sort(
-(a,b)=>
+(a,b) =>
 String(b.updated_at || "")
 .localeCompare(
 String(a.updated_at || "")
@@ -1161,19 +1237,27 @@ String(a.updated_at || "")
 );
 
 box.innerHTML =
-sortedChats.map(chat=>`
+sortedChats.map(chat => `
 
 <div
-class="chat-user ${selectedChat===chat.id ? "active":""}"
+class="chat-user ${
+selectedChat === chat.id
+? "active"
+: ""
+}"
 onclick="selectChat('${chat.id}')"
 >
 
 <strong>
-${escapeHtml(chat.name || "مشتری")}
+${escapeHtml(
+chat.name || "مشتری"
+)}
 </strong>
 
 <small dir="ltr">
-${escapeHtml(chat.phone || "")}
+${escapeHtml(
+chat.phone || ""
+)}
 </small>
 
 </div>
@@ -1187,29 +1271,37 @@ ${escapeHtml(chat.phone || "")}
    SELECT CHAT
 ===================================================== */
 
-function selectChat(id, scroll=true){
+function selectChat(
+id,
+scroll=true
+){
 
-selectedChat=id;
+selectedChat = id;
 
 renderChats();
 
 const chat =
 dashboardData.chats.find(
-item=>item.id===id
+item =>
+item.id === id
 );
 
 const header =
-document.getElementById("chatHeader");
+document.getElementById(
+"chatHeader"
+);
 
 const box =
-document.getElementById("messages");
+document.getElementById(
+"messages"
+);
 
 if(!chat){
 
-header.textContent=
+header.textContent =
 "گفتگو پیدا نشد";
 
-box.innerHTML=
+box.innerHTML =
 '<div class="no-chat">گفتگو پیدا نشد.</div>';
 
 return;
@@ -1221,7 +1313,6 @@ header.textContent =
 " — " +
 (chat.phone || "");
 
-
 const messages =
 Array.isArray(chat.messages)
 ? chat.messages
@@ -1229,7 +1320,7 @@ Array.isArray(chat.messages)
 
 if(!messages.length){
 
-box.innerHTML=
+box.innerHTML =
 '<div class="no-chat">هنوز پیامی ثبت نشده است.</div>';
 
 return;
@@ -1237,33 +1328,40 @@ return;
 }
 
 box.innerHTML =
-messages.map(message=>`
+messages.map(
+message => `
 
 <div class="msg ${
-message.sender==="admin"
-?"admin"
-:"customer"
+message.sender === "admin"
+? "admin"
+: "customer"
 }">
 
-${escapeHtml(message.message)}
+${escapeHtml(
+message.message
+)}
 
 <span class="msg-time">
-${escapeHtml(message.created_at || "")}
+${escapeHtml(
+message.created_at || ""
+)}
 </span>
 
 </div>
 
-`).join("");
-
+`
+).join("");
 
 if(scroll){
 
-requestAnimationFrame(()=>{
+requestAnimationFrame(
+() => {
 
 box.scrollTop =
 box.scrollHeight;
 
-});
+}
+);
 
 }
 
@@ -1311,10 +1409,12 @@ return;
 
 }
 
-sendingReply=true;
+sendingReply = true;
 
-button.disabled=true;
-button.textContent="در حال ارسال...";
+button.disabled = true;
+
+button.textContent =
+"در حال ارسال...";
 
 try{
 
@@ -1324,8 +1424,10 @@ api("/api/admin/chat/reply"),
 {
 method:"POST",
 headers:{
-"Content-Type":"application/json",
-"Accept":"application/json"
+"Content-Type":
+"application/json",
+"Accept":
+"application/json"
 },
 body:JSON.stringify({
 chat_id:selectedChat,
@@ -1337,15 +1439,6 @@ message:message
 const data =
 await readJson(response);
 
-if(!response.ok){
-
-throw new Error(
-data.message ||
-("خطای سرور: " + response.status)
-);
-
-}
-
 if(data.success !== true){
 
 throw new Error(
@@ -1355,25 +1448,18 @@ data.message ||
 
 }
 
-
-/*
-   پیام فقط بعد از پاسخ موفق سرور پاک می‌شود.
-*/
-
-input.value="";
-
-
-/*
-   اطلاعات جدید را می‌گیریم تا پیام
-   واقعاً از دیتابیس خوانده شود.
-*/
+input.value = "";
 
 await loadDashboard();
+
+if(selectedChat){
 
 selectChat(
 selectedChat,
 true
 );
+
+}
 
 }catch(error){
 
@@ -1389,10 +1475,12 @@ error.message ||
 
 }finally{
 
-sendingReply=false;
+sendingReply = false;
 
-button.disabled=false;
-button.textContent="ارسال";
+button.disabled = false;
+
+button.textContent =
+"ارسال";
 
 }
 
@@ -1404,13 +1492,15 @@ button.textContent="ارسال";
 ===================================================== */
 
 document
-.getElementById("replyInput")
+.getElementById(
+"replyInput"
+)
 .addEventListener(
 "keydown",
 function(event){
 
 if(
-event.key==="Enter" &&
+event.key === "Enter" &&
 !event.shiftKey
 ){
 
@@ -1429,7 +1519,9 @@ sendReply();
 ===================================================== */
 
 document
-.getElementById("productForm")
+.getElementById(
+"productForm"
+)
 .addEventListener(
 "submit",
 async function(e){
@@ -1441,7 +1533,7 @@ document.getElementById(
 "productMessage"
 );
 
-const payload={
+const payload = {
 
 name:
 document.getElementById(
@@ -1483,17 +1575,23 @@ api("/api/admin/products"),
 {
 method:"POST",
 headers:{
-"Content-Type":"application/json",
-"Accept":"application/json"
+"Content-Type":
+"application/json",
+"Accept":
+"application/json"
 },
-body:JSON.stringify(payload)
+body:JSON.stringify(
+payload
+)
 }
 );
 
 const data =
 await readJson(response);
 
-if(!response.ok || data.success!==true){
+if(
+data.success !== true
+){
 
 throw new Error(
 data.message ||
@@ -1502,10 +1600,10 @@ data.message ||
 
 }
 
-messageBox.className=
+messageBox.className =
 "message success";
 
-messageBox.textContent=
+messageBox.textContent =
 "محصول با موفقیت اضافه شد.";
 
 this.reset();
@@ -1514,15 +1612,17 @@ await loadDashboard();
 
 }catch(error){
 
-messageBox.className=
+messageBox.className =
 "message error";
 
-messageBox.textContent=
-error.message;
+messageBox.textContent =
+error.message ||
+"ثبت محصول ناموفق بود.";
 
 }
 
-});
+}
+);
 
 
 /* =====================================================
@@ -1533,17 +1633,25 @@ async function deleteProduct(id){
 
 if(!confirm(
 "این محصول حذف شود؟"
-))return;
+)){
+
+return;
+
+}
 
 try{
 
 const response =
 await fetch(
-api("/api/admin/products/"+id),
+api(
+"/api/admin/products/" +
+id
+),
 {
 method:"DELETE",
 headers:{
-"Accept":"application/json"
+"Accept":
+"application/json"
 }
 }
 );
@@ -1551,7 +1659,9 @@ headers:{
 const data =
 await readJson(response);
 
-if(!response.ok || data.success!==true){
+if(
+data.success !== true
+){
 
 throw new Error(
 data.message ||
@@ -1564,7 +1674,10 @@ await loadDashboard();
 
 }catch(error){
 
-alert(error.message);
+alert(
+error.message ||
+"حذف محصول ناموفق بود."
+);
 
 }
 
@@ -1579,10 +1692,15 @@ async function editProduct(id){
 
 const product =
 dashboardData.products.find(
-item=>item.id===id
+item =>
+item.id === id
 );
 
-if(!product)return;
+if(!product){
+
+return;
+
+}
 
 const name =
 prompt(
@@ -1590,7 +1708,11 @@ prompt(
 product.name
 );
 
-if(name===null)return;
+if(name === null){
+
+return;
+
+}
 
 const price =
 prompt(
@@ -1598,7 +1720,11 @@ prompt(
 product.price
 );
 
-if(price===null)return;
+if(price === null){
+
+return;
+
+}
 
 const stock =
 prompt(
@@ -1606,7 +1732,11 @@ prompt(
 product.stock
 );
 
-if(stock===null)return;
+if(stock === null){
+
+return;
+
+}
 
 const category =
 prompt(
@@ -1614,24 +1744,35 @@ prompt(
 product.category
 );
 
-if(category===null)return;
+if(category === null){
+
+return;
+
+}
 
 try{
 
 const response =
 await fetch(
-api("/api/admin/products/"+id),
+api(
+"/api/admin/products/" +
+id
+),
 {
 method:"PATCH",
 headers:{
-"Content-Type":"application/json",
-"Accept":"application/json"
+"Content-Type":
+"application/json",
+"Accept":
+"application/json"
 },
 body:JSON.stringify({
+
 name:name,
 price:price,
 stock:stock,
 category:category
+
 })
 }
 );
@@ -1639,7 +1780,9 @@ category:category
 const data =
 await readJson(response);
 
-if(!response.ok || data.success!==true){
+if(
+data.success !== true
+){
 
 throw new Error(
 data.message ||
@@ -1652,7 +1795,10 @@ await loadDashboard();
 
 }catch(error){
 
-alert(error.message);
+alert(
+error.message ||
+"ویرایش ناموفق بود."
+);
 
 }
 
@@ -1663,18 +1809,26 @@ alert(error.message);
    UPDATE ORDER
 ===================================================== */
 
-async function updateOrder(id,status){
+async function updateOrder(
+id,
+status
+){
 
 try{
 
 const response =
 await fetch(
-api("/api/admin/orders/"+id),
+api(
+"/api/admin/orders/" +
+id
+),
 {
 method:"PATCH",
 headers:{
-"Content-Type":"application/json",
-"Accept":"application/json"
+"Content-Type":
+"application/json",
+"Accept":
+"application/json"
 },
 body:JSON.stringify({
 status:status
@@ -1685,7 +1839,9 @@ status:status
 const data =
 await readJson(response);
 
-if(!response.ok || data.success!==true){
+if(
+data.success !== true
+){
 
 throw new Error(
 data.message ||
@@ -1698,7 +1854,10 @@ await loadDashboard();
 
 }catch(error){
 
-alert(error.message);
+alert(
+error.message ||
+"تغییر وضعیت ناموفق بود."
+);
 
 }
 
@@ -1709,18 +1868,26 @@ alert(error.message);
    UPDATE REQUEST
 ===================================================== */
 
-async function updateRequest(id,status){
+async function updateRequest(
+id,
+status
+){
 
 try{
 
 const response =
 await fetch(
-api("/api/admin/requests/"+id),
+api(
+"/api/admin/requests/" +
+id
+),
 {
 method:"PATCH",
 headers:{
-"Content-Type":"application/json",
-"Accept":"application/json"
+"Content-Type":
+"application/json",
+"Accept":
+"application/json"
 },
 body:JSON.stringify({
 status:status
@@ -1731,7 +1898,9 @@ status:status
 const data =
 await readJson(response);
 
-if(!response.ok || data.success!==true){
+if(
+data.success !== true
+){
 
 throw new Error(
 data.message ||
@@ -1744,7 +1913,10 @@ await loadDashboard();
 
 }catch(error){
 
-alert(error.message);
+alert(
+error.message ||
+"تغییر وضعیت ناموفق بود."
+);
 
 }
 
@@ -1757,12 +1929,29 @@ alert(error.message);
 
 function escapeHtml(value){
 
-return String(value ?? "")
-.replace(/&/g,"&amp;")
-.replace(/</g,"&lt;")
-.replace(/>/g,"&gt;")
-.replace(/"/g,"&quot;")
-.replace(/'/g,"&#039;");
+return String(
+value ?? ""
+)
+.replace(
+/&/g,
+"&amp;"
+)
+.replace(
+/</g,
+"&lt;"
+)
+.replace(
+/>/g,
+"&gt;"
+)
+.replace(
+/"/g,
+"&quot;"
+)
+.replace(
+/'/g,
+"&#039;"
+);
 
 }
 
