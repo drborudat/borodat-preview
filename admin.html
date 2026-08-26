@@ -176,9 +176,7 @@ min-height:80px;
 resize:vertical
 }
 
-.form-full{
-grid-column:1/-1
-}
+.form-full{grid-column:1/-1}
 
 .add-btn{
 border:0;
@@ -217,20 +215,20 @@ color:#8a99a7;
 font-size:11px
 }
 
-/* ================= CHAT ================= */
+/* CHAT */
 
 .chat-list{
 display:grid;
 grid-template-columns:320px minmax(0,1fr);
 gap:15px;
-height:600px
+height:520px
 }
 
 .chat-users{
 border:1px solid #e1e7ec;
-border-radius:10px;
+border-radius:9px;
 overflow-y:auto;
-background:#fafcfd
+min-height:0
 }
 
 .chat-user{
@@ -242,7 +240,7 @@ transition:.2s
 
 .chat-user:hover,
 .chat-user.active{
-background:#e8f5fb
+background:#edf7fb
 }
 
 .chat-user strong{
@@ -256,101 +254,73 @@ color:#81909d;
 font-size:9px
 }
 
-.chat-user .last-message{
-margin-top:7px;
-font-size:9px;
-color:#687987;
-white-space:nowrap;
-overflow:hidden;
-text-overflow:ellipsis
-}
-
-.chat-user .chat-time{
-margin-top:5px;
-font-size:8px;
-color:#9aa7b2
-}
-
 .chat-box{
 border:1px solid #e1e7ec;
-border-radius:10px;
+border-radius:9px;
 display:flex;
 flex-direction:column;
 min-width:0;
-overflow:hidden;
-background:#fff
+overflow:hidden
 }
 
 .chat-header{
-background:#071b31;
-color:#fff;
-padding:14px 16px;
-display:flex;
-align-items:center;
-justify-content:space-between;
-min-height:58px
-}
-
-.chat-header strong{
-font-size:11px
-}
-
-.chat-header small{
-font-size:8px;
-color:#bcd0df;
-display:block;
-margin-top:4px
+padding:13px 15px;
+background:#f5f8fa;
+border-bottom:1px solid #e1e7ec;
+font-size:11px;
+font-weight:bold;
+min-height:45px
 }
 
 .messages{
 flex:1;
 overflow-y:auto;
-padding:20px;
-background:#f7fafc;
-display:flex;
-flex-direction:column
+padding:15px;
+background:#fff;
+min-height:0
 }
 
 .msg{
-max-width:72%;
-padding:11px 13px;
+display:block;
+max-width:75%;
+width:max-content;
+padding:10px 12px;
 border-radius:12px;
 margin-bottom:10px;
 font-size:10px;
 line-height:1.9;
 word-break:break-word;
-box-shadow:0 1px 2px rgba(0,0,0,.04)
+white-space:pre-wrap
 }
 
 .msg.customer{
-background:#fff;
-margin-right:0;
+background:#edf3f7;
 margin-left:auto;
-border:1px solid #e1e7ec;
+margin-right:0;
 border-radius:12px 12px 3px 12px;
-color:#172b3f
+color:#102238
 }
 
 .msg.admin{
 background:#0879bd;
 color:#fff;
-margin-left:0;
 margin-right:auto;
+margin-left:0;
 border-radius:12px 12px 12px 3px
 }
 
 .msg-time{
 display:block;
 font-size:7px;
-margin-top:4px;
-opacity:.65
+opacity:.7;
+margin-top:4px
 }
 
 .reply{
 display:flex;
 gap:8px;
 padding:12px;
-background:#fff;
+background:#f7f9fb;
 border-top:1px solid #e1e7ec
 }
 
@@ -359,9 +329,10 @@ flex:1;
 min-width:0;
 border:1px solid #dce5eb;
 border-radius:8px;
-padding:12px;
+padding:11px;
 font-size:10px;
-outline:none
+outline:none;
+background:#fff
 }
 
 .reply input:focus{
@@ -376,7 +347,7 @@ border-radius:8px;
 padding:0 20px;
 cursor:pointer;
 font-size:10px;
-min-width:70px
+min-width:65px
 }
 
 .reply button:disabled{
@@ -384,7 +355,7 @@ opacity:.5;
 cursor:not-allowed
 }
 
-.chat-empty{
+.no-chat{
 height:100%;
 display:flex;
 align-items:center;
@@ -392,13 +363,6 @@ justify-content:center;
 color:#8a99a7;
 font-size:11px;
 text-align:center
-}
-
-.loading{
-text-align:center;
-padding:20px;
-color:#8a99a7;
-font-size:10px
 }
 
 @media(max-width:800px){
@@ -421,11 +385,11 @@ height:auto
 }
 
 .chat-users{
-max-height:250px
+height:180px
 }
 
 .chat-box{
-height:600px
+height:500px
 }
 
 table{
@@ -438,6 +402,10 @@ white-space:nowrap
 
 @media(max-width:500px){
 
+.cards{
+grid-template-columns:1fr 1fr
+}
+
 .container{
 width:94%
 }
@@ -446,33 +414,12 @@ width:94%
 padding:15px 3%
 }
 
-.cards{
-grid-template-columns:1fr 1fr;
-gap:10px
-}
-
-.stat-card{
-padding:15px
-}
-
-.stat-card strong{
-font-size:23px
-}
-
 .panel{
-padding:15px
+padding:14px
 }
 
 .chat-list{
 gap:10px
-}
-
-.chat-box{
-height:550px
-}
-
-.msg{
-max-width:85%
 }
 
 }
@@ -493,10 +440,7 @@ Dr <span>Borodat</span>
 
 </header>
 
-
 <main class="container">
-
-<!-- ================= STATS ================= -->
 
 <div class="cards">
 
@@ -523,7 +467,7 @@ Dr <span>Borodat</span>
 </div>
 
 
-<!-- ================= REQUESTS ================= -->
+<!-- REQUESTS -->
 
 <section class="panel">
 
@@ -542,7 +486,7 @@ Dr <span>Borodat</span>
 </section>
 
 
-<!-- ================= PRODUCTS ADD ================= -->
+<!-- PRODUCTS -->
 
 <section class="panel">
 
@@ -554,29 +498,13 @@ Dr <span>Borodat</span>
 
 <div class="form-grid">
 
-<input
-id="productName"
-placeholder="نام محصول"
-required
->
+<input id="productName" placeholder="نام محصول" required>
 
-<input
-id="productPrice"
-placeholder="قیمت"
-required
->
+<input id="productPrice" placeholder="قیمت" required>
 
-<input
-id="productStock"
-placeholder="موجودی"
-value="0"
->
+<input id="productStock" placeholder="موجودی" value="0">
 
-<input
-id="productCategory"
-placeholder="دسته‌بندی"
-required
->
+<input id="productCategory" placeholder="دسته‌بندی" required>
 
 <input
 class="form-full"
@@ -592,10 +520,7 @@ placeholder="توضیحات محصول"
 
 <div class="form-full">
 
-<button
-class="add-btn"
-type="submit"
->
+<button class="add-btn" type="submit">
 ➕ افزودن محصول
 </button>
 
@@ -605,15 +530,12 @@ type="submit"
 
 </form>
 
-<div
-id="productMessage"
-class="message"
-></div>
+<div id="productMessage" class="message"></div>
 
 </section>
 
 
-<!-- ================= PRODUCTS ================= -->
+<!-- PRODUCTS TABLE -->
 
 <section class="panel">
 
@@ -626,7 +548,7 @@ class="message"
 </section>
 
 
-<!-- ================= ORDERS ================= -->
+<!-- ORDERS -->
 
 <section class="panel">
 
@@ -639,7 +561,7 @@ class="message"
 </section>
 
 
-<!-- ================= CHAT ================= -->
+<!-- CHAT -->
 
 <section class="panel">
 
@@ -647,24 +569,15 @@ class="message"
 
 <h2>💬 پشتیبانی آنلاین</h2>
 
-<button
-class="refresh"
-onclick="loadDashboard()"
->
+<button class="refresh" onclick="loadDashboard()">
 ↻ بروزرسانی
 </button>
 
 </div>
 
-
 <div class="chat-list">
 
-<!-- CHAT USERS -->
-
-<div
-class="chat-users"
-id="chatUsers"
->
+<div class="chat-users" id="chatUsers">
 
 <div class="empty">
 هنوز گفتگویی ثبت نشده است.
@@ -672,57 +585,33 @@ id="chatUsers"
 
 </div>
 
-
-<!-- CHAT BOX -->
-
 <div class="chat-box">
 
-<div
-class="chat-header"
-id="chatHeader"
->
+<div class="chat-header" id="chatHeader">
+یک گفتگو را انتخاب کنید
+</div>
 
-<div>
+<div class="messages" id="messages">
 
-<strong>
-گفتگو را انتخاب کنید
-</strong>
-
-<small>
-برای مشاهده پیام‌ها یک مشتری را انتخاب کنید.
-</small>
-
+<div class="no-chat">
+برای مشاهده پیام‌ها یک گفتگو را انتخاب کنید.
 </div>
 
 </div>
-
-
-<div
-class="messages"
-id="messages"
->
-
-<div class="chat-empty">
-یک گفتگو را از سمت راست انتخاب کنید.
-</div>
-
-</div>
-
 
 <div class="reply">
 
 <input
 id="replyInput"
 type="text"
-autocomplete="off"
 placeholder="پاسخ خود را بنویسید..."
-disabled
+autocomplete="off"
 >
 
 <button
 id="replyButton"
+type="button"
 onclick="sendReply()"
-disabled
 >
 ارسال
 </button>
@@ -741,14 +630,19 @@ disabled
 <script>
 
 /* =====================================================
-API
+   API
 ===================================================== */
 
-const API_BASE = "";
+/*
+   پنل روی borodat-panel است.
+   سایت preview فقط Frontend است.
+*/
+
+const API_BASE = "https://borodat-panel.onrender.com";
 
 
 /* =====================================================
-STATE
+   DATA
 ===================================================== */
 
 let dashboardData = {
@@ -759,28 +653,29 @@ orders:[]
 };
 
 let selectedChat = null;
-
 let sendingReply = false;
 
 
 /* =====================================================
-API URL
+   API HELPER
 ===================================================== */
 
 function api(path){
+
 return API_BASE + path;
+
 }
 
 
 /* =====================================================
-SAFE JSON RESPONSE
+   SAFE JSON RESPONSE
 ===================================================== */
 
-async function readJsonResponse(response){
+async function readJson(response){
 
 const text = await response.text();
 
-if(!text || !text.trim()){
+if(!text){
 
 throw new Error(
 "سرور پاسخ خالی برگرداند."
@@ -795,12 +690,12 @@ return JSON.parse(text);
 }catch(error){
 
 console.error(
-"INVALID JSON FROM SERVER:",
+"INVALID SERVER RESPONSE:",
 text
 );
 
 throw new Error(
-"پاسخ سرور JSON معتبر نیست."
+"سرور پاسخ JSON معتبر برنگرداند."
 );
 
 }
@@ -809,7 +704,7 @@ throw new Error(
 
 
 /* =====================================================
-LOAD DASHBOARD
+   LOAD DASHBOARD
 ===================================================== */
 
 async function loadDashboard(){
@@ -835,13 +730,13 @@ headers:{
 );
 
 const data =
-await readJsonResponse(response);
+await readJson(response);
 
 if(!response.ok){
 
 throw new Error(
 data.message ||
-"خطا در دریافت اطلاعات."
+("خطای سرور: " + response.status)
 );
 
 }
@@ -877,11 +772,32 @@ orders:Array.isArray(data.orders)
 
 renderAll();
 
-status.textContent =
-"● آنلاین";
+status.textContent="● آنلاین";
+status.style.color="#78e08f";
 
-status.style.color =
-"#78e08f";
+
+/*
+   اگر گفتگوی انتخاب‌شده هنوز وجود دارد،
+   همان گفتگو را دوباره نمایش بده.
+*/
+
+if(selectedChat){
+
+const exists =
+dashboardData.chats.some(
+chat=>chat.id===selectedChat
+);
+
+if(exists){
+
+selectChat(
+selectedChat,
+false
+);
+
+}
+
+}
 
 }catch(error){
 
@@ -890,11 +806,10 @@ console.error(
 error
 );
 
-status.textContent =
+status.textContent=
 "● خطا در اتصال";
 
-status.style.color =
-"#ff8b8b";
+status.style.color="#ff8b8b";
 
 }
 
@@ -902,7 +817,7 @@ status.style.color =
 
 
 /* =====================================================
-RENDER ALL
+   RENDER ALL
 ===================================================== */
 
 function renderAll(){
@@ -928,24 +843,15 @@ document.getElementById(
 dashboardData.orders.length;
 
 renderRequests();
-
 renderProducts();
-
 renderOrders();
-
 renderChats();
-
-if(selectedChat){
-
-renderSelectedChat();
-
-}
 
 }
 
 
 /* =====================================================
-REQUESTS
+   REQUESTS
 ===================================================== */
 
 function renderRequests(){
@@ -955,19 +861,18 @@ document.getElementById("requests");
 
 if(!dashboardData.requests.length){
 
-box.innerHTML =
+box.innerHTML=
 '<div class="empty">درخواستی ثبت نشده است.</div>';
 
 return;
 
 }
 
-box.innerHTML = `
+box.innerHTML=`
 
 <table>
 
 <thead>
-
 <tr>
 <th>نام</th>
 <th>شماره</th>
@@ -977,18 +882,15 @@ box.innerHTML = `
 <th>وضعیت</th>
 <th>عملیات</th>
 </tr>
-
 </thead>
 
 <tbody>
 
-${dashboardData.requests.map(item => `
+${dashboardData.requests.map(item=>`
 
 <tr>
 
-<td>
-${escapeHtml(item.name)}
-</td>
+<td>${escapeHtml(item.name)}</td>
 
 <td dir="ltr">
 ${escapeHtml(item.phone)}
@@ -1017,14 +919,12 @@ ${escapeHtml(item.status || "new")}
 <div class="actions">
 
 <button
-onclick="updateRequest('${item.id}','done')"
->
+onclick="updateRequest('${item.id}','done')">
 انجام شد
 </button>
 
 <button
-onclick="updateRequest('${item.id}','processing')"
->
+onclick="updateRequest('${item.id}','processing')">
 در حال انجام
 </button>
 
@@ -1046,7 +946,7 @@ onclick="updateRequest('${item.id}','processing')"
 
 
 /* =====================================================
-PRODUCTS
+   PRODUCTS
 ===================================================== */
 
 function renderProducts(){
@@ -1056,14 +956,14 @@ document.getElementById("products");
 
 if(!dashboardData.products.length){
 
-box.innerHTML =
+box.innerHTML=
 '<div class="empty">محصولی ثبت نشده است.</div>';
 
 return;
 
 }
 
-box.innerHTML = `
+box.innerHTML=`
 
 <table>
 
@@ -1081,7 +981,7 @@ box.innerHTML = `
 
 <tbody>
 
-${dashboardData.products.map(product => `
+${dashboardData.products.map(product=>`
 
 <tr>
 
@@ -1106,14 +1006,12 @@ ${escapeHtml(product.stock)}
 <div class="actions">
 
 <button
-onclick="editProduct('${product.id}')"
->
+onclick="editProduct('${product.id}')">
 ویرایش
 </button>
 
 <button
-onclick="deleteProduct('${product.id}')"
->
+onclick="deleteProduct('${product.id}')">
 حذف
 </button>
 
@@ -1135,7 +1033,7 @@ onclick="deleteProduct('${product.id}')"
 
 
 /* =====================================================
-ORDERS
+   ORDERS
 ===================================================== */
 
 function renderOrders(){
@@ -1145,14 +1043,14 @@ document.getElementById("orders");
 
 if(!dashboardData.orders.length){
 
-box.innerHTML =
+box.innerHTML=
 '<div class="empty">سفارشی ثبت نشده است.</div>';
 
 return;
 
 }
 
-box.innerHTML = `
+box.innerHTML=`
 
 <table>
 
@@ -1172,7 +1070,7 @@ box.innerHTML = `
 
 <tbody>
 
-${dashboardData.orders.map(order => `
+${dashboardData.orders.map(order=>`
 
 <tr>
 
@@ -1209,14 +1107,12 @@ ${escapeHtml(order.status || "new")}
 <div class="actions">
 
 <button
-onclick="updateOrder('${order.id}','processing')"
->
+onclick="updateOrder('${order.id}','processing')">
 در حال انجام
 </button>
 
 <button
-onclick="updateOrder('${order.id}','done')"
->
+onclick="updateOrder('${order.id}','done')">
 تکمیل شد
 </button>
 
@@ -1238,7 +1134,7 @@ onclick="updateOrder('${order.id}','done')"
 
 
 /* =====================================================
-RENDER CHAT LIST
+   CHATS LIST
 ===================================================== */
 
 function renderChats(){
@@ -1248,188 +1144,105 @@ document.getElementById("chatUsers");
 
 if(!dashboardData.chats.length){
 
-box.innerHTML =
+box.innerHTML=
 '<div class="empty">هنوز گفتگویی ثبت نشده است.</div>';
 
 return;
 
 }
 
+const sortedChats =
+[...dashboardData.chats].sort(
+(a,b)=>
+String(b.updated_at || "")
+.localeCompare(
+String(a.updated_at || "")
+)
+);
+
 box.innerHTML =
-dashboardData.chats.map(chat => {
-
-const messages =
-Array.isArray(chat.messages)
-? chat.messages
-:[];
-
-const lastMessage =
-messages.length
-? messages[messages.length - 1].message
-: "هنوز پیامی ثبت نشده";
-
-return `
+sortedChats.map(chat=>`
 
 <div
-class="chat-user ${
-selectedChat === chat.id
-? "active"
-: ""
-}"
+class="chat-user ${selectedChat===chat.id ? "active":""}"
 onclick="selectChat('${chat.id}')"
 >
 
 <strong>
-${escapeHtml(chat.name)}
+${escapeHtml(chat.name || "مشتری")}
 </strong>
 
 <small dir="ltr">
-${escapeHtml(chat.phone)}
+${escapeHtml(chat.phone || "")}
 </small>
 
-<div class="last-message">
-${escapeHtml(lastMessage)}
 </div>
 
-<div class="chat-time">
-${escapeHtml(chat.updated_at || chat.created_at || "")}
-</div>
-
-</div>
-
-`;
-
-}).join("");
+`).join("");
 
 }
 
 
 /* =====================================================
-SELECT CHAT
+   SELECT CHAT
 ===================================================== */
 
-function selectChat(id){
+function selectChat(id, scroll=true){
 
-selectedChat = id;
+selectedChat=id;
 
 renderChats();
 
-renderSelectedChat();
-
-}
-
-
-/* =====================================================
-RENDER SELECTED CHAT
-===================================================== */
-
-function renderSelectedChat(){
-
 const chat =
 dashboardData.chats.find(
-item => item.id === selectedChat
+item=>item.id===id
 );
-
-const messagesBox =
-document.getElementById("messages");
 
 const header =
 document.getElementById("chatHeader");
 
-const input =
-document.getElementById("replyInput");
-
-const button =
-document.getElementById("replyButton");
-
+const box =
+document.getElementById("messages");
 
 if(!chat){
 
-header.innerHTML = `
+header.textContent=
+"گفتگو پیدا نشد";
 
-<div>
-
-<strong>
-گفتگو را انتخاب کنید
-</strong>
-
-<small>
-برای مشاهده پیام‌ها یک مشتری را انتخاب کنید.
-</small>
-
-</div>
-
-`;
-
-messagesBox.innerHTML = `
-
-<div class="chat-empty">
-یک گفتگو را از سمت راست انتخاب کنید.
-</div>
-
-`;
-
-input.disabled = true;
-button.disabled = true;
+box.innerHTML=
+'<div class="no-chat">گفتگو پیدا نشد.</div>';
 
 return;
 
 }
 
+header.textContent =
+(chat.name || "مشتری") +
+" — " +
+(chat.phone || "");
 
-/* HEADER */
-
-header.innerHTML = `
-
-<div>
-
-<strong>
-${escapeHtml(chat.name)}
-</strong>
-
-<small dir="ltr">
-${escapeHtml(chat.phone)}
-</small>
-
-</div>
-
-`;
-
-
-input.disabled = false;
-button.disabled = false;
-
-
-/* MESSAGES */
 
 const messages =
 Array.isArray(chat.messages)
 ? chat.messages
 :[];
 
-
 if(!messages.length){
 
-messagesBox.innerHTML = `
-
-<div class="chat-empty">
-هنوز پیامی در این گفتگو وجود ندارد.
-</div>
-
-`;
+box.innerHTML=
+'<div class="no-chat">هنوز پیامی ثبت نشده است.</div>';
 
 return;
 
 }
 
-
-messagesBox.innerHTML =
-messages.map(message => `
+box.innerHTML =
+messages.map(message=>`
 
 <div class="msg ${
-message.sender === "admin"
-? "admin"
-: "customer"
+message.sender==="admin"
+?"admin"
+:"customer"
 }">
 
 ${escapeHtml(message.message)}
@@ -1443,25 +1256,31 @@ ${escapeHtml(message.created_at || "")}
 `).join("");
 
 
-/* ALWAYS SCROLL TO BOTTOM */
+if(scroll){
 
-setTimeout(() => {
+requestAnimationFrame(()=>{
 
-messagesBox.scrollTop =
-messagesBox.scrollHeight;
+box.scrollTop =
+box.scrollHeight;
 
-},50);
+});
+
+}
 
 }
 
 
 /* =====================================================
-SEND REPLY
+   SEND REPLY
 ===================================================== */
 
 async function sendReply(){
 
-if(sendingReply)return;
+if(sendingReply){
+
+return;
+
+}
 
 if(!selectedChat){
 
@@ -1474,24 +1293,28 @@ return;
 }
 
 const input =
-document.getElementById("replyInput");
+document.getElementById(
+"replyInput"
+);
 
 const button =
-document.getElementById("replyButton");
+document.getElementById(
+"replyButton"
+);
 
 const message =
 input.value.trim();
 
-if(!message)return;
+if(!message){
 
+return;
 
-sendingReply = true;
+}
 
-button.disabled = true;
+sendingReply=true;
 
-button.textContent =
-"در حال ارسال...";
-
+button.disabled=true;
+button.textContent="در حال ارسال...";
 
 try{
 
@@ -1511,20 +1334,17 @@ message:message
 }
 );
 
-
 const data =
-await readJsonResponse(response);
-
+await readJson(response);
 
 if(!response.ok){
 
 throw new Error(
 data.message ||
-"ارسال پاسخ ناموفق بود."
+("خطای سرور: " + response.status)
 );
 
 }
-
 
 if(data.success !== true){
 
@@ -1537,58 +1357,42 @@ data.message ||
 
 
 /*
-IMPORTANT:
-اول متن را پاک می‌کنیم،
-بعد اطلاعات را دوباره می‌گیریم.
+   پیام فقط بعد از پاسخ موفق سرور پاک می‌شود.
 */
 
-input.value = "";
+input.value="";
 
 
 /*
-رفرش کامل داشبورد،
-اما selectedChat حفظ می‌شود.
+   اطلاعات جدید را می‌گیریم تا پیام
+   واقعاً از دیتابیس خوانده شود.
 */
 
 await loadDashboard();
 
-
-/*
-اگر گفتگو هنوز وجود داشت،
-دوباره همان گفتگو را باز می‌کنیم.
-*/
-
-if(
-dashboardData.chats.some(
-chat => chat.id === selectedChat
-)
-){
-
-renderSelectedChat();
-
-}
-
+selectChat(
+selectedChat,
+true
+);
 
 }catch(error){
 
 console.error(
-"REPLY ERROR:",
+"SEND REPLY ERROR:",
 error
 );
 
 alert(
 error.message ||
-"خطا در ارسال پاسخ."
+"ارسال پاسخ ناموفق بود."
 );
 
 }finally{
 
-sendingReply = false;
+sendingReply=false;
 
-button.disabled = false;
-
-button.textContent =
-"ارسال";
+button.disabled=false;
+button.textContent="ارسال";
 
 }
 
@@ -1596,7 +1400,7 @@ button.textContent =
 
 
 /* =====================================================
-ENTER TO SEND
+   ENTER TO SEND
 ===================================================== */
 
 document
@@ -1605,7 +1409,10 @@ document
 "keydown",
 function(event){
 
-if(event.key === "Enter"){
+if(
+event.key==="Enter" &&
+!event.shiftKey
+){
 
 event.preventDefault();
 
@@ -1613,27 +1420,28 @@ sendReply();
 
 }
 
-});
+}
+);
 
 
 /* =====================================================
-ADD PRODUCT
+   ADD PRODUCT
 ===================================================== */
 
 document
 .getElementById("productForm")
 .addEventListener(
 "submit",
-async function(event){
+async function(e){
 
-event.preventDefault();
+e.preventDefault();
 
 const messageBox =
 document.getElementById(
 "productMessage"
 );
 
-const payload = {
+const payload={
 
 name:
 document.getElementById(
@@ -1667,7 +1475,6 @@ document.getElementById(
 
 };
 
-
 try{
 
 const response =
@@ -1684,18 +1491,9 @@ body:JSON.stringify(payload)
 );
 
 const data =
-await readJsonResponse(response);
+await readJson(response);
 
-if(!response.ok){
-
-throw new Error(
-data.message ||
-"ثبت محصول ناموفق بود."
-);
-
-}
-
-if(data.success !== true){
+if(!response.ok || data.success!==true){
 
 throw new Error(
 data.message ||
@@ -1704,10 +1502,10 @@ data.message ||
 
 }
 
-messageBox.className =
+messageBox.className=
 "message success";
 
-messageBox.textContent =
+messageBox.textContent=
 "محصول با موفقیت اضافه شد.";
 
 this.reset();
@@ -1716,12 +1514,10 @@ await loadDashboard();
 
 }catch(error){
 
-console.error(error);
-
-messageBox.className =
+messageBox.className=
 "message error";
 
-messageBox.textContent =
+messageBox.textContent=
 error.message;
 
 }
@@ -1730,7 +1526,7 @@ error.message;
 
 
 /* =====================================================
-DELETE PRODUCT
+   DELETE PRODUCT
 ===================================================== */
 
 async function deleteProduct(id){
@@ -1739,12 +1535,11 @@ if(!confirm(
 "این محصول حذف شود؟"
 ))return;
 
-
 try{
 
 const response =
 await fetch(
-api("/api/admin/products/"+encodeURIComponent(id)),
+api("/api/admin/products/"+id),
 {
 method:"DELETE",
 headers:{
@@ -1754,18 +1549,9 @@ headers:{
 );
 
 const data =
-await readJsonResponse(response);
+await readJson(response);
 
-if(!response.ok){
-
-throw new Error(
-data.message ||
-"حذف محصول ناموفق بود."
-);
-
-}
-
-if(data.success !== true){
+if(!response.ok || data.success!==true){
 
 throw new Error(
 data.message ||
@@ -1778,9 +1564,7 @@ await loadDashboard();
 
 }catch(error){
 
-alert(
-error.message
-);
+alert(error.message);
 
 }
 
@@ -1788,18 +1572,17 @@ error.message
 
 
 /* =====================================================
-EDIT PRODUCT
+   EDIT PRODUCT
 ===================================================== */
 
 async function editProduct(id){
 
 const product =
 dashboardData.products.find(
-item => item.id === id
+item=>item.id===id
 );
 
 if(!product)return;
-
 
 const name =
 prompt(
@@ -1807,8 +1590,7 @@ prompt(
 product.name
 );
 
-if(name === null)return;
-
+if(name===null)return;
 
 const price =
 prompt(
@@ -1816,8 +1598,7 @@ prompt(
 product.price
 );
 
-if(price === null)return;
-
+if(price===null)return;
 
 const stock =
 prompt(
@@ -1825,8 +1606,7 @@ prompt(
 product.stock
 );
 
-if(stock === null)return;
-
+if(stock===null)return;
 
 const category =
 prompt(
@@ -1834,14 +1614,13 @@ prompt(
 product.category
 );
 
-if(category === null)return;
-
+if(category===null)return;
 
 try{
 
 const response =
 await fetch(
-api("/api/admin/products/"+encodeURIComponent(id)),
+api("/api/admin/products/"+id),
 {
 method:"PATCH",
 headers:{
@@ -1858,18 +1637,9 @@ category:category
 );
 
 const data =
-await readJsonResponse(response);
+await readJson(response);
 
-if(!response.ok){
-
-throw new Error(
-data.message ||
-"ویرایش ناموفق بود."
-);
-
-}
-
-if(data.success !== true){
+if(!response.ok || data.success!==true){
 
 throw new Error(
 data.message ||
@@ -1882,9 +1652,7 @@ await loadDashboard();
 
 }catch(error){
 
-alert(
-error.message
-);
+alert(error.message);
 
 }
 
@@ -1892,7 +1660,7 @@ error.message
 
 
 /* =====================================================
-UPDATE ORDER
+   UPDATE ORDER
 ===================================================== */
 
 async function updateOrder(id,status){
@@ -1901,7 +1669,7 @@ try{
 
 const response =
 await fetch(
-api("/api/admin/orders/"+encodeURIComponent(id)),
+api("/api/admin/orders/"+id),
 {
 method:"PATCH",
 headers:{
@@ -1915,18 +1683,9 @@ status:status
 );
 
 const data =
-await readJsonResponse(response);
+await readJson(response);
 
-if(!response.ok){
-
-throw new Error(
-data.message ||
-"تغییر وضعیت ناموفق بود."
-);
-
-}
-
-if(data.success !== true){
+if(!response.ok || data.success!==true){
 
 throw new Error(
 data.message ||
@@ -1939,9 +1698,7 @@ await loadDashboard();
 
 }catch(error){
 
-alert(
-error.message
-);
+alert(error.message);
 
 }
 
@@ -1949,7 +1706,7 @@ error.message
 
 
 /* =====================================================
-UPDATE REQUEST
+   UPDATE REQUEST
 ===================================================== */
 
 async function updateRequest(id,status){
@@ -1958,7 +1715,7 @@ try{
 
 const response =
 await fetch(
-api("/api/admin/requests/"+encodeURIComponent(id)),
+api("/api/admin/requests/"+id),
 {
 method:"PATCH",
 headers:{
@@ -1972,18 +1729,9 @@ status:status
 );
 
 const data =
-await readJsonResponse(response);
+await readJson(response);
 
-if(!response.ok){
-
-throw new Error(
-data.message ||
-"تغییر وضعیت ناموفق بود."
-);
-
-}
-
-if(data.success !== true){
+if(!response.ok || data.success!==true){
 
 throw new Error(
 data.message ||
@@ -1996,9 +1744,7 @@ await loadDashboard();
 
 }catch(error){
 
-alert(
-error.message
-);
+alert(error.message);
 
 }
 
@@ -2006,7 +1752,7 @@ error.message
 
 
 /* =====================================================
-ESCAPE HTML
+   ESCAPE HTML
 ===================================================== */
 
 function escapeHtml(value){
@@ -2022,26 +1768,7 @@ return String(value ?? "")
 
 
 /* =====================================================
-AUTO REFRESH
-===================================================== */
-
-setInterval(
-async function(){
-
-/*
-هر 5 ثانیه اطلاعات جدید می‌گیرد،
-ولی گفتگوی انتخاب‌شده را حفظ می‌کند.
-*/
-
-await loadDashboard();
-
-},
-5000
-);
-
-
-/* =====================================================
-START
+   START
 ===================================================== */
 
 loadDashboard();
