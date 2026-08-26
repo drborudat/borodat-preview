@@ -161,8 +161,7 @@ gap:10px
 }
 
 .form-grid input,
-.form-grid textarea,
-.form-grid select{
+.form-grid textarea{
 width:100%;
 padding:11px;
 border:1px solid #dce5eb;
@@ -385,13 +384,11 @@ Dr <span>Borodat</span>
 <section class="panel">
 
 <div class="panel-title">
-
 <h2>📥 درخواست‌های خدمات</h2>
 
 <button class="refresh" onclick="loadDashboard()">
 ↻ بروزرسانی
 </button>
-
 </div>
 
 <div id="requests"></div>
@@ -473,9 +470,11 @@ placeholder="توضیحات محصول"
 <div class="chat-list">
 
 <div class="chat-users" id="chatUsers">
+
 <div class="empty">
 هنوز گفتگویی ثبت نشده است.
 </div>
+
 </div>
 
 <div class="chat-box">
@@ -511,16 +510,7 @@ placeholder="پاسخ خود را بنویسید..."
 
 <script>
 
-/* =====================================================
-SERVER ADDRESS
-===================================================== */
-
-const API_BASE = "https://dr-borodat.onrender.com";
-
-
-/* =====================================================
-DATA
-===================================================== */
+const API_BASE="https://dr-borodat.onrender.com";
 
 let dashboardData={
 requests:[],
@@ -530,11 +520,6 @@ orders:[]
 };
 
 let selectedChat=null;
-
-
-/* =====================================================
-API
-===================================================== */
 
 async function apiFetch(path,options={}){
 
@@ -561,11 +546,6 @@ return response.json();
 
 }
 
-
-/* =====================================================
-LOAD DASHBOARD
-===================================================== */
-
 async function loadDashboard(){
 
 const status=document.getElementById("status");
@@ -588,19 +568,10 @@ throw new Error(
 }
 
 dashboardData={
-
-requests:Array.isArray(data.requests)
-?data.requests:[],
-
-chats:Array.isArray(data.chats)
-?data.chats:[],
-
-products:Array.isArray(data.products)
-?data.products:[],
-
-orders:Array.isArray(data.orders)
-?data.orders:[]
-
+requests:Array.isArray(data.requests)?data.requests:[],
+chats:Array.isArray(data.chats)?data.chats:[],
+products:Array.isArray(data.products)?data.products:[],
+orders:Array.isArray(data.orders)?data.orders:[]
 };
 
 renderAll();
@@ -618,11 +589,6 @@ status.style.color="#ff8b8b";
 }
 
 }
-
-
-/* =====================================================
-RENDER ALL
-===================================================== */
 
 function renderAll(){
 
@@ -645,11 +611,6 @@ renderChats();
 
 }
 
-
-/* =====================================================
-REQUESTS
-===================================================== */
-
 function renderRequests(){
 
 const box=document.getElementById("requests");
@@ -668,7 +629,6 @@ box.innerHTML=`
 <table>
 
 <thead>
-
 <tr>
 <th>نام</th>
 <th>شماره</th>
@@ -678,7 +638,6 @@ box.innerHTML=`
 <th>وضعیت</th>
 <th>عملیات</th>
 </tr>
-
 </thead>
 
 <tbody>
@@ -707,13 +666,11 @@ ${escapeHtml(item.status||"new")}
 
 <div class="actions">
 
-<button
-onclick="updateRequest('${item.id}','done')">
+<button onclick="updateRequest('${item.id}','done')">
 انجام شد
 </button>
 
-<button
-onclick="updateRequest('${item.id}','processing')">
+<button onclick="updateRequest('${item.id}','processing')">
 در حال انجام
 </button>
 
@@ -733,11 +690,6 @@ onclick="updateRequest('${item.id}','processing')">
 
 }
 
-
-/* =====================================================
-PRODUCTS
-===================================================== */
-
 function renderProducts(){
 
 const box=document.getElementById("products");
@@ -756,7 +708,6 @@ box.innerHTML=`
 <table>
 
 <thead>
-
 <tr>
 <th>نام</th>
 <th>دسته‌بندی</th>
@@ -764,7 +715,6 @@ box.innerHTML=`
 <th>موجودی</th>
 <th>عملیات</th>
 </tr>
-
 </thead>
 
 <tbody>
@@ -809,11 +759,6 @@ ${dashboardData.products.map(product=>`
 
 }
 
-
-/* =====================================================
-ORDERS
-===================================================== */
-
 function renderOrders(){
 
 const box=document.getElementById("orders");
@@ -832,7 +777,6 @@ box.innerHTML=`
 <table>
 
 <thead>
-
 <tr>
 <th>نام</th>
 <th>شماره</th>
@@ -842,7 +786,6 @@ box.innerHTML=`
 <th>وضعیت</th>
 <th>عملیات</th>
 </tr>
-
 </thead>
 
 <tbody>
@@ -871,13 +814,11 @@ ${escapeHtml(order.status||"new")}
 
 <div class="actions">
 
-<button
-onclick="updateOrder('${order.id}','processing')">
+<button onclick="updateOrder('${order.id}','processing')">
 در حال انجام
 </button>
 
-<button
-onclick="updateOrder('${order.id}','done')">
+<button onclick="updateOrder('${order.id}','done')">
 تکمیل شد
 </button>
 
@@ -897,11 +838,6 @@ onclick="updateOrder('${order.id}','done')">
 
 }
 
-
-/* =====================================================
-CHATS
-===================================================== */
-
 function renderChats(){
 
 const box=document.getElementById("chatUsers");
@@ -915,19 +851,14 @@ return;
 
 }
 
-box.innerHTML=
-dashboardData.chats.map(chat=>`
+box.innerHTML=dashboardData.chats.map(chat=>`
 
 <div
-class="chat-user ${
-selectedChat===chat.id?"active":""
-}"
+class="chat-user ${selectedChat===chat.id?"active":""}"
 onclick="selectChat('${chat.id}')"
 >
 
-<strong>
-${escapeHtml(chat.name)}
-</strong>
+<strong>${escapeHtml(chat.name)}</strong>
 
 <small dir="ltr">
 ${escapeHtml(chat.phone)}
@@ -939,24 +870,17 @@ ${escapeHtml(chat.phone)}
 
 }
 
-
-/* =====================================================
-SELECT CHAT
-===================================================== */
-
 function selectChat(id){
 
 selectedChat=id;
 
 renderChats();
 
-const chat=
-dashboardData.chats.find(
+const chat=dashboardData.chats.find(
 item=>item.id===id
 );
 
-const box=
-document.getElementById("messages");
+const box=document.getElementById("messages");
 
 if(!chat){
 
@@ -967,9 +891,9 @@ return;
 
 }
 
-const messages=
-Array.isArray(chat.messages)
-?chat.messages:[];
+const messages=Array.isArray(chat.messages)
+?chat.messages
+:[];
 
 if(!messages.length){
 
@@ -980,8 +904,7 @@ return;
 
 }
 
-box.innerHTML=
-messages.map(message=>`
+box.innerHTML=messages.map(message=>`
 
 <div class="msg ${
 message.sender==="admin"
@@ -1003,33 +926,23 @@ ${escapeHtml(message.created_at)}
 
 }
 
-
-/* =====================================================
-SEND REPLY
-===================================================== */
-
 async function sendReply(){
 
 if(!selectedChat){
 
 alert("ابتدا یک گفتگو را انتخاب کنید.");
-
 return;
 
 }
 
-const input=
-document.getElementById("replyInput");
-
-const message=
-input.value.trim();
+const input=document.getElementById("replyInput");
+const message=input.value.trim();
 
 if(!message)return;
 
 try{
 
-const data=
-await apiFetch(
+const data=await apiFetch(
 "/api/admin/chat/reply",
 {
 method:"POST",
@@ -1065,16 +978,8 @@ alert(error.message);
 
 }
 
-
-/* =====================================================
-ADD PRODUCT
-===================================================== */
-
-document
-.getElementById("productForm")
-.addEventListener(
-"submit",
-async function(e){
+document.getElementById("productForm")
+.addEventListener("submit",async function(e){
 
 e.preventDefault();
 
@@ -1083,30 +988,23 @@ document.getElementById("productMessage");
 
 const payload={
 
-name:
-document.getElementById("productName").value.trim(),
+name:document.getElementById("productName").value.trim(),
 
-price:
-document.getElementById("productPrice").value.trim(),
+price:document.getElementById("productPrice").value.trim(),
 
-stock:
-document.getElementById("productStock").value.trim(),
+stock:document.getElementById("productStock").value.trim(),
 
-category:
-document.getElementById("productCategory").value.trim(),
+category:document.getElementById("productCategory").value.trim(),
 
-image:
-document.getElementById("productImage").value.trim(),
+image:document.getElementById("productImage").value.trim(),
 
-description:
-document.getElementById("productDescription").value.trim()
+description:document.getElementById("productDescription").value.trim()
 
 };
 
 try{
 
-const data=
-await apiFetch(
+const data=await apiFetch(
 "/api/admin/products",
 {
 method:"POST",
@@ -1125,11 +1023,8 @@ data.message||"ثبت محصول ناموفق بود."
 
 }
 
-message.className=
-"message success";
-
-message.textContent=
-"محصول با موفقیت اضافه شد.";
+message.className="message success";
+message.textContent="محصول با موفقیت اضافه شد.";
 
 this.reset();
 
@@ -1137,20 +1032,12 @@ await loadDashboard();
 
 }catch(error){
 
-message.className=
-"message error";
-
-message.textContent=
-error.message;
+message.className="message error";
+message.textContent=error.message;
 
 }
 
 });
-
-
-/* =====================================================
-DELETE PRODUCT
-===================================================== */
 
 async function deleteProduct(id){
 
@@ -1158,8 +1045,7 @@ if(!confirm("این محصول حذف شود؟"))return;
 
 try{
 
-const data=
-await apiFetch(
+const data=await apiFetch(
 "/api/admin/products/"+id,
 {
 method:"DELETE"
@@ -1184,44 +1070,45 @@ alert(error.message);
 
 }
 
-
-/* =====================================================
-EDIT PRODUCT
-===================================================== */
-
 async function editProduct(id){
 
-const product=
-dashboardData.products.find(
+const product=dashboardData.products.find(
 item=>item.id===id
 );
 
 if(!product)return;
 
-const name=
-prompt("نام محصول:",product.name);
+const name=prompt(
+"نام محصول:",
+product.name
+);
 
 if(name===null)return;
 
-const price=
-prompt("قیمت:",product.price);
+const price=prompt(
+"قیمت:",
+product.price
+);
 
 if(price===null)return;
 
-const stock=
-prompt("موجودی:",product.stock);
+const stock=prompt(
+"موجودی:",
+product.stock
+);
 
 if(stock===null)return;
 
-const category=
-prompt("دسته‌بندی:",product.category);
+const category=prompt(
+"دسته‌بندی:",
+product.category
+);
 
 if(category===null)return;
 
 try{
 
-const data=
-await apiFetch(
+const data=await apiFetch(
 "/api/admin/products/"+id,
 {
 method:"PATCH",
@@ -1255,17 +1142,11 @@ alert(error.message);
 
 }
 
-
-/* =====================================================
-UPDATE ORDER
-===================================================== */
-
 async function updateOrder(id,status){
 
 try{
 
-const data=
-await apiFetch(
+const data=await apiFetch(
 "/api/admin/orders/"+id,
 {
 method:"PATCH",
@@ -1296,17 +1177,11 @@ alert(error.message);
 
 }
 
-
-/* =====================================================
-UPDATE REQUEST
-===================================================== */
-
 async function updateRequest(id,status){
 
 try{
 
-const data=
-await apiFetch(
+const data=await apiFetch(
 "/api/admin/requests/"+id,
 {
 method:"PATCH",
@@ -1337,11 +1212,6 @@ alert(error.message);
 
 }
 
-
-/* =====================================================
-ESCAPE HTML
-===================================================== */
-
 function escapeHtml(value){
 
 return String(value??"")
@@ -1352,11 +1222,6 @@ return String(value??"")
 .replace(/'/g,"&#039;");
 
 }
-
-
-/* =====================================================
-START
-===================================================== */
 
 loadDashboard();
 
