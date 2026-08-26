@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="fa" dir="rtl">
 <head>
@@ -1907,6 +1906,23 @@ placeholder="پیامتان را بنویسید..."
 
 <script>
 
+/* =========================
+   CONFIG
+========================= */
+
+/*
+  API اصلی پنل دکتر برودت
+  سایت اصلی درخواست‌ها را مستقیماً
+  به این سرویس ارسال می‌کند.
+*/
+
+const API_BASE = "https://borodat-panel.onrender.com";
+
+
+/* =========================
+   MENU
+========================= */
+
 function toggleMenu(){
 
 document
@@ -1915,6 +1931,11 @@ document
 .toggle("open");
 
 }
+
+
+/* =========================
+   CHAT
+========================= */
 
 function toggleChat(){
 
@@ -1936,6 +1957,11 @@ document
 .focus();
 
 }
+
+
+/* =========================
+   SERVICE REQUEST
+========================= */
 
 document
 .getElementById("serviceForm")
@@ -1966,7 +1992,9 @@ button.textContent="در حال ارسال...";
 
 try{
 
-const response=await fetch("/api/request",{
+const response=await fetch(
+API_BASE + "/api/request",
+{
 
 method:"POST",
 
@@ -1978,13 +2006,27 @@ body:JSON.stringify(data)
 
 });
 
-const result=await response.json();
+let result;
 
-if(result.success){
+try{
+
+result=await response.json();
+
+}catch(jsonError){
+
+throw new Error(
+"پاسخ نامعتبر از سرور دریافت شد."
+);
+
+}
+
+if(response.ok && result.success){
 
 message.className="form-message success";
 
-message.textContent="✅ "+result.message;
+message.textContent=
+"✅ "+
+(result.message || "درخواست شما با موفقیت ثبت شد.");
 
 document
 .getElementById("serviceForm")
@@ -2001,19 +2043,32 @@ result.message ||
 
 }catch(error){
 
+console.error("SERVICE REQUEST ERROR:",error);
+
 message.className="form-message error";
 
-message.textContent="❌ "+error.message;
+message.textContent=
+"❌ "+
+(
+error.message ||
+"خطا در اتصال به سرور. لطفاً دوباره تلاش کنید."
+);
 
 }finally{
 
 button.disabled=false;
-button.textContent="ثبت درخواست خدمات";
+
+button.textContent=
+"ثبت درخواست خدمات";
 
 }
 
 });
 
+
+/* =========================
+   CLOSE MENU OUTSIDE
+========================= */
 
 document.addEventListener("click",function(e){
 
