@@ -860,7 +860,7 @@ font-size:25px
 position:fixed;
 left:22px;
 bottom:158px;
-width:330px;
+width:350px;
 background:#fff;
 border-radius:16px;
 overflow:hidden;
@@ -910,7 +910,26 @@ font-size:20px;
 cursor:pointer
 }
 
-.chat-body{padding:18px}
+.chat-body{
+padding:18px
+}
+
+.chat-login{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:7px;
+margin-bottom:12px
+}
+
+.chat-login input{
+width:100%;
+border:1px solid #dfe7ec;
+border-radius:8px;
+padding:10px;
+font-size:9px;
+outline:none;
+color:#263f54
+}
 
 .chat-message{
 background:#f1f6f9;
@@ -922,10 +941,59 @@ line-height:1.9;
 margin-bottom:15px
 }
 
+.chat-messages{
+max-height:230px;
+overflow-y:auto;
+padding:3px 2px 5px;
+margin-bottom:10px
+}
+
+.chat-item{
+display:flex;
+margin-bottom:8px
+}
+
+.chat-item.customer{
+justify-content:flex-end
+}
+
+.chat-item.admin{
+justify-content:flex-start
+}
+
+.chat-bubble{
+max-width:82%;
+padding:10px 12px;
+border-radius:12px;
+font-size:10px;
+line-height:1.8;
+word-break:break-word
+}
+
+.chat-item.customer .chat-bubble{
+background:#0879bd;
+color:#fff;
+border-radius:12px 12px 3px 12px
+}
+
+.chat-item.admin .chat-bubble{
+background:#f1f6f9;
+color:#334b60;
+border-radius:12px 12px 12px 3px
+}
+
+.chat-time{
+display:block;
+font-size:7px;
+opacity:.65;
+margin-top:4px
+}
+
 .chat-options{
 display:grid;
 grid-template-columns:1fr 1fr;
-gap:7px
+gap:7px;
+margin-bottom:10px
 }
 
 .chat-option{
@@ -938,14 +1006,50 @@ font-size:9px;
 cursor:pointer
 }
 
+.chat-option:hover{
+background:#edf7fb;
+border-color:#9fd3e8
+}
+
+.chat-compose{
+display:flex;
+gap:7px;
+align-items:center
+}
+
 .chat-input{
-margin-top:12px;
+flex:1;
 width:100%;
 border:1px solid #dfe7ec;
 border-radius:8px;
 padding:11px;
 font-size:9px;
 outline:none
+}
+
+.chat-send{
+width:70px;
+border:0;
+border-radius:8px;
+padding:11px 5px;
+background:#0879bd;
+color:#fff;
+font-size:9px;
+font-weight:bold;
+cursor:pointer
+}
+
+.chat-send:disabled{
+opacity:.6;
+cursor:wait
+}
+
+.chat-status{
+font-size:8px;
+color:#718192;
+text-align:center;
+margin-top:8px;
+min-height:12px
 }
 
 /* MOBILE BAR */
@@ -1076,7 +1180,9 @@ color:#53697b
 
 .chat-button{bottom:82px}
 
-.chat-window{bottom:150px}
+.chat-window{
+bottom:150px
+}
 
 }
 
@@ -1162,6 +1268,10 @@ grid-template-columns:1fr
 left:12px;
 right:12px;
 width:auto
+}
+
+.chat-login{
+grid-template-columns:1fr
 }
 
 .request-form{
@@ -1866,12 +1976,31 @@ aria-label="پشتیبانی آنلاین"
 
 <div class="chat-body">
 
-<div class="chat-message">
+<div class="chat-login">
 
-سلام 👋<br>
-چطور می‌تونم کمکتون کنم؟
+<input
+id="chatName"
+type="text"
+placeholder="نام شما"
+autocomplete="name"
+>
+
+<input
+id="chatPhone"
+type="tel"
+placeholder="شماره تماس"
+dir="rtl"
+autocomplete="tel"
+>
 
 </div>
+
+<div class="chat-message">
+سلام 👋<br>
+چطور می‌تونم کمکتون کنم؟
+</div>
+
+<div class="chat-messages" id="chatMessages"></div>
 
 <div class="chat-options">
 
@@ -1893,11 +2022,27 @@ aria-label="پشتیبانی آنلاین"
 
 </div>
 
+<div class="chat-compose">
+
 <input
 class="chat-input"
 id="chatInput"
 placeholder="پیامتان را بنویسید..."
+autocomplete="off"
 >
+
+<button
+class="chat-send"
+id="chatSend"
+type="button"
+onclick="sendChatMessage()"
+>
+ارسال
+</button>
+
+</div>
+
+<div class="chat-status" id="chatStatus"></div>
 
 </div>
 
@@ -1906,22 +2051,9 @@ placeholder="پیامتان را بنویسید..."
 
 <script>
 
-/* =========================
-   CONFIG
-========================= */
-
-/*
-  API اصلی پنل دکتر برودت
-  سایت اصلی درخواست‌ها را مستقیماً
-  به این سرویس ارسال می‌کند.
-*/
-
-const API_BASE = "https://borodat-panel.onrender.com";
-
-
-/* =========================
+/* =========================================================
    MENU
-========================= */
+========================================================= */
 
 function toggleMenu(){
 
@@ -1933,35 +2065,379 @@ document
 }
 
 
-/* =========================
+/* =========================================================
    CHAT
-========================= */
+========================================================= */
+
+let currentChatPhone="";
+let chatPolling=null;
+let lastChatSignature="";
+
 
 function toggleChat(){
 
-document
-.getElementById("chatWindow")
-.classList
-.toggle("open");
+const windowElement=document.getElementById("chatWindow");
+
+windowElement.classList.toggle("open");
+
+if(windowElement.classList.contains("open")){
+
+loadChat();
+
+startChatPolling();
+
+setTimeout(function(){
+
+document.getElementById("chatInput").focus();
+
+},150);
+
+}else{
+
+stopChatPolling();
 
 }
+
+}
+
+
+function startChatPolling(){
+
+stopChatPolling();
+
+chatPolling=setInterval(function(){
+
+const phone=document
+.getElementById("chatPhone")
+.value
+.trim();
+
+if(phone){
+
+loadChat(true);
+
+}
+
+},5000);
+
+}
+
+
+function stopChatPolling(){
+
+if(chatPolling){
+
+clearInterval(chatPolling);
+
+chatPolling=null;
+
+}
+
+}
+
 
 function chatChoice(text){
 
-document
-.getElementById("chatInput")
-.value=text;
+const input=document.getElementById("chatInput");
 
-document
-.getElementById("chatInput")
-.focus();
+input.value=text;
+
+input.focus();
 
 }
 
 
-/* =========================
+function escapeHtml(value){
+
+return String(value)
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
+
+}
+
+
+function renderChatMessages(messages){
+
+const container=document.getElementById("chatMessages");
+
+if(!Array.isArray(messages)){
+
+container.innerHTML="";
+
+return;
+
+}
+
+const signature=JSON.stringify(messages);
+
+if(signature===lastChatSignature){
+
+return;
+
+}
+
+lastChatSignature=signature;
+
+container.innerHTML="";
+
+messages.forEach(function(item){
+
+const wrapper=document.createElement("div");
+
+wrapper.className=
+"chat-item "+
+(
+item.sender==="admin"
+? "admin"
+: "customer"
+);
+
+const bubble=document.createElement("div");
+
+bubble.className="chat-bubble";
+
+const messageText=escapeHtml(
+item.message || ""
+).replace(/\n/g,"<br>");
+
+bubble.innerHTML=
+messageText+
+(
+item.created_at
+?
+'<span class="chat-time">'+
+escapeHtml(item.created_at)+
+"</span>"
+:
+""
+);
+
+wrapper.appendChild(bubble);
+
+container.appendChild(wrapper);
+
+});
+
+container.scrollTop=container.scrollHeight;
+
+}
+
+
+async function loadChat(silent=false){
+
+const phone=document
+.getElementById("chatPhone")
+.value
+.trim();
+
+if(!phone){
+
+if(!silent){
+
+document.getElementById("chatStatus").textContent=
+"شماره تماس را وارد کنید.";
+
+}
+
+return;
+
+}
+
+currentChatPhone=phone;
+
+try{
+
+const response=await fetch(
+"/chat?phone="+encodeURIComponent(phone),
+{
+method:"GET",
+cache:"no-store"
+}
+);
+
+const result=await response.json();
+
+if(result.success){
+
+renderChatMessages(
+result.messages || []
+);
+
+if(!silent){
+
+document.getElementById("chatStatus").textContent="";
+
+}
+
+}else if(!silent){
+
+document.getElementById("chatStatus").textContent=
+result.message || "خطا در دریافت گفتگو.";
+
+}
+
+}catch(error){
+
+if(!silent){
+
+document.getElementById("chatStatus").textContent=
+"خطا در اتصال به پشتیبانی.";
+
+}
+
+}
+
+}
+
+
+async function sendChatMessage(){
+
+const name=document
+.getElementById("chatName")
+.value
+.trim();
+
+const phone=document
+.getElementById("chatPhone")
+.value
+.trim();
+
+const input=document.getElementById("chatInput");
+
+const button=document.getElementById("chatSend");
+
+const status=document.getElementById("chatStatus");
+
+const message=input.value.trim();
+
+if(!name){
+
+status.textContent="لطفاً نام خود را وارد کنید.";
+
+document.getElementById("chatName").focus();
+
+return;
+
+}
+
+if(!phone){
+
+status.textContent="لطفاً شماره تماس خود را وارد کنید.";
+
+document.getElementById("chatPhone").focus();
+
+return;
+
+}
+
+if(!message){
+
+status.textContent="لطفاً پیام خود را بنویسید.";
+
+input.focus();
+
+return;
+
+}
+
+button.disabled=true;
+button.textContent="...";
+
+status.textContent="در حال ارسال...";
+
+try{
+
+const response=await fetch(
+"/chat/send",
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+name:name,
+phone:phone,
+message:message
+})
+}
+);
+
+const result=await response.json();
+
+if(!response.ok || !result.success){
+
+throw new Error(
+result.message ||
+"ارسال پیام انجام نشد."
+);
+
+}
+
+input.value="";
+
+status.textContent="پیام ارسال شد ✓";
+
+lastChatSignature="";
+
+await loadChat(true);
+
+setTimeout(function(){
+
+status.textContent="";
+
+},2500);
+
+}catch(error){
+
+status.textContent=
+"❌ "+error.message;
+
+}finally{
+
+button.disabled=false;
+button.textContent="ارسال";
+
+}
+
+}
+
+
+/* ENTER = SEND */
+
+document
+.getElementById("chatInput")
+.addEventListener("keydown",function(e){
+
+if(e.key==="Enter"){
+
+e.preventDefault();
+
+sendChatMessage();
+
+}
+
+});
+
+
+/* LOAD CHAT WHEN PHONE CHANGES */
+
+document
+.getElementById("chatPhone")
+.addEventListener("change",function(){
+
+lastChatSignature="";
+
+loadChat();
+
+});
+
+
+/* =========================================================
    SERVICE REQUEST
-========================= */
+========================================================= */
 
 document
 .getElementById("serviceForm")
@@ -1992,9 +2468,7 @@ button.textContent="در حال ارسال...";
 
 try{
 
-const response=await fetch(
-API_BASE + "/api/request",
-{
+const response=await fetch("/api/request",{
 
 method:"POST",
 
@@ -2006,27 +2480,13 @@ body:JSON.stringify(data)
 
 });
 
-let result;
+const result=await response.json();
 
-try{
-
-result=await response.json();
-
-}catch(jsonError){
-
-throw new Error(
-"پاسخ نامعتبر از سرور دریافت شد."
-);
-
-}
-
-if(response.ok && result.success){
+if(result.success){
 
 message.className="form-message success";
 
-message.textContent=
-"✅ "+
-(result.message || "درخواست شما با موفقیت ثبت شد.");
+message.textContent="✅ "+result.message;
 
 document
 .getElementById("serviceForm")
@@ -2043,32 +2503,23 @@ result.message ||
 
 }catch(error){
 
-console.error("SERVICE REQUEST ERROR:",error);
-
 message.className="form-message error";
 
-message.textContent=
-"❌ "+
-(
-error.message ||
-"خطا در اتصال به سرور. لطفاً دوباره تلاش کنید."
-);
+message.textContent="❌ "+error.message;
 
 }finally{
 
 button.disabled=false;
-
-button.textContent=
-"ثبت درخواست خدمات";
+button.textContent="ثبت درخواست خدمات";
 
 }
 
 });
 
 
-/* =========================
-   CLOSE MENU OUTSIDE
-========================= */
+/* =========================================================
+   CLOSE MENU
+========================================================= */
 
 document.addEventListener("click",function(e){
 
@@ -2083,6 +2534,17 @@ menu.classList.contains("open") &&
 menu.classList.remove("open");
 
 }
+
+});
+
+
+/* =========================================================
+   CLEANUP
+========================================================= */
+
+window.addEventListener("beforeunload",function(){
+
+stopChatPolling();
 
 });
 
