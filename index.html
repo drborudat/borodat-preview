@@ -62,38 +62,30 @@ text-decoration:none
 display:flex;
 align-items:center;
 justify-content:center;
-gap:4px;
-width:72px;
+width:40px;
 height:40px;
-padding:0 8px;
 border-radius:10px;
 background:#071b31;
 color:#fff;
 font-family:Arial,sans-serif;
-font-size:12px;
+font-size:14px;
 font-weight:900;
 direction:ltr !important;
 unicode-bidi:isolate;
 white-space:nowrap;
-flex-shrink:0;
-overflow:hidden
+flex-shrink:0
 }
 
-.logo-db{
-display:inline-block;
+.logo-symbol{
+display:flex;
+align-items:center;
+font-family:Arial,sans-serif;
+font-size:20px;
+font-weight:900;
+color:#071b31;
 direction:ltr !important;
 unicode-bidi:isolate;
-font-family:Arial,sans-serif;
-font-weight:900;
-color:#fff
-}
-
-.logo-snow{
-display:inline-block;
-font-family:Arial,sans-serif;
-font-size:13px;
-line-height:1;
-color:#fff
+white-space:nowrap
 }
 
 .header-tools{
@@ -348,16 +340,6 @@ display:flex;
 align-items:center;
 justify-content:center;
 font-size:25px
-}
-
-.service-icon svg{
-width:25px;
-height:25px;
-stroke:#0879bd;
-fill:none;
-stroke-width:1.7;
-stroke-linecap:round;
-stroke-linejoin:round
 }
 
 .card h3{
@@ -1102,14 +1084,22 @@ color:#53697b
 
 .logo{
 font-size:17px;
-direction:ltr !important;
-flex-direction:row !important
+direction:ltr;
+flex-direction:row
 }
 
 .logo-text{
-width:72px;
+width:40px;
 height:40px;
-direction:ltr !important;
+font-size:14px;
+direction:ltr;
+unicode-bidi:isolate;
+white-space:nowrap
+}
+
+.logo-symbol{
+font-size:17px;
+direction:ltr;
 unicode-bidi:isolate;
 white-space:nowrap
 }
@@ -1207,13 +1197,10 @@ transition:none!important
 
 <div class="header-inner">
 
+<!-- LOGO: فقط DB داخل کادر مشکی -->
 <a href="#home" class="logo" dir="ltr">
-
-<span class="logo-text" dir="ltr">
-<span class="logo-db">DB</span>
-<span class="logo-snow">❄</span>
-</span>
-
+<span class="logo-text">DB</span>
+<span class="logo-symbol">+ ❄️</span>
 </a>
 
 <div class="header-tools">
