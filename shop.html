@@ -44,7 +44,6 @@ display:flex;
 align-items:center
 }
 
-/* LOGO */
 .logo{
 display:flex;
 align-items:center;
@@ -101,7 +100,8 @@ display:flex;
 align-items:center;
 justify-content:center;
 cursor:pointer;
-padding:0
+padding:0;
+position:relative
 }
 
 .icon-svg{
@@ -112,6 +112,27 @@ stroke:#071b31;
 stroke-width:1.8;
 stroke-linecap:round;
 stroke-linejoin:round
+}
+
+.cart-count{
+position:absolute;
+top:-5px;
+left:-5px;
+min-width:18px;
+height:18px;
+padding:0 4px;
+border-radius:20px;
+background:#0879bd;
+color:#fff;
+font-size:8px;
+display:none;
+align-items:center;
+justify-content:center;
+font-family:Arial,sans-serif
+}
+
+.cart-count.show{
+display:flex
 }
 
 /* MENU */
@@ -608,6 +629,213 @@ transition:.2s
 
 .product-cart:hover{background:#0879bd}
 
+.empty-products{
+grid-column:1/-1;
+text-align:center;
+padding:60px 20px;
+color:#81909d;
+font-size:11px
+}
+
+/* CART MODAL */
+.modal{
+display:none;
+position:fixed;
+inset:0;
+background:rgba(3,16,31,.55);
+z-index:10000;
+align-items:center;
+justify-content:center;
+padding:15px
+}
+
+.modal.open{
+display:flex
+}
+
+.modal-box{
+width:100%;
+max-width:520px;
+max-height:90vh;
+overflow:auto;
+background:#fff;
+border-radius:14px;
+box-shadow:0 25px 70px rgba(0,0,0,.25)
+}
+
+.modal-header{
+padding:18px 20px;
+background:#071b31;
+color:#fff;
+display:flex;
+align-items:center;
+justify-content:space-between
+}
+
+.modal-header h3{
+margin:0;
+font-size:14px
+}
+
+.modal-close{
+width:32px;
+height:32px;
+border:0;
+border-radius:7px;
+background:rgba(255,255,255,.1);
+color:#fff;
+cursor:pointer;
+font-size:18px
+}
+
+.cart-items{
+padding:15px 20px
+}
+
+.cart-item{
+display:flex;
+align-items:center;
+gap:12px;
+padding:12px 0;
+border-bottom:1px solid #edf1f4
+}
+
+.cart-item-image{
+width:55px;
+height:55px;
+border-radius:8px;
+background:#edf7fb;
+display:flex;
+align-items:center;
+justify-content:center;
+overflow:hidden;
+font-size:25px;
+flex-shrink:0
+}
+
+.cart-item-image img{
+width:100%;
+height:100%;
+object-fit:cover
+}
+
+.cart-item-info{
+flex:1
+}
+
+.cart-item-info strong{
+display:block;
+font-size:11px;
+margin-bottom:5px
+}
+
+.cart-item-info small{
+font-size:9px;
+color:#718192
+}
+
+.qty-controls{
+display:flex;
+align-items:center;
+gap:5px
+}
+
+.qty-controls button{
+width:25px;
+height:25px;
+border:1px solid #dce5eb;
+background:#fff;
+border-radius:5px;
+cursor:pointer
+}
+
+.qty-controls span{
+min-width:20px;
+text-align:center;
+font-size:10px
+}
+
+.remove-item{
+border:0;
+background:none;
+color:#c0392b;
+cursor:pointer;
+font-size:10px
+}
+
+.cart-empty{
+padding:45px 20px;
+text-align:center;
+color:#81909d;
+font-size:11px
+}
+
+.cart-footer{
+padding:18px 20px;
+border-top:1px solid #edf1f4
+}
+
+.cart-total{
+display:flex;
+justify-content:space-between;
+font-size:12px;
+font-weight:bold;
+margin-bottom:15px
+}
+
+.order-form{
+display:grid;
+gap:9px
+}
+
+.order-form input{
+width:100%;
+padding:11px;
+border:1px solid #dce5eb;
+border-radius:7px;
+outline:none;
+font-family:inherit;
+font-size:10px
+}
+
+.order-submit{
+border:0;
+background:#0879bd;
+color:#fff;
+border-radius:7px;
+padding:12px;
+cursor:pointer;
+font-size:10px;
+font-weight:bold
+}
+
+.order-submit:hover{
+background:#071b31
+}
+
+.order-message{
+display:none;
+padding:10px;
+border-radius:7px;
+font-size:9px;
+margin-top:9px;
+line-height:1.8
+}
+
+.order-message.show{
+display:block
+}
+
+.order-message.success{
+background:#e9f8ef;
+color:#176b3b
+}
+
+.order-message.error{
+background:#fff0f0;
+color:#a22626
+}
+
 /* FOOTER */
 footer{
 background:#06182c;
@@ -737,6 +965,7 @@ height:27px;
 display:flex;
 align-items:center
 }
+
 }
 
 @media(max-width:500px){
@@ -853,6 +1082,21 @@ gap:9px
 .footer-grid{grid-template-columns:1fr}
 
 footer{padding-bottom:100px}
+
+.modal-box{
+max-height:94vh
+}
+
+.cart-item{
+flex-wrap:wrap
+}
+
+}
+
+/* CATEGORY FILTER */
+.category.active{
+border-color:#0879bd;
+background:#f5fbfe
 }
 </style>
 </head>
@@ -879,12 +1123,16 @@ footer{padding-bottom:100px}
 </button>
 
 <button class="header-icon" aria-label="سبد خرید" onclick="showCart()">
+
 <svg class="icon-svg" viewBox="0 0 24 24">
 <path d="M4 8h16l-1 11H5L4 8z"></path>
 <path d="M8 8V6a4 4 0 0 1 8 0v2"></path>
 <circle cx="9" cy="21" r="1"></circle>
 <circle cx="17" cy="21" r="1"></circle>
 </svg>
+
+<span class="cart-count" id="cartCount">0</span>
+
 </button>
 
 <button class="header-icon" aria-label="منو" onclick="toggleMenu()">
@@ -1006,7 +1254,7 @@ aria-label="اسلاید دوم"></button>
 
 <div class="category-grid">
 
-<a class="category" href="#products">
+<a class="category" href="#products" data-category="کولر گازی">
 <div class="category-icon">❄️</div>
 <div>
 <h3>کولر گازی</h3>
@@ -1014,7 +1262,7 @@ aria-label="اسلاید دوم"></button>
 </div>
 </a>
 
-<a class="category" href="#products">
+<a class="category" href="#products" data-category="قطعات کولر">
 <div class="category-icon">🔧</div>
 <div>
 <h3>قطعات کولر</h3>
@@ -1022,7 +1270,7 @@ aria-label="اسلاید دوم"></button>
 </div>
 </a>
 
-<a class="category" href="#products">
+<a class="category" href="#products" data-category="تجهیزات تهویه">
 <div class="category-icon">⚙️</div>
 <div>
 <h3>تجهیزات تهویه</h3>
@@ -1030,11 +1278,11 @@ aria-label="اسلاید دوم"></button>
 </div>
 </a>
 
-<a class="category" href="tel:09197701790">
-<div class="category-icon">📞</div>
+<a class="category" href="#products" data-category="">
+<div class="category-icon">📦</div>
 <div>
-<h3>مشاوره خرید</h3>
-<p>ارتباط با کارشناس</p>
+<h3>همه محصولات</h3>
+<p>مشاهده همه محصولات</p>
 </div>
 </a>
 
@@ -1091,8 +1339,7 @@ aria-label="اسلاید دوم"></button>
 </div>
 </div>
 
-
-<div class="special-products">
+<div class="special-products" id="specialProducts">
 
 <div class="deal-card">
 
@@ -1100,96 +1347,24 @@ aria-label="اسلاید دوم"></button>
 
 <div class="deal-info">
 
-<small>کولر گازی</small>
+<small>محصول ویژه</small>
 
-<h3>اسپلیت دیواری</h3>
-
-<div class="deal-price">
-<strong>تماس بگیرید</strong>
-<span>قیمت روز</span>
-</div>
-
-<button class="cart-btn"
-onclick="addCart('اسپلیت دیواری')">
-🛒 افزودن به سبد
-</button>
-
-</div>
-</div>
-
-
-<div class="deal-card">
-
-<div class="deal-image">🌬️</div>
-
-<div class="deal-info">
-
-<small>تهویه</small>
-
-<h3>تجهیزات تهویه</h3>
+<h3>در حال دریافت محصولات...</h3>
 
 <div class="deal-price">
-<strong>تماس بگیرید</strong>
-<span>قیمت روز</span>
+<strong>—</strong>
+<span>قیمت</span>
 </div>
 
-<button class="cart-btn"
-onclick="addCart('تجهیزات تهویه')">
-🛒 افزودن به سبد
-</button>
-
-</div>
-</div>
-
-
-<div class="deal-card">
-
-<div class="deal-image">🔧</div>
-
-<div class="deal-info">
-
-<small>قطعات</small>
-
-<h3>قطعات کولر گازی</h3>
-
-<div class="deal-price">
-<strong>تماس بگیرید</strong>
-<span>قیمت روز</span>
-</div>
-
-<button class="cart-btn"
-onclick="addCart('قطعات کولر گازی')">
-🛒 افزودن به سبد
-</button>
-
-</div>
-</div>
-
-
-<div class="deal-card">
-
-<div class="deal-image">⚙️</div>
-
-<div class="deal-info">
-
-<small>تجهیزات</small>
-
-<h3>لوازم و متعلقات</h3>
-
-<div class="deal-price">
-<strong>تماس بگیرید</strong>
-<span>قیمت روز</span>
-</div>
-
-<button class="cart-btn"
-onclick="addCart('لوازم و متعلقات')">
-🛒 افزودن به سبد
+<button class="cart-btn" disabled>
+در حال بارگذاری
 </button>
 
 </div>
 </div>
 
 </div>
+
 </div>
 </div>
 
@@ -1213,137 +1388,14 @@ onclick="addCart('لوازم و متعلقات')">
 
 </div>
 
+<div class="product-grid" id="productGrid">
 
-<div class="product-grid">
-
-<div class="product">
-<div class="product-image">❄️</div>
-<div class="product-info">
-<small>کولر گازی</small>
-<h3>اسپلیت دیواری</h3>
-<p>مناسب برای فضاهای مسکونی و اداری.</p>
-<div class="product-bottom">
-<div class="product-price">تماس بگیرید</div>
-<button class="product-cart"
-onclick="addCart('اسپلیت دیواری')"
-aria-label="افزودن به سبد">🛒</button>
-</div>
-</div>
-</div>
-
-
-<div class="product">
-<div class="product-image">🌬️</div>
-<div class="product-info">
-<small>تجهیزات سرمایشی</small>
-<h3>تجهیزات تهویه</h3>
-<p>تجهیزات مورد نیاز سیستم‌های سرمایشی.</p>
-<div class="product-bottom">
-<div class="product-price">تماس بگیرید</div>
-<button class="product-cart"
-onclick="addCart('تجهیزات تهویه')"
-aria-label="افزودن به سبد">🛒</button>
-</div>
-</div>
-</div>
-
-
-<div class="product">
-<div class="product-image">🔧</div>
-<div class="product-info">
-<small>قطعات</small>
-<h3>قطعات و لوازم کولر</h3>
-<p>قطعات مورد نیاز سرویس و تعمیر دستگاه.</p>
-<div class="product-bottom">
-<div class="product-price">تماس بگیرید</div>
-<button class="product-cart"
-onclick="addCart('قطعات و لوازم کولر')"
-aria-label="افزودن به سبد">🛒</button>
-</div>
-</div>
-</div>
-
-
-<div class="product">
-<div class="product-image">⚙️</div>
-<div class="product-info">
-<small>قطعات</small>
-<h3>برد کولر گازی</h3>
-<p>قطعات و تجهیزات مورد نیاز تعمیرات.</p>
-<div class="product-bottom">
-<div class="product-price">تماس بگیرید</div>
-<button class="product-cart"
-onclick="addCart('برد کولر گازی')"
-aria-label="افزودن به سبد">🛒</button>
-</div>
-</div>
-</div>
-
-
-<div class="product">
-<div class="product-image">💨</div>
-<div class="product-info">
-<small>قطعات</small>
-<h3>موتور فن</h3>
-<p>مناسب برای انواع سیستم‌های سرمایشی.</p>
-<div class="product-bottom">
-<div class="product-price">تماس بگیرید</div>
-<button class="product-cart"
-onclick="addCart('موتور فن')"
-aria-label="افزودن به سبد">🛒</button>
-</div>
-</div>
-</div>
-
-
-<div class="product">
-<div class="product-image">🔩</div>
-<div class="product-info">
-<small>لوازم</small>
-<h3>قطعات مصرفی</h3>
-<p>لوازم مورد نیاز سرویس و نگهداری.</p>
-<div class="product-bottom">
-<div class="product-price">تماس بگیرید</div>
-<button class="product-cart"
-onclick="addCart('قطعات مصرفی')"
-aria-label="افزودن به سبد">🛒</button>
-</div>
-</div>
-</div>
-
-
-<div class="product">
-<div class="product-image">🎛️</div>
-<div class="product-info">
-<small>لوازم جانبی</small>
-<h3>ریموت کنترل</h3>
-<p>ریموت و متعلقات سیستم‌های سرمایشی.</p>
-<div class="product-bottom">
-<div class="product-price">تماس بگیرید</div>
-<button class="product-cart"
-onclick="addCart('ریموت کنترل')"
-aria-label="افزودن به سبد">🛒</button>
-</div>
-</div>
-</div>
-
-
-<div class="product">
-<div class="product-image">🧰</div>
-<div class="product-info">
-<small>تجهیزات</small>
-<h3>ابزار و تجهیزات فنی</h3>
-<p>ابزار مورد نیاز خدمات تخصصی سرمایش.</p>
-<div class="product-bottom">
-<div class="product-price">تماس بگیرید</div>
-<button class="product-cart"
-onclick="addCart('ابزار و تجهیزات فنی')"
-aria-label="افزودن به سبد">🛒</button>
-</div>
-</div>
+<div class="empty-products">
+در حال دریافت محصولات...
 </div>
 
 </div>
+
 </div>
 
 </section>
@@ -1370,7 +1422,6 @@ Dr <span>Borodat</span>
 
 </div>
 
-
 <div>
 
 <h3>دسترسی سریع</h3>
@@ -1382,7 +1433,6 @@ Dr <span>Borodat</span>
 
 </div>
 
-
 <div>
 
 <h3>خدمات</h3>
@@ -1393,7 +1443,6 @@ Dr <span>Borodat</span>
 <a href="/">شارژ گاز</a>
 
 </div>
-
 
 <div>
 
@@ -1414,7 +1463,6 @@ Dr <span>Borodat</span>
 </div>
 
 </div>
-
 
 <div class="container copyright">
 © 2026 Dr Borodat — تمامی حقوق محفوظ است.
@@ -1454,25 +1502,120 @@ Dr <span>Borodat</span>
 </div>
 
 
+<!-- CART MODAL -->
+<div class="modal" id="cartModal">
+
+<div class="modal-box">
+
+<div class="modal-header">
+
+<h3>🛒 سبد خرید</h3>
+
+<button class="modal-close" onclick="closeCart()">
+×
+</button>
+
+</div>
+
+<div class="cart-items" id="cartItems"></div>
+
+<div class="cart-footer">
+
+<div class="cart-total">
+
+<span>تعداد:</span>
+
+<strong id="cartTotalCount">0</strong>
+
+</div>
+
+<div class="order-form">
+
+<input
+id="orderName"
+type="text"
+placeholder="نام و نام خانوادگی"
+>
+
+<input
+id="orderPhone"
+type="tel"
+placeholder="شماره تماس"
+dir="ltr"
+>
+
+<button
+class="order-submit"
+onclick="submitOrder()">
+ثبت سفارش
+</button>
+
+</div>
+
+<div
+class="order-message"
+id="orderMessage">
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
 <!-- MESSAGE -->
 <div class="cart-message" id="cartMessage"></div>
 
 
 <script>
 
-/* MENU */
+/* =====================================================
+DATA
+===================================================== */
 
-function toggleMenu(){
-document.getElementById("menu").classList.toggle("open");
+let products = [];
+let cart = [];
+
+try{
+cart = JSON.parse(
+localStorage.getItem("drBorodatCart") || "[]"
+);
+
+if(!Array.isArray(cart)){
+cart=[];
+}
+
+}catch(error){
+cart=[];
 }
 
 
-/* SLIDER */
+/* =====================================================
+MENU
+===================================================== */
+
+function toggleMenu(){
+
+document
+.getElementById("menu")
+.classList
+.toggle("open");
+
+}
+
+
+/* =====================================================
+SLIDER
+===================================================== */
 
 let currentSlide=0;
 
-const slides=document.querySelectorAll(".slide");
-const dots=document.querySelectorAll(".slider-dot");
+const slides=
+document.querySelectorAll(".slide");
+
+const dots=
+document.querySelectorAll(".slider-dot");
 
 function showSlide(index){
 
@@ -1487,53 +1630,86 @@ index=0;
 currentSlide=index;
 
 slides.forEach(function(slide,i){
-slide.classList.toggle("active",i===currentSlide);
+
+slide.classList.toggle(
+"active",
+i===currentSlide
+);
+
 });
 
 dots.forEach(function(dot,i){
-dot.classList.toggle("active",i===currentSlide);
+
+dot.classList.toggle(
+"active",
+i===currentSlide
+);
+
 });
 
 }
 
 function changeSlide(direction){
-showSlide(currentSlide+direction);
+
+showSlide(
+currentSlide+direction
+);
+
 }
 
 function goToSlide(index){
+
 showSlide(index);
+
 }
 
 setInterval(function(){
+
 changeSlide(1);
+
 },6000);
 
 
-/* COUNTDOWN */
+/* =====================================================
+COUNTDOWN
+===================================================== */
 
-let totalSeconds=(8*60*60)+(45*60);
+let totalSeconds=
+(8*60*60)+(45*60);
 
 function updateCountdown(){
 
 if(totalSeconds<=0){
-totalSeconds=(8*60*60)+(45*60);
+
+totalSeconds=
+(8*60*60)+(45*60);
+
 }
 
-let hours=Math.floor(totalSeconds/3600);
+let hours=
+Math.floor(totalSeconds/3600);
 
-let minutes=Math.floor(
+let minutes=
+Math.floor(
 (totalSeconds%3600)/60
 );
 
-let seconds=totalSeconds%60;
+let seconds=
+totalSeconds%60;
 
-document.getElementById("hours").textContent=
+document.getElementById(
+"hours"
+).textContent=
 String(hours).padStart(2,"0");
 
-document.getElementById("minutes").textContent=
+document.getElementById(
+"minutes"
+).textContent=
 String(minutes).padStart(2,"0");
 
-document.getElementById("seconds").textContent=
+document.getElementById(
+"seconds"
+).textContent=
 String(seconds).padStart(2,"0");
 
 totalSeconds--;
@@ -1542,55 +1718,890 @@ totalSeconds--;
 
 updateCountdown();
 
-setInterval(updateCountdown,1000);
+setInterval(
+updateCountdown,
+1000
+);
 
 
-/* CART */
+/* =====================================================
+ESCAPE
+===================================================== */
 
-function addCart(product){
+function escapeHtml(value){
 
-const message=
-document.getElementById("cartMessage");
-
-message.textContent=
-"🛒 «"+product+"» به سبد خرید اضافه شد";
-
-message.classList.add("show");
-
-setTimeout(function(){
-message.classList.remove("show");
-},2200);
+return String(value ?? "")
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
 
 }
 
 
-/* HEADER CART */
+/* =====================================================
+LOAD PRODUCTS
+===================================================== */
+
+async function loadProducts(){
+
+const grid=
+document.getElementById(
+"productGrid"
+);
+
+try{
+
+const response=
+await fetch(
+"/api/products",
+{
+method:"GET",
+cache:"no-store",
+headers:{
+"Accept":"application/json"
+}
+}
+);
+
+if(!response.ok){
+
+throw new Error(
+"HTTP "+response.status
+);
+
+}
+
+const data=
+await response.json();
+
+products=
+Array.isArray(data.products)
+? data.products
+:[];
+
+renderProducts();
+renderSpecialProducts();
+
+}catch(error){
+
+console.error(
+"PRODUCT LOAD ERROR:",
+error
+);
+
+grid.innerHTML=
+`
+<div class="empty-products">
+فعلاً محصولی برای نمایش وجود ندارد.
+</div>
+`;
+
+}
+
+}
+
+
+/* =====================================================
+RENDER PRODUCTS
+===================================================== */
+
+function renderProducts(
+categoryFilter=""
+){
+
+const grid=
+document.getElementById(
+"productGrid"
+);
+
+let list=
+products.slice();
+
+if(categoryFilter){
+
+list=
+list.filter(function(product){
+
+return String(
+product.category || ""
+).trim()===categoryFilter.trim();
+
+});
+
+}
+
+if(!list.length){
+
+grid.innerHTML=
+`
+<div class="empty-products">
+محصولی در این دسته‌بندی وجود ندارد.
+</div>
+`;
+
+return;
+
+}
+
+grid.innerHTML=
+list.map(function(product){
+
+let imageHtml=
+product.image
+?
+`
+<img
+src="${escapeHtml(product.image)}"
+alt="${escapeHtml(product.name)}"
+loading="lazy"
+>
+`
+:
+"❄️";
+
+return `
+<div class="product">
+
+<div class="product-image">
+${imageHtml}
+</div>
+
+<div class="product-info">
+
+<small>
+${escapeHtml(
+product.category || "محصول"
+)}
+</small>
+
+<h3>
+${escapeHtml(product.name)}
+</h3>
+
+<p>
+${escapeHtml(
+product.description ||
+"برای اطلاعات بیشتر با دکتر برودت تماس بگیرید."
+)}
+</p>
+
+<div class="product-bottom">
+
+<div class="product-price">
+${escapeHtml(
+product.price || "تماس بگیرید"
+)}
+</div>
+
+<button
+class="product-cart"
+onclick="addCart('${escapeJs(product.id)}')"
+aria-label="افزودن به سبد">
+🛒
+</button>
+
+</div>
+
+</div>
+
+</div>
+`;
+
+}).join("");
+
+}
+
+
+/* =====================================================
+SPECIAL PRODUCTS
+===================================================== */
+
+function renderSpecialProducts(){
+
+const box=
+document.getElementById(
+"specialProducts"
+);
+
+if(!products.length){
+
+box.innerHTML=
+`
+<div class="empty-products">
+هنوز محصولی ثبت نشده است.
+</div>
+`;
+
+return;
+
+}
+
+const special=
+products.slice(0,4);
+
+box.innerHTML=
+special.map(function(product){
+
+let imageHtml=
+product.image
+?
+`
+<img
+src="${escapeHtml(product.image)}"
+alt="${escapeHtml(product.name)}"
+loading="lazy"
+>
+`
+:
+"❄️";
+
+return `
+<div class="deal-card">
+
+<div class="deal-image">
+${imageHtml}
+</div>
+
+<div class="deal-info">
+
+<small>
+${escapeHtml(
+product.category || "محصول"
+)}
+</small>
+
+<h3>
+${escapeHtml(product.name)}
+</h3>
+
+<div class="deal-price">
+
+<strong>
+${escapeHtml(
+product.price || "تماس بگیرید"
+)}
+</strong>
+
+<span>
+قیمت
+</span>
+
+</div>
+
+<button
+class="cart-btn"
+onclick="addCart('${escapeJs(product.id)}')">
+🛒 افزودن به سبد
+</button>
+
+</div>
+
+</div>
+`;
+
+}).join("");
+
+}
+
+
+/* =====================================================
+JS ESCAPE
+===================================================== */
+
+function escapeJs(value){
+
+return String(value ?? "")
+.replace(/\\/g,"\\\\")
+.replace(/'/g,"\\'")
+.replace(/\r/g,"")
+.replace(/\n/g," ");
+
+}
+
+
+/* =====================================================
+ADD CART
+===================================================== */
+
+function addCart(productId){
+
+const product=
+products.find(
+item=>String(item.id)===String(productId)
+);
+
+if(!product){
+
+showCartMessage(
+"محصول پیدا نشد."
+);
+
+return;
+
+}
+
+const existing=
+cart.find(
+item=>String(item.id)===String(product.id)
+);
+
+if(existing){
+
+existing.quantity++;
+
+}else{
+
+cart.push({
+id:product.id,
+name:product.name,
+price:product.price,
+image:product.image || "",
+quantity:1
+});
+
+}
+
+saveCart();
+
+showCartMessage(
+"🛒 «"+product.name+"» به سبد خرید اضافه شد"
+);
+
+}
+
+
+/* =====================================================
+SAVE CART
+===================================================== */
+
+function saveCart(){
+
+localStorage.setItem(
+"drBorodatCart",
+JSON.stringify(cart)
+);
+
+updateCartCount();
+
+}
+
+
+/* =====================================================
+CART COUNT
+===================================================== */
+
+function updateCartCount(){
+
+const count=
+cart.reduce(
+function(total,item){
+return total+
+Number(item.quantity || 0);
+},
+0
+);
+
+const badge=
+document.getElementById(
+"cartCount"
+);
+
+badge.textContent=count;
+
+badge.classList.toggle(
+"show",
+count>0
+);
+
+document.getElementById(
+"cartTotalCount"
+).textContent=count;
+
+}
+
+
+/* =====================================================
+SHOW CART
+===================================================== */
 
 function showCart(){
 
-const message=
-document.getElementById("cartMessage");
+renderCart();
 
-message.textContent=
-"🛒 سبد خرید شما فعلاً خالی است";
+document
+.getElementById("cartModal")
+.classList
+.add("open");
+
+}
+
+
+/* =====================================================
+CLOSE CART
+===================================================== */
+
+function closeCart(){
+
+document
+.getElementById("cartModal")
+.classList
+.remove("open");
+
+}
+
+
+/* =====================================================
+RENDER CART
+===================================================== */
+
+function renderCart(){
+
+const box=
+document.getElementById(
+"cartItems"
+);
+
+if(!cart.length){
+
+box.innerHTML=
+`
+<div class="cart-empty">
+🛒 سبد خرید شما خالی است.
+</div>
+`;
+
+updateCartCount();
+
+return;
+
+}
+
+box.innerHTML=
+cart.map(function(item){
+
+const image=
+item.image
+?
+`
+<img
+src="${escapeHtml(item.image)}"
+alt="${escapeHtml(item.name)}"
+>
+`
+:
+"❄️";
+
+return `
+<div class="cart-item">
+
+<div class="cart-item-image">
+${image}
+</div>
+
+<div class="cart-item-info">
+
+<strong>
+${escapeHtml(item.name)}
+</strong>
+
+<small>
+${escapeHtml(item.price || "تماس بگیرید")}
+</small>
+
+</div>
+
+<div class="qty-controls">
+
+<button
+onclick="changeQuantity('${escapeJs(item.id)}',-1)">
+−
+</button>
+
+<span>
+${Number(item.quantity || 1)}
+</span>
+
+<button
+onclick="changeQuantity('${escapeJs(item.id)}',1)">
++
+</button>
+
+</div>
+
+<button
+class="remove-item"
+onclick="removeCartItem('${escapeJs(item.id)}')">
+حذف
+</button>
+
+</div>
+`;
+
+}).join("");
+
+updateCartCount();
+
+}
+
+
+/* =====================================================
+CHANGE QUANTITY
+===================================================== */
+
+function changeQuantity(
+productId,
+amount
+){
+
+const item=
+cart.find(
+item=>String(item.id)===String(productId)
+);
+
+if(!item)return;
+
+item.quantity=
+Number(item.quantity || 1)+amount;
+
+if(item.quantity<=0){
+
+cart=
+cart.filter(
+item=>String(item.id)!==String(productId)
+);
+
+}
+
+saveCart();
+renderCart();
+
+}
+
+
+/* =====================================================
+REMOVE ITEM
+===================================================== */
+
+function removeCartItem(productId){
+
+cart=
+cart.filter(
+item=>String(item.id)!==String(productId)
+);
+
+saveCart();
+renderCart();
+
+}
+
+
+/* =====================================================
+SUBMIT ORDER
+===================================================== */
+
+async function submitOrder(){
+
+if(!cart.length){
+
+showOrderMessage(
+"error",
+"سبد خرید شما خالی است."
+);
+
+return;
+
+}
+
+const name=
+document
+.getElementById("orderName")
+.value
+.trim();
+
+const phone=
+document
+.getElementById("orderPhone")
+.value
+.trim();
+
+if(!name || !phone){
+
+showOrderMessage(
+"error",
+"نام و شماره تماس را وارد کنید."
+);
+
+return;
+
+}
+
+const button=
+document.querySelector(
+".order-submit"
+);
+
+button.disabled=true;
+button.textContent=
+"در حال ثبت سفارش...";
+
+try{
+
+const requests=
+cart.map(function(item){
+
+return fetch(
+"/api/order",
+{
+method:"POST",
+headers:{
+"Content-Type":
+"application/json",
+"Accept":
+"application/json"
+},
+body:JSON.stringify({
+
+name:name,
+
+phone:phone,
+
+product_id:item.id,
+
+product_name:item.name,
+
+quantity:String(
+item.quantity
+)
+
+})
+};
+
+});
+
+const responses=
+await Promise.all(requests);
+
+const results=
+await Promise.all(
+responses.map(
+response=>response.json()
+)
+);
+
+const failed=
+results.find(
+result=>!result.success
+);
+
+if(failed){
+
+throw new Error(
+failed.message ||
+"ثبت سفارش ناموفق بود."
+);
+
+}
+
+cart=[];
+
+saveCart();
+renderCart();
+
+showOrderMessage(
+"success",
+"سفارش شما با موفقیت ثبت شد ❤️"
+);
+
+document
+.getElementById("orderName")
+.value="";
+
+document
+.getElementById("orderPhone")
+.value="";
+
+}catch(error){
+
+showOrderMessage(
+"error",
+error.message
+);
+
+}finally{
+
+button.disabled=false;
+button.textContent=
+"ثبت سفارش";
+
+}
+
+}
+
+
+/* =====================================================
+ORDER MESSAGE
+===================================================== */
+
+function showOrderMessage(
+type,
+text
+){
+
+const box=
+document.getElementById(
+"orderMessage"
+);
+
+box.className=
+"order-message show "+type;
+
+box.textContent=text;
+
+}
+
+
+/* =====================================================
+TOAST
+===================================================== */
+
+function showCartMessage(text){
+
+const message=
+document.getElementById(
+"cartMessage"
+);
+
+message.textContent=text;
 
 message.classList.add("show");
 
 setTimeout(function(){
+
 message.classList.remove("show");
+
 },2200);
 
 }
 
 
-/* SEARCH */
+/* =====================================================
+SEARCH
+===================================================== */
 
 function showSearch(){
 
 const search=
-prompt("نام محصول یا قطعه مورد نظر را وارد کنید:");
+prompt(
+"نام محصول یا قطعه مورد نظر را وارد کنید:"
+);
 
-if(search && search.trim()!==""){
+if(!search || !search.trim())return;
+
+const term=
+search.trim().toLowerCase();
+
+const found=
+products.filter(
+function(product){
+
+return (
+String(product.name || "")
+.toLowerCase()
+.includes(term)
+||
+String(product.category || "")
+.toLowerCase()
+.includes(term)
+||
+String(product.description || "")
+.toLowerCase()
+.includes(term)
+);
+
+});
+
+const grid=
+document.getElementById(
+"productGrid"
+);
+
+if(!found.length){
+
+grid.innerHTML=
+`
+<div class="empty-products">
+محصول مورد نظر پیدا نشد.
+</div>
+`;
+
+document
+.getElementById("products")
+.scrollIntoView({
+behavior:"smooth"
+});
+
+return;
+
+}
+
+grid.innerHTML=
+found.map(function(product){
+
+const image=
+product.image
+?
+`
+<img
+src="${escapeHtml(product.image)}"
+alt="${escapeHtml(product.name)}"
+>
+`
+:
+"❄️";
+
+return `
+<div class="product">
+
+<div class="product-image">
+${image}
+</div>
+
+<div class="product-info">
+
+<small>
+${escapeHtml(product.category || "محصول")}
+</small>
+
+<h3>
+${escapeHtml(product.name)}
+</h3>
+
+<p>
+${escapeHtml(product.description || "")}
+</p>
+
+<div class="product-bottom">
+
+<div class="product-price">
+${escapeHtml(product.price || "تماس بگیرید")}
+</div>
+
+<button
+class="product-cart"
+onclick="addCart('${escapeJs(product.id)}')">
+🛒
+</button>
+
+</div>
+
+</div>
+
+</div>
+`;
+
+}).join("");
 
 document
 .getElementById("products")
@@ -1600,20 +2611,85 @@ behavior:"smooth"
 
 }
 
+
+/* =====================================================
+CATEGORY FILTER
+===================================================== */
+
+document
+.querySelectorAll(
+".category[data-category]"
+)
+.forEach(function(category){
+
+category.addEventListener(
+"click",
+function(e){
+
+e.preventDefault();
+
+document
+.querySelectorAll(".category")
+.forEach(
+item=>item.classList.remove("active")
+);
+
+this.classList.add("active");
+
+const value=
+this.dataset.category || "";
+
+renderProducts(value);
+
+document
+.getElementById("products")
+.scrollIntoView({
+behavior:"smooth"
+});
+
+}
+);
+
+});
+
+
+/* =====================================================
+CLOSE MODAL
+===================================================== */
+
+document
+.getElementById("cartModal")
+.addEventListener(
+"click",
+function(e){
+
+if(e.target===this){
+
+closeCart();
+
 }
 
+});
 
-/* CLOSE MENU */
 
-document.addEventListener("click",function(e){
+/* =====================================================
+CLOSE MENU
+===================================================== */
 
-const menu=document.getElementById("menu");
+document.addEventListener(
+"click",
+function(e){
+
+const menu=
+document.getElementById("menu");
 
 const insideMenu=
 e.target.closest(".menu-panel");
 
 const menuButton=
-e.target.closest('[aria-label="منو"]');
+e.target.closest(
+'[aria-label="منو"]'
+);
 
 if(
 menu.classList.contains("open") &&
@@ -1626,6 +2702,15 @@ menu.classList.remove("open");
 }
 
 });
+
+
+/* =====================================================
+START
+===================================================== */
+
+updateCartCount();
+
+loadProducts();
 
 </script>
 
