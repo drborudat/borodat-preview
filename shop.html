@@ -6,9 +6,13 @@
 <title>فروشگاه | دکتر برودت</title>
 
 <style>
-*{box-sizing:border-box}
+*{
+box-sizing:border-box
+}
 
-html{scroll-behavior:smooth}
+html{
+scroll-behavior:smooth
+}
 
 body{
 margin:0;
@@ -21,6 +25,8 @@ a{
 text-decoration:none;
 color:inherit
 }
+
+/* HEADER */
 
 .header{
 height:78px;
@@ -42,14 +48,21 @@ align-items:center;
 justify-content:space-between
 }
 
-  .logo{
+/* LOGO */
+
+.logo{
 display:flex;
 align-items:center;
 gap:9px;
 font-family:Arial,sans-serif;
 font-size:20px;
 font-weight:800;
-color:#071b31
+color:#071b31;
+direction:ltr !important;
+unicode-bidi:isolate;
+white-space:nowrap;
+flex-direction:row !important;
+text-decoration:none
 }
 
 .logo-mark{
@@ -61,14 +74,27 @@ display:flex;
 align-items:center;
 justify-content:center;
 color:#fff;
+font-family:Arial,sans-serif;
 font-size:14px;
-font-weight:900
+font-weight:900;
+direction:ltr !important;
+unicode-bidi:isolate;
+white-space:nowrap;
+flex-shrink:0
 }
 
 .logo-plus{
+font-family:Arial,sans-serif;
 font-size:19px;
-color:#0879bd
+color:#0879bd;
+direction:ltr !important;
+unicode-bidi:isolate;
+white-space:nowrap;
+display:inline-flex;
+align-items:center
 }
+
+/* BACK BUTTON */
 
 .back{
 background:#071b31;
@@ -78,6 +104,8 @@ border-radius:8px;
 font-size:10px;
 font-weight:bold
 }
+
+/* HERO */
 
 .hero{
 background:#071b31;
@@ -103,11 +131,15 @@ font-size:11px;
 line-height:2
 }
 
+/* CONTAINER */
+
 .container{
 width:92%;
 max-width:1280px;
 margin:auto
 }
+
+/* PRODUCTS */
 
 .products{
 padding:55px 0 90px
@@ -191,6 +223,8 @@ font-size:10px;
 font-weight:bold
 }
 
+/* NOTICE */
+
 .notice{
 margin:0 auto 30px;
 max-width:700px;
@@ -203,6 +237,8 @@ font-size:10px;
 color:#607386
 }
 
+/* FOOTER */
+
 footer{
 background:#06182c;
 color:#fff;
@@ -212,7 +248,9 @@ text-align:center
 
 footer strong{
 font-family:Arial,sans-serif;
-font-size:20px
+font-size:20px;
+direction:ltr;
+unicode-bidi:isolate
 }
 
 footer strong span{
@@ -224,11 +262,17 @@ color:#aebdca;
 font-size:9px
 }
 
+/* TABLET */
+
 @media(max-width:900px){
+
 .grid{
 grid-template-columns:1fr 1fr
 }
+
 }
+
+/* MOBILE */
 
 @media(max-width:500px){
 
@@ -237,12 +281,20 @@ height:68px
 }
 
 .logo{
-font-size:17px
+font-size:17px;
+direction:ltr !important;
+flex-direction:row !important
 }
 
 .logo-mark{
 width:35px;
-height:35px
+height:35px;
+font-size:13px
+}
+
+.logo-plus{
+font-size:17px;
+direction:ltr !important
 }
 
 .back{
@@ -283,6 +335,17 @@ font-size:8px
 .price{
 font-size:12px
 }
+
+}
+
+/* ACCESSIBILITY / DIRECTION FIX */
+
+.logo,
+.logo *,
+.logo-mark,
+.logo-plus{
+writing-mode:horizontal-tb !important;
+text-orientation:mixed !important
 }
 </style>
 </head>
@@ -293,11 +356,11 @@ font-size:12px
 
 <div class="header-inner">
 
-<a href="/" class="logo">
+<a href="/" class="logo" dir="ltr">
 
-<div class="logo-mark">DB</div>
+<span class="logo-mark" dir="ltr">DB</span>
 
-<span class="logo-plus">+ ❄️</span>
+<span class="logo-plus" dir="ltr">+ ❄️</span>
 
 </a>
 
@@ -460,7 +523,7 @@ font-size:12px
 
 <footer>
 
-<strong>
+<strong dir="ltr">
 Dr <span>Borodat</span>
 </strong>
 
