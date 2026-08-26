@@ -7,30 +7,16 @@ from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import requests
 
-
-# =========================================================
-# APP
-# =========================================================
-
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 app = Flask(__name__)
 CORS(app)
-
-
-# =========================================================
-# SETTINGS
-# =========================================================
 
 BALE_TOKEN = os.environ.get("BALE_TOKEN")
 ADMIN_ID = 746740194
 
 DATA_FILE = os.path.join(BASE_DIR, "data.json")
 
-
-# =========================================================
-# DATABASE
-# =========================================================
 
 def empty_database():
     return {
@@ -42,56 +28,41 @@ def empty_database():
 
 
 def load_data():
-
     if not os.path.exists(DATA_FILE):
         return empty_database()
 
     try:
+        with open(DATA_FILE, "r", encoding="utf-8") as f:
+            data = json.load(f)
 
-        with open(DATA_FILE, "r", encoding="utf-8") as file:
-            data = json.load(file)
+        if not isinstance(data, dict):
+            return empty_database()
 
-        data.setdefault("requests", [])
-        data.setdefault("chats", [])
-        data.setdefault("products", [])
-        data.setdefault("orders", [])
+        for key in ["requests", "chats", "products", "orders"]:
+            if not isinstance(data.get(key), list):
+                data[key] = []
 
         return data
 
     except Exception:
-
         return empty_database()
 
 
 def save_data(data):
+    with open(DATA_FILE, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
 
-    with open(DATA_FILE, "w", encoding="utf-8") as file:
-
-        json.dump(
-            data,
-            file,
-            ensure_ascii=False,
-            indent=2
-        )
-
-
-# =========================================================
-# HELPERS
-# =========================================================
 
 def now():
-
     return datetime.now().strftime("%Y-%m-%d %H:%M")
 
 
 def send_bale_message(text):
-
     if not BALE_TOKEN:
         return False
 
-    url = f"https://tapi.bale.ai/bot{BALE_TOKEN}/sendMessage"
-
     try:
+        url = f"https://tapi.bale.ai/bot{BALE_TOKEN}/sendMessage"
 
         response = requests.post(
             url,
@@ -104,76 +75,42 @@ def send_bale_message(text):
 
         return response.ok
 
-    except requests.RequestException:
-
+    except Exception:
         return False
 
 
-# =========================================================
-# FRONTEND ROUTES
-# =========================================================
-
 @app.route("/")
 def home():
-
-    return send_from_directory(
-        BASE_DIR,
-        "admin.html"
-    )
+    return send_from_directory(BASE_DIR, "admin.html")
 
 
 @app.route("/admin")
 def admin():
-
-    return send_from_directory(
-        BASE_DIR,
-        "admin.html"
-    )
+    return send_from_directory(BASE_DIR, "admin.html")
 
 
 @app.route("/admin.html")
-def admin_page():
-
-    return send_from_directory(
-        BASE_DIR,
-        "admin.html"
-    )
+def admin_html():
+    return send_from_directory(BASE_DIR, "admin.html")
 
 
 @app.route("/index.html")
-def index_page():
-
-    return send_from_directory(
-        BASE_DIR,
-        "index.html"
-    )
+def index_html():
+    return send_from_directory(BASE_DIR, "index.html")
 
 
 @app.route("/shop.html")
-def shop_page():
+def shop_html():
+    return send_from_directory(BASE_DIR, "shop.html")
 
-    return send_from_directory(
-        BASE_DIR,
-        "shop.html"
-    )
-
-
-# =========================================================
-# HEALTH
-# =========================================================
 
 @app.route("/health")
 def health():
-
     return jsonify({
         "success": True,
         "status": "online"
     })
 
-
-# =========================================================
-# SERVICE REQUEST
-# =========================================================
 
 @app.route("/api/request", methods=["POST"])
 def service_request():
@@ -186,7 +123,6 @@ def service_request():
     description = str(data.get("description", "")).strip()
 
     if not name or not phone or not service:
-
         return jsonify({
             "success": False,
             "message": "لطفاً نام، شماره تماس و نوع خدمت را وارد کنید."
@@ -203,20 +139,16 @@ def service_request():
     }
 
     database = load_data()
-
     database["requests"].append(item)
-
     save_data(database)
 
-    bale_text = (
+    bale_sent = send_bale_message(
         "📥 درخواست جدید دکتر برودت\n\n"
         f"👤 نام مشتری: {name}\n"
         f"📱 شماره تماس: {phone}\n"
         f"🔧 خدمت: {service}\n"
         f"📝 توضیحات: {description or 'ثبت نشده'}"
     )
-
-    bale_sent = send_bale_message(bale_text)
 
     return jsonify({
         "success": True,
@@ -226,22 +158,14 @@ def service_request():
     })
 
 
-# =========================================================
-# CHAT - GET
-# =========================================================
-
 @app.route("/chat", methods=["GET"])
 def get_chat():
 
-    phone = request.args.get(
-        "phone",
-        ""
-    ).strip()
+    phone = request.args.get("phone", "").strip()
 
     database = load_data()
 
     if not phone:
-
         return jsonify({
             "success": True,
             "messages": []
@@ -249,15 +173,13 @@ def get_chat():
 
     chat = next(
         (
-            item
-            for item in database["chats"]
+            item for item in database["chats"]
             if item.get("phone") == phone
         ),
         None
     )
 
     if not chat:
-
         return jsonify({
             "success": True,
             "messages": []
@@ -265,14 +187,12 @@ def get_chat():
 
     return jsonify({
         "success": True,
-        "chat_id": chat["id"],
+        "chat_id": chat.get("id"),
+        "name": chat.get("name", ""),
+        "phone": chat.get("phone", ""),
         "messages": chat.get("messages", [])
     })
 
-
-# =========================================================
-# CHAT - SEND
-# =========================================================
 
 @app.route("/chat/send", methods=["POST"])
 def send_chat():
@@ -284,7 +204,6 @@ def send_chat():
     message = str(data.get("message", "")).strip()
 
     if not name or not phone or not message:
-
         return jsonify({
             "success": False,
             "message": "نام، شماره تماس و پیام الزامی است."
@@ -294,8 +213,7 @@ def send_chat():
 
     chat = next(
         (
-            item
-            for item in database["chats"]
+            item for item in database["chats"]
             if item.get("phone") == phone
         ),
         None
@@ -315,7 +233,6 @@ def send_chat():
         database["chats"].append(chat)
 
     else:
-
         chat["name"] = name
         chat["updated_at"] = now()
 
@@ -326,23 +243,17 @@ def send_chat():
         "created_at": now()
     }
 
-    chat.setdefault(
-        "messages",
-        []
-    ).append(customer_message)
-
+    chat.setdefault("messages", []).append(customer_message)
     chat["updated_at"] = now()
 
     save_data(database)
 
-    bale_text = (
+    bale_sent = send_bale_message(
         "💬 پیام جدید پشتیبانی\n\n"
         f"👤 {name}\n"
         f"📱 {phone}\n\n"
         f"💬 {message}"
     )
-
-    bale_sent = send_bale_message(bale_text)
 
     return jsonify({
         "success": True,
@@ -352,14 +263,7 @@ def send_chat():
     })
 
 
-# =========================================================
-# ADMIN DASHBOARD
-# =========================================================
-
-@app.route(
-    "/api/admin/dashboard",
-    methods=["GET"]
-)
+@app.route("/api/admin/dashboard", methods=["GET"])
 def admin_dashboard():
 
     database = load_data()
@@ -373,28 +277,15 @@ def admin_dashboard():
     })
 
 
-# =========================================================
-# ADMIN CHAT REPLY
-# =========================================================
-
-@app.route(
-    "/api/admin/chat/reply",
-    methods=["POST"]
-)
+@app.route("/api/admin/chat/reply", methods=["POST"])
 def admin_chat_reply():
 
     data = request.get_json(silent=True) or {}
 
-    chat_id = str(
-        data.get("chat_id", "")
-    ).strip()
-
-    message = str(
-        data.get("message", "")
-    ).strip()
+    chat_id = str(data.get("chat_id", "")).strip()
+    message = str(data.get("message", "")).strip()
 
     if not chat_id or not message:
-
         return jsonify({
             "success": False,
             "message": "گفتگو و متن پاسخ الزامی است."
@@ -404,15 +295,13 @@ def admin_chat_reply():
 
     chat = next(
         (
-            item
-            for item in database["chats"]
+            item for item in database["chats"]
             if item.get("id") == chat_id
         ),
         None
     )
 
     if not chat:
-
         return jsonify({
             "success": False,
             "message": "گفتگو پیدا نشد."
@@ -425,11 +314,7 @@ def admin_chat_reply():
         "created_at": now()
     }
 
-    chat.setdefault(
-        "messages",
-        []
-    ).append(admin_message)
-
+    chat.setdefault("messages", []).append(admin_message)
     chat["updated_at"] = now()
 
     save_data(database)
@@ -437,18 +322,12 @@ def admin_chat_reply():
     return jsonify({
         "success": True,
         "message": "پاسخ ارسال شد.",
-        "chat_id": chat_id
+        "chat_id": chat_id,
+        "reply": admin_message
     })
 
 
-# =========================================================
-# ADD PRODUCT
-# =========================================================
-
-@app.route(
-    "/api/admin/products",
-    methods=["POST"]
-)
+@app.route("/api/admin/products", methods=["POST"])
 def add_product():
 
     data = request.get_json(silent=True) or {}
@@ -461,7 +340,6 @@ def add_product():
     image = str(data.get("image", "")).strip()
 
     if not name or not price or not category:
-
         return jsonify({
             "success": False,
             "message": "نام، قیمت و دسته‌بندی محصول الزامی است."
@@ -479,9 +357,7 @@ def add_product():
     }
 
     database = load_data()
-
     database["products"].append(product)
-
     save_data(database)
 
     return jsonify({
@@ -491,14 +367,7 @@ def add_product():
     })
 
 
-# =========================================================
-# PUBLIC PRODUCTS
-# =========================================================
-
-@app.route(
-    "/api/products",
-    methods=["GET"]
-)
+@app.route("/api/products", methods=["GET"])
 def get_products():
 
     database = load_data()
@@ -509,31 +378,21 @@ def get_products():
     })
 
 
-# =========================================================
-# UPDATE PRODUCT
-# =========================================================
-
-@app.route(
-    "/api/admin/products/<product_id>",
-    methods=["PATCH"]
-)
+@app.route("/api/admin/products/<product_id>", methods=["PATCH"])
 def update_product(product_id):
 
     data = request.get_json(silent=True) or {}
-
     database = load_data()
 
     product = next(
         (
-            item
-            for item in database["products"]
+            item for item in database["products"]
             if item.get("id") == product_id
         ),
         None
     )
 
     if not product:
-
         return jsonify({
             "success": False,
             "message": "محصول پیدا نشد."
@@ -549,12 +408,8 @@ def update_product(product_id):
     ]
 
     for field in allowed_fields:
-
         if field in data:
-
-            product[field] = str(
-                data[field]
-            ).strip()
+            product[field] = str(data[field]).strip()
 
     save_data(database)
 
@@ -565,30 +420,19 @@ def update_product(product_id):
     })
 
 
-# =========================================================
-# DELETE PRODUCT
-# =========================================================
-
-@app.route(
-    "/api/admin/products/<product_id>",
-    methods=["DELETE"]
-)
+@app.route("/api/admin/products/<product_id>", methods=["DELETE"])
 def delete_product(product_id):
 
     database = load_data()
 
-    old_count = len(
-        database["products"]
-    )
+    old_count = len(database["products"])
 
     database["products"] = [
-        product
-        for product in database["products"]
+        product for product in database["products"]
         if product.get("id") != product_id
     ]
 
     if len(database["products"]) == old_count:
-
         return jsonify({
             "success": False,
             "message": "محصول پیدا نشد."
@@ -602,14 +446,7 @@ def delete_product(product_id):
     })
 
 
-# =========================================================
-# CREATE ORDER
-# =========================================================
-
-@app.route(
-    "/api/order",
-    methods=["POST"]
-)
+@app.route("/api/order", methods=["POST"])
 def create_order():
 
     data = request.get_json(silent=True) or {}
@@ -621,7 +458,6 @@ def create_order():
     quantity = str(data.get("quantity", "1")).strip()
 
     if not name or not phone or not product_name:
-
         return jsonify({
             "success": False,
             "message": "نام، شماره تماس و محصول الزامی است."
@@ -632,11 +468,9 @@ def create_order():
     product = None
 
     if product_id:
-
         product = next(
             (
-                item
-                for item in database["products"]
+                item for item in database["products"]
                 if item.get("id") == product_id
             ),
             None
@@ -654,18 +488,15 @@ def create_order():
     }
 
     database["orders"].append(order)
-
     save_data(database)
 
-    bale_text = (
+    bale_sent = send_bale_message(
         "🛒 سفارش جدید دکتر برودت\n\n"
         f"👤 نام: {name}\n"
         f"📱 شماره: {phone}\n"
         f"📦 محصول: {product_name}\n"
         f"🔢 تعداد: {quantity}"
     )
-
-    bale_sent = send_bale_message(bale_text)
 
     return jsonify({
         "success": True,
@@ -676,24 +507,13 @@ def create_order():
     })
 
 
-# =========================================================
-# UPDATE ORDER
-# =========================================================
-
-@app.route(
-    "/api/admin/orders/<order_id>",
-    methods=["PATCH"]
-)
+@app.route("/api/admin/orders/<order_id>", methods=["PATCH"])
 def update_order(order_id):
 
     data = request.get_json(silent=True) or {}
-
-    status = str(
-        data.get("status", "")
-    ).strip()
+    status = str(data.get("status", "")).strip()
 
     if not status:
-
         return jsonify({
             "success": False,
             "message": "وضعیت سفارش مشخص نشده است."
@@ -703,22 +523,19 @@ def update_order(order_id):
 
     order = next(
         (
-            item
-            for item in database["orders"]
+            item for item in database["orders"]
             if item.get("id") == order_id
         ),
         None
     )
 
     if not order:
-
         return jsonify({
             "success": False,
             "message": "سفارش پیدا نشد."
         }), 404
 
     order["status"] = status
-
     save_data(database)
 
     return jsonify({
@@ -728,14 +545,7 @@ def update_order(order_id):
     })
 
 
-# =========================================================
-# ADMIN REQUESTS
-# =========================================================
-
-@app.route(
-    "/api/admin/requests",
-    methods=["GET"]
-)
+@app.route("/api/admin/requests", methods=["GET"])
 def admin_requests():
 
     database = load_data()
@@ -746,24 +556,13 @@ def admin_requests():
     })
 
 
-# =========================================================
-# UPDATE REQUEST
-# =========================================================
-
-@app.route(
-    "/api/admin/requests/<request_id>",
-    methods=["PATCH"]
-)
+@app.route("/api/admin/requests/<request_id>", methods=["PATCH"])
 def update_service_request(request_id):
 
     data = request.get_json(silent=True) or {}
-
-    status = str(
-        data.get("status", "")
-    ).strip()
+    status = str(data.get("status", "")).strip()
 
     if not status:
-
         return jsonify({
             "success": False,
             "message": "وضعیت درخواست مشخص نشده است."
@@ -773,22 +572,19 @@ def update_service_request(request_id):
 
     item = next(
         (
-            request_item
-            for request_item in database["requests"]
-            if request_item.get("id") == request_id
+            x for x in database["requests"]
+            if x.get("id") == request_id
         ),
         None
     )
 
     if not item:
-
         return jsonify({
             "success": False,
             "message": "درخواست پیدا نشد."
         }), 404
 
     item["status"] = status
-
     save_data(database)
 
     return jsonify({
@@ -798,18 +594,33 @@ def update_service_request(request_id):
     })
 
 
-# =========================================================
-# RUN
-# =========================================================
+@app.errorhandler(404)
+def not_found(error):
+    return jsonify({
+        "success": False,
+        "message": "مسیر موردنظر پیدا نشد."
+    }), 404
+
+
+@app.errorhandler(405)
+def method_not_allowed(error):
+    return jsonify({
+        "success": False,
+        "message": "متد درخواست مجاز نیست."
+    }), 405
+
+
+@app.errorhandler(500)
+def internal_error(error):
+    return jsonify({
+        "success": False,
+        "message": "خطای داخلی سرور."
+    }), 500
+
 
 if __name__ == "__main__":
 
-    port = int(
-        os.environ.get(
-            "PORT",
-            10000
-        )
-    )
+    port = int(os.environ.get("PORT", 10000))
 
     app.run(
         host="0.0.0.0",
