@@ -7,8 +7,16 @@ from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import requests
 
-app = Flask(__name__)
+
+# =========================================================
+# APP
+# =========================================================
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+app = Flask(__name__, static_folder=BASE_DIR)
 CORS(app)
+
 
 # =========================================================
 # SETTINGS
@@ -17,7 +25,7 @@ CORS(app)
 BALE_TOKEN = os.environ.get("BALE_TOKEN")
 ADMIN_ID = 746740194
 
-DATA_FILE = "data.json"
+DATA_FILE = os.path.join(BASE_DIR, "data.json")
 
 
 # =========================================================
@@ -102,14 +110,14 @@ def send_bale_message(text):
 
 
 # =========================================================
-# WEBSITE
+# WEBSITE / FRONTEND
 # =========================================================
 
 @app.route("/")
 def home():
 
     return send_from_directory(
-        ".",
+        BASE_DIR,
         "index.html"
     )
 
@@ -118,8 +126,17 @@ def home():
 def index_page():
 
     return send_from_directory(
-        ".",
+        BASE_DIR,
         "index.html"
+    )
+
+
+@app.route("/admin")
+def admin_redirect():
+
+    return send_from_directory(
+        BASE_DIR,
+        "admin.html"
     )
 
 
@@ -127,7 +144,7 @@ def index_page():
 def admin_page():
 
     return send_from_directory(
-        ".",
+        BASE_DIR,
         "admin.html"
     )
 
