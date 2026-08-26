@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-
 <title>پنل مدیریت | Dr Borodat</title>
 
 <style>
@@ -16,9 +15,7 @@ background:#f4f7fa;
 color:#102238
 }
 
-button,input,textarea,select{
-font-family:inherit
-}
+button,input,textarea,select{font-family:inherit}
 
 .header{
 background:#071b31;
@@ -39,9 +36,7 @@ font-weight:800;
 direction:ltr
 }
 
-.logo span{
-color:#6cccf3
-}
+.logo span{color:#6cccf3}
 
 .status{
 font-size:11px;
@@ -181,9 +176,7 @@ min-height:80px;
 resize:vertical
 }
 
-.form-full{
-grid-column:1/-1
-}
+.form-full{grid-column:1/-1}
 
 .add-btn{
 border:0;
@@ -321,21 +314,13 @@ font-size:9px
 
 @media(max-width:800px){
 
-.cards{
-grid-template-columns:1fr 1fr
-}
+.cards{grid-template-columns:1fr 1fr}
 
-.form-grid{
-grid-template-columns:1fr
-}
+.form-grid{grid-template-columns:1fr}
 
-.form-full{
-grid-column:auto
-}
+.form-full{grid-column:auto}
 
-.chat-list{
-grid-template-columns:1fr
-}
+.chat-list{grid-template-columns:1fr}
 
 table{
 display:block;
@@ -347,17 +332,11 @@ white-space:nowrap
 
 @media(max-width:500px){
 
-.cards{
-grid-template-columns:1fr 1fr
-}
+.cards{grid-template-columns:1fr 1fr}
 
-.container{
-width:94%
-}
+.container{width:94%}
 
-.header{
-padding:15px 3%
-}
+.header{padding:15px 3%}
 
 }
 </style>
@@ -422,9 +401,7 @@ Dr <span>Borodat</span>
 <section class="panel">
 
 <div class="panel-title">
-
 <h2>🛒 مدیریت محصولات</h2>
-
 </div>
 
 <form id="productForm">
@@ -439,7 +416,11 @@ Dr <span>Borodat</span>
 
 <input id="productCategory" placeholder="دسته‌بندی" required>
 
-<input class="form-full" id="productImage" placeholder="آدرس تصویر محصول">
+<input
+class="form-full"
+id="productImage"
+placeholder="آدرس تصویر محصول"
+>
 
 <textarea
 class="form-full"
@@ -466,9 +447,7 @@ placeholder="توضیحات محصول"
 <section class="panel">
 
 <div class="panel-title">
-
 <h2>📦 محصولات</h2>
-
 </div>
 
 <div id="products"></div>
@@ -478,9 +457,7 @@ placeholder="توضیحات محصول"
 <section class="panel">
 
 <div class="panel-title">
-
 <h2>🛍️ سفارش‌ها</h2>
-
 </div>
 
 <div id="orders"></div>
@@ -490,9 +467,7 @@ placeholder="توضیحات محصول"
 <section class="panel">
 
 <div class="panel-title">
-
 <h2>💬 پشتیبانی آنلاین</h2>
-
 </div>
 
 <div class="chat-list">
@@ -539,16 +514,9 @@ placeholder="پاسخ خود را بنویسید..."
 <script>
 
 /* =====================================================
-API
+API CONNECTION
 ===================================================== */
 
-/*
-اگر Admin و Server روی یک Render Service هستند،
-همین مقدار خالی درست است.
-
-اگر Admin را روی سرویس جدا گذاشته‌ای،
-فقط مقدار زیر را با آدرس Render مربوط به Server عوض می‌کنیم.
-*/
 const API_BASE = "";
 
 
@@ -557,23 +525,21 @@ DATA
 ===================================================== */
 
 let dashboardData = {
-requests: [],
-chats: [],
-products: [],
-orders: []
+requests:[],
+chats:[],
+products:[],
+orders:[]
 };
 
 let selectedChat = null;
 
 
 /* =====================================================
-API URL
+API HELPER
 ===================================================== */
 
 function api(path){
-
 return API_BASE + path;
-
 }
 
 
@@ -583,13 +549,16 @@ LOAD DASHBOARD
 
 async function loadDashboard(){
 
-const status = document.getElementById("status");
+const status =
+document.getElementById("status");
 
-status.textContent = "در حال دریافت اطلاعات...";
+status.textContent =
+"در حال دریافت اطلاعات...";
 
 try{
 
-const response = await fetch(
+const response =
+await fetch(
 api("/api/admin/dashboard"),
 {
 method:"GET",
@@ -603,19 +572,18 @@ headers:{
 if(!response.ok){
 
 throw new Error(
-"سرور پاسخ صحیح نداد (" +
-response.status +
-")"
+"HTTP " + response.status
 );
 
 }
 
-const data = await response.json();
+const data =
+await response.json();
 
 if(!data.success){
 
 throw new Error(
-"دریافت اطلاعات ناموفق بود."
+"پاسخ سرور معتبر نیست."
 );
 
 }
@@ -624,39 +592,38 @@ dashboardData = {
 
 requests:Array.isArray(data.requests)
 ? data.requests
-: [],
+:[],
 
 chats:Array.isArray(data.chats)
 ? data.chats
-: [],
+:[],
 
 products:Array.isArray(data.products)
 ? data.products
-: [],
+:[],
 
 orders:Array.isArray(data.orders)
 ? data.orders
-: []
+:[]
 
 };
 
 renderAll();
 
-status.textContent = "● آنلاین";
-
-status.style.color = "#78e08f";
+status.textContent="● آنلاین";
+status.style.color="#78e08f";
 
 }catch(error){
 
 console.error(
-"Dashboard connection error:",
+"ADMIN CONNECTION ERROR:",
 error
 );
 
-status.textContent =
+status.textContent=
 "● خطا در اتصال";
 
-status.style.color = "#ff8b8b";
+status.style.color="#ff8b8b";
 
 }
 
@@ -664,7 +631,7 @@ status.style.color = "#ff8b8b";
 
 
 /* =====================================================
-RENDER ALL
+RENDER
 ===================================================== */
 
 function renderAll(){
@@ -708,21 +675,19 @@ document.getElementById("requests");
 
 if(!dashboardData.requests.length){
 
-box.innerHTML =
+box.innerHTML=
 '<div class="empty">درخواستی ثبت نشده است.</div>';
 
 return;
 
 }
 
-box.innerHTML = `
+box.innerHTML=`
 
 <table>
 
 <thead>
-
 <tr>
-
 <th>نام</th>
 <th>شماره</th>
 <th>خدمت</th>
@@ -730,20 +695,16 @@ box.innerHTML = `
 <th>زمان</th>
 <th>وضعیت</th>
 <th>عملیات</th>
-
 </tr>
-
 </thead>
 
 <tbody>
 
-${dashboardData.requests.map(item => `
+${dashboardData.requests.map(item=>`
 
 <tr>
 
-<td>
-${escapeHtml(item.name)}
-</td>
+<td>${escapeHtml(item.name)}</td>
 
 <td dir="ltr">
 ${escapeHtml(item.phone)}
@@ -762,22 +723,22 @@ ${escapeHtml(item.created_at)}
 </td>
 
 <td>
-
 <span class="badge">
 ${escapeHtml(item.status || "new")}
 </span>
-
 </td>
 
 <td>
 
 <div class="actions">
 
-<button onclick="updateRequest('${item.id}','done')">
+<button
+onclick="updateRequest('${item.id}','done')">
 انجام شد
 </button>
 
-<button onclick="updateRequest('${item.id}','processing')">
+<button
+onclick="updateRequest('${item.id}','processing')">
 در حال انجام
 </button>
 
@@ -809,34 +770,32 @@ document.getElementById("products");
 
 if(!dashboardData.products.length){
 
-box.innerHTML =
+box.innerHTML=
 '<div class="empty">محصولی ثبت نشده است.</div>';
 
 return;
 
 }
 
-box.innerHTML = `
+box.innerHTML=`
 
 <table>
 
 <thead>
 
 <tr>
-
 <th>نام</th>
 <th>دسته‌بندی</th>
 <th>قیمت</th>
 <th>موجودی</th>
 <th>عملیات</th>
-
 </tr>
 
 </thead>
 
 <tbody>
 
-${dashboardData.products.map(product => `
+${dashboardData.products.map(product=>`
 
 <tr>
 
@@ -860,11 +819,13 @@ ${escapeHtml(product.stock)}
 
 <div class="actions">
 
-<button onclick="editProduct('${product.id}')">
+<button
+onclick="editProduct('${product.id}')">
 ویرایش
 </button>
 
-<button onclick="deleteProduct('${product.id}')">
+<button
+onclick="deleteProduct('${product.id}')">
 حذف
 </button>
 
@@ -896,21 +857,20 @@ document.getElementById("orders");
 
 if(!dashboardData.orders.length){
 
-box.innerHTML =
+box.innerHTML=
 '<div class="empty">سفارشی ثبت نشده است.</div>';
 
 return;
 
 }
 
-box.innerHTML = `
+box.innerHTML=`
 
 <table>
 
 <thead>
 
 <tr>
-
 <th>نام</th>
 <th>شماره</th>
 <th>محصول</th>
@@ -918,14 +878,13 @@ box.innerHTML = `
 <th>زمان</th>
 <th>وضعیت</th>
 <th>عملیات</th>
-
 </tr>
 
 </thead>
 
 <tbody>
 
-${dashboardData.orders.map(order => `
+${dashboardData.orders.map(order=>`
 
 <tr>
 
@@ -961,11 +920,13 @@ ${escapeHtml(order.status || "new")}
 
 <div class="actions">
 
-<button onclick="updateOrder('${order.id}','processing')">
+<button
+onclick="updateOrder('${order.id}','processing')">
 در حال انجام
 </button>
 
-<button onclick="updateOrder('${order.id}','done')">
+<button
+onclick="updateOrder('${order.id}','done')">
 تکمیل شد
 </button>
 
@@ -997,7 +958,7 @@ document.getElementById("chatUsers");
 
 if(!dashboardData.chats.length){
 
-box.innerHTML =
+box.innerHTML=
 '<div class="empty">هنوز گفتگویی ثبت نشده است.</div>';
 
 return;
@@ -1005,10 +966,10 @@ return;
 }
 
 box.innerHTML =
-dashboardData.chats.map(chat => `
+dashboardData.chats.map(chat=>`
 
 <div
-class="chat-user ${selectedChat === chat.id ? "active" : ""}"
+class="chat-user ${selectedChat===chat.id ? "active":""}"
 onclick="selectChat('${chat.id}')"
 >
 
@@ -1033,13 +994,13 @@ SELECT CHAT
 
 function selectChat(id){
 
-selectedChat = id;
+selectedChat=id;
 
 renderChats();
 
 const chat =
 dashboardData.chats.find(
-item => item.id === id
+item=>item.id===id
 );
 
 const box =
@@ -1047,7 +1008,7 @@ document.getElementById("messages");
 
 if(!chat){
 
-box.innerHTML =
+box.innerHTML=
 '<div class="empty">گفتگو پیدا نشد.</div>';
 
 return;
@@ -1057,11 +1018,11 @@ return;
 const messages =
 Array.isArray(chat.messages)
 ? chat.messages
-: [];
+:[];
 
 if(!messages.length){
 
-box.innerHTML =
+box.innerHTML=
 '<div class="empty">پیامی ثبت نشده است.</div>';
 
 return;
@@ -1069,9 +1030,13 @@ return;
 }
 
 box.innerHTML =
-messages.map(message => `
+messages.map(message=>`
 
-<div class="msg ${message.sender === "admin" ? "admin" : "customer"}">
+<div class="msg ${
+message.sender==="admin"
+?"admin"
+:"customer"
+}">
 
 ${escapeHtml(message.message)}
 
@@ -1096,23 +1061,23 @@ async function sendReply(){
 
 if(!selectedChat){
 
-alert("ابتدا یک گفتگو را انتخاب کنید.");
+alert(
+"ابتدا یک گفتگو را انتخاب کنید."
+);
 
 return;
 
 }
 
 const input =
-document.getElementById("replyInput");
+document.getElementById(
+"replyInput"
+);
 
 const message =
 input.value.trim();
 
-if(!message){
-
-return;
-
-}
+if(!message)return;
 
 try{
 
@@ -1144,7 +1109,7 @@ data.message ||
 
 }
 
-input.value = "";
+input.value="";
 
 await loadDashboard();
 
@@ -1176,7 +1141,7 @@ document.getElementById(
 "productMessage"
 );
 
-const payload = {
+const payload={
 
 name:
 document.getElementById(
@@ -1237,10 +1202,10 @@ data.message ||
 
 }
 
-message.className =
+message.className=
 "message success";
 
-message.textContent =
+message.textContent=
 "محصول با موفقیت اضافه شد.";
 
 this.reset();
@@ -1249,10 +1214,10 @@ await loadDashboard();
 
 }catch(error){
 
-message.className =
+message.className=
 "message error";
 
-message.textContent =
+message.textContent=
 error.message;
 
 }
@@ -1268,17 +1233,13 @@ async function deleteProduct(id){
 
 if(!confirm(
 "این محصول حذف شود؟"
-)){
-
-return;
-
-}
+))return;
 
 try{
 
 const response =
 await fetch(
-api("/api/admin/products/" + id),
+api("/api/admin/products/"+id),
 {
 method:"DELETE",
 headers:{
@@ -1318,14 +1279,10 @@ async function editProduct(id){
 
 const product =
 dashboardData.products.find(
-item => item.id === id
+item=>item.id===id
 );
 
-if(!product){
-
-return;
-
-}
+if(!product)return;
 
 const name =
 prompt(
@@ -1333,11 +1290,7 @@ prompt(
 product.name
 );
 
-if(name === null){
-
-return;
-
-}
+if(name===null)return;
 
 const price =
 prompt(
@@ -1345,11 +1298,7 @@ prompt(
 product.price
 );
 
-if(price === null){
-
-return;
-
-}
+if(price===null)return;
 
 const stock =
 prompt(
@@ -1357,11 +1306,7 @@ prompt(
 product.stock
 );
 
-if(stock === null){
-
-return;
-
-}
+if(stock===null)return;
 
 const category =
 prompt(
@@ -1369,17 +1314,13 @@ prompt(
 product.category
 );
 
-if(category === null){
-
-return;
-
-}
+if(category===null)return;
 
 try{
 
 const response =
 await fetch(
-api("/api/admin/products/" + id),
+api("/api/admin/products/"+id),
 {
 method:"PATCH",
 headers:{
@@ -1428,7 +1369,7 @@ try{
 
 const response =
 await fetch(
-api("/api/admin/orders/" + id),
+api("/api/admin/orders/"+id),
 {
 method:"PATCH",
 headers:{
@@ -1474,7 +1415,7 @@ try{
 
 const response =
 await fetch(
-api("/api/admin/requests/" + id),
+api("/api/admin/requests/"+id),
 {
 method:"PATCH",
 headers:{
