@@ -1,1193 +1,342 @@
-index.html — Dr Borodat Preview
-
 <!doctype html>
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Dr Borodat | دکتر برودت</title>
+<title>پنل مدیریت | Dr Borodat</title>
 
 <style>
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
 
 body{
 margin:0;
 font-family:Tahoma,Arial,sans-serif;
-background:#fff;
-color:#102238;
-overflow-x:hidden
+background:#f4f7fa;
+color:#102238
 }
 
-a{text-decoration:none;color:inherit}
-button,input,select,textarea{font-family:inherit}
-
-/* HEADER */
+button,input,textarea,select{font-family:inherit}
 
 .header{
-height:78px;
-background:#fff;
-border-bottom:1px solid #e8edf1;
+background:#071b31;
+color:#fff;
+padding:18px 5%;
 display:flex;
 align-items:center;
+justify-content:space-between;
 position:sticky;
 top:0;
-z-index:1000
+z-index:10
 }
-
-.header-inner{
-width:92%;
-max-width:1280px;
-margin:auto;
-display:flex;
-align-items:center
-}
-
-/* LOGO */
 
 .logo{
-display:flex;
-align-items:center;
-gap:9px;
 font-family:Arial,sans-serif;
 font-size:20px;
 font-weight:800;
-color:#071b31;
-direction:ltr !important;
-unicode-bidi:isolate;
-white-space:nowrap;
-flex-direction:row !important;
-text-decoration:none
+direction:ltr
 }
 
-.logo-text{
-display:flex;
-align-items:center;
-justify-content:center;
-width:40px;
-height:40px;
-border-radius:10px;
-background:#071b31;
-color:#fff;
-font-family:Arial,sans-serif;
-font-size:14px;
-font-weight:900;
-direction:ltr !important;
-unicode-bidi:isolate;
-white-space:nowrap;
-flex-shrink:0
-}
+.logo span{color:#6cccf3}
 
-.logo-symbol{
-display:flex;
-align-items:center;
-font-family:Arial,sans-serif;
-font-size:20px;
-font-weight:900;
-color:#071b31;
-direction:ltr !important;
-unicode-bidi:isolate;
-white-space:nowrap
-}
-
-.header-tools{
-margin-right:auto;
-display:flex;
-align-items:center;
-gap:9px
-}
-
-.header-icon{
-width:42px;
-height:42px;
-border:1px solid #e1e7ec;
-border-radius:10px;
-background:#fff;
-display:flex;
-align-items:center;
-justify-content:center;
-cursor:pointer
-}
-
-.icon-svg{
-width:20px;
-height:20px;
-fill:none;
-stroke:#071b31;
-stroke-width:1.8;
-stroke-linecap:round;
-stroke-linejoin:round
-}
-
-/* MENU */
-
-.menu-panel{
-display:none;
-position:absolute;
-top:78px;
-right:0;
-left:0;
-background:#fff;
-border-bottom:1px solid #e4e9ed;
-box-shadow:0 20px 45px rgba(7,27,49,.12)
-}
-
-.menu-panel.open{display:block}
-
-.menu-inner{
-width:92%;
-max-width:1280px;
-margin:auto;
-padding:22px 0;
-display:grid;
-grid-template-columns:repeat(6,1fr);
-gap:10px
-}
-
-.menu-item{
-padding:18px 14px;
-border:1px solid #e4e9ed;
-border-radius:8px;
+.status{
 font-size:11px;
-font-weight:bold;
-color:#253c50;
-text-align:center
+color:#bcd0df
 }
-
-.menu-item:hover{
-background:#071b31;
-color:#fff
-}
-
-/* HERO */
-
-.hero{
-height:calc(100vh - 78px);
-min-height:620px;
-position:relative;
-overflow:hidden;
-background:#071b31
-}
-
-.hero-image{
-position:absolute;
-inset:0;
-width:100%;
-height:100%;
-object-fit:cover;
-animation:heroZoom 12s ease-in-out infinite alternate
-}
-
-.hero-overlay{
-position:absolute;
-inset:0;
-background:linear-gradient(
-90deg,
-rgba(3,16,31,.84),
-rgba(4,20,37,.58),
-rgba(4,20,37,.43)
-)
-}
-
-.hero-content{
-position:relative;
-z-index:2;
-width:92%;
-max-width:1280px;
-height:100%;
-margin:auto;
-display:flex;
-align-items:center;
-justify-content:center;
-text-align:center
-}
-
-.hero-text{
-color:#fff;
-max-width:760px;
-animation:fadeUp .9s ease both
-}
-
-.hero-line{
-width:55px;
-height:2px;
-background:#6bc9ee;
-margin:0 auto 20px
-}
-
-.hero-logo{
-font-family:Arial,sans-serif;
-font-size:58px;
-font-weight:800;
-letter-spacing:.5px;
-margin-bottom:12px;
-direction:ltr;
-unicode-bidi:isolate
-}
-
-.hero-logo span{color:#70cff2}
-
-.hero-subtitle{
-font-size:18px;
-line-height:2;
-margin:0 auto 14px;
-font-weight:500
-}
-
-.hero-description{
-max-width:600px;
-margin:0 auto 30px;
-color:#e2edf4;
-font-size:12px;
-line-height:2.1
-}
-
-.hero-buttons{
-display:flex;
-justify-content:center;
-gap:12px;
-flex-wrap:wrap
-}
-
-.glass-button{
-min-width:165px;
-padding:14px 24px;
-border-radius:9px;
-border:1px solid rgba(255,255,255,.45);
-background:rgba(255,255,255,.13);
-color:#fff;
-backdrop-filter:blur(10px);
--webkit-backdrop-filter:blur(10px);
-font-size:11px;
-font-weight:bold;
-display:flex;
-align-items:center;
-justify-content:center;
-gap:9px;
-transition:.25s
-}
-
-.glass-button:hover{
-background:#fff;
-color:#071b31;
-transform:translateY(-3px)
-}
-
-.glass-button.primary{
-background:rgba(12,122,187,.72);
-border-color:#62c7ed
-}
-
-/* GENERAL */
-
-section{padding:85px 0}
 
 .container{
 width:92%;
-max-width:1280px;
-margin:auto
+max-width:1300px;
+margin:30px auto
 }
 
-.heading{
-text-align:center;
-margin-bottom:42px
-}
-
-.heading small{
-color:#0879bd;
-font-size:10px;
-font-weight:bold
-}
-
-.heading h2{
-color:#071b31;
-font-size:30px;
-margin:8px 0
-}
-
-.heading p{
-color:#718192;
-font-size:11px
-}
-
-/* SERVICES */
-
-.services{background:#f5f7f9}
-
-.grid4{
+.cards{
 display:grid;
 grid-template-columns:repeat(4,1fr);
-gap:16px
-}
-
-.card{
-background:#fff;
-border:1px solid #e1e7ec;
-border-radius:9px;
-padding:28px 22px;
-transition:.3s
-}
-
-.card:hover{
-transform:translateY(-6px);
-box-shadow:0 20px 45px rgba(7,27,49,.08)
-}
-
-.service-icon{
-width:50px;
-height:50px;
-border-radius:10px;
-background:#edf7fb;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:25px
-}
-
-.card h3{
-font-size:15px;
-color:#071b31;
-margin:15px 0 7px
-}
-
-.card p{
-font-size:10px;
-color:#718192;
-line-height:1.9
-}
-
-.card a{
-color:#0879bd;
-font-size:10px;
-font-weight:bold
-}
-
-/* WHY */
-
-.why{background:#fff}
-
-.why-grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:55px;
-align-items:center
-}
-
-.why-text h2{
-font-size:32px;
-color:#071b31;
-margin:8px 0 18px
-}
-
-.why-text>p{
-font-size:12px;
-color:#718192;
-line-height:2
-}
-
-.why-items{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:13px;
-margin-top:25px
-}
-
-.why-item{
-padding:18px;
-border:1px solid #e1e7ec;
-border-radius:9px;
-background:#fff;
-transition:.3s
-}
-
-.why-item:hover{
-transform:translateY(-4px);
-box-shadow:0 15px 35px rgba(7,27,49,.07)
-}
-
-.why-icon{
-font-size:23px;
-margin-bottom:8px
-}
-
-.why-item h3{
-font-size:12px;
-margin:5px 0;
-color:#071b31
-}
-
-.why-item p{
-font-size:9px;
-line-height:1.8;
-color:#718192;
-margin:0
-}
-
-.stats-box{
-background:#071b31;
-border-radius:14px;
-padding:38px 25px;
-color:#fff;
-box-shadow:0 25px 55px rgba(7,27,49,.16)
-}
-
-.stats-title{
-font-size:13px;
-color:#bcd0df;
+gap:15px;
 margin-bottom:25px
 }
 
-.stats{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:25px 10px
-}
-
-.stat{text-align:center}
-
-.stat strong{
-display:block;
-font-family:Arial,sans-serif;
-font-size:32px;
-color:#6cccf3
-}
-
-.stat span{
-font-size:9px;
-color:#c5d3de
-}
-
-/* BRANDS */
-
-.brands{background:#fff}
-
-.brand-grid{
-display:grid;
-grid-template-columns:repeat(6,1fr);
-gap:12px
-}
-
-.brand{
-height:75px;
-border:1px solid #e1e7ec;
-border-radius:8px;
-display:flex;
-align-items:center;
-justify-content:center;
-color:#617283;
-font-family:Arial,sans-serif;
-font-size:14px;
-font-weight:bold;
-transition:.25s
-}
-
-.brand:hover{
-border-color:#8dcbe3;
-transform:translateY(-3px)
-}
-
-/* PRODUCTS */
-
-.products{background:#f5f7f9}
-
-.product-grid{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:16px
-}
-
-.product{
+.stat-card{
 background:#fff;
 border:1px solid #e1e7ec;
-border-radius:10px;
-overflow:hidden;
-transition:.3s
+border-radius:12px;
+padding:20px
 }
 
-.product:hover{
-transform:translateY(-5px);
-box-shadow:0 20px 45px rgba(7,27,49,.09)
+.stat-card small{
+display:block;
+color:#718192;
+font-size:10px;
+margin-bottom:10px
 }
 
-.product-image{
-height:170px;
-background:linear-gradient(135deg,#edf5f8,#dcecf2);
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:50px
-}
-
-.product-info{padding:18px}
-
-.product-info small{
-font-size:9px;
+.stat-card strong{
+font-family:Arial;
+font-size:28px;
 color:#0879bd
 }
 
-.product-info h3{
-font-size:12px;
-color:#071b31;
-margin:8px 0
-}
-
-.product-info p{
-font-size:9px;
-color:#718192;
-line-height:1.8
-}
-
-.product-btn{
-display:block;
-text-align:center;
-background:#071b31;
-color:#fff;
-padding:10px;
-border-radius:7px;
-font-size:9px;
-margin-top:12px
-}
-
-/* ABOUT */
-
-.about{background:#fff}
-
-.about-grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:55px;
-align-items:center
-}
-
-.about h2{
-color:#071b31;
-font-size:33px;
-line-height:1.5
-}
-
-.about p{
-color:#718192;
-font-size:12px;
-line-height:2
-}
-
-.about-panel{
-min-height:320px;
-background:#071b31;
-border-radius:12px;
-padding:45px;
-color:#fff
-}
-
-.about-panel strong{
-font-family:Arial,sans-serif;
-font-size:60px;
-color:#6cccf3
-}
-
-.about-panel h3{font-size:20px}
-
-/* REVIEWS */
-
-.reviews{background:#f5f7f9}
-
-.review-grid{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:16px
-}
-
-.review{
+.panel{
 background:#fff;
 border:1px solid #e1e7ec;
-border-radius:10px;
-padding:25px
+border-radius:12px;
+padding:22px;
+margin-bottom:20px
 }
 
-.stars{
-color:#e4a928;
-letter-spacing:2px;
-font-size:12px
+.panel-title{
+display:flex;
+align-items:center;
+justify-content:space-between;
+margin-bottom:18px
 }
 
-.review p{
-font-size:11px;
-color:#596d7e;
-line-height:2;
-margin:15px 0
+.panel-title h2{
+font-size:16px;
+margin:0
 }
 
-.review strong{
+.refresh{
+border:0;
+background:#0879bd;
+color:#fff;
+border-radius:7px;
+padding:9px 15px;
 font-size:10px;
-color:#071b31
+cursor:pointer
 }
 
-/* REQUEST */
+table{
+width:100%;
+border-collapse:collapse;
+font-size:10px
+}
 
-.request{
+th{
+background:#f1f5f8;
+color:#40576b;
+font-weight:bold
+}
+
+th,td{
+padding:12px 8px;
+border-bottom:1px solid #e7edf1;
+text-align:right;
+vertical-align:top
+}
+
+.badge{
+display:inline-block;
+padding:5px 9px;
+border-radius:20px;
+background:#eaf5fb;
+color:#0879bd;
+font-size:9px
+}
+
+.actions{
+display:flex;
+gap:5px;
+flex-wrap:wrap
+}
+
+.actions button{
+border:1px solid #dce5eb;
+background:#fff;
+border-radius:6px;
+padding:6px 9px;
+font-size:9px;
+cursor:pointer
+}
+
+.actions button:hover{
 background:#071b31;
 color:#fff
 }
 
-.request-grid{
-display:grid;
-grid-template-columns:.8fr 1.2fr;
-gap:50px;
-align-items:center
-}
-
-.request-text h2{
-font-size:30px;
-margin:8px 0 15px
-}
-
-.request-text p{
-font-size:11px;
-color:#b9cbd8;
-line-height:2
-}
-
-.request-list div{
-font-size:10px;
-color:#d9e5ec;
-margin:12px 0
-}
-
-.request-form{
-background:#fff;
-padding:28px;
-border-radius:12px
-}
-
-.form-row{
+.form-grid{
 display:grid;
 grid-template-columns:1fr 1fr;
 gap:10px
 }
 
-.request-form input,
-.request-form select,
-.request-form textarea{
+.form-grid input,
+.form-grid textarea,
+.form-grid select{
 width:100%;
-border:1px solid #dfe7ec;
+padding:11px;
+border:1px solid #dce5eb;
 border-radius:7px;
-padding:12px;
-margin-bottom:10px;
-font-size:10px;
 outline:none;
-color:#263e52;
-background:#fff
+font-size:10px
 }
 
-.request-form textarea{
-height:100px;
-resize:none
+.form-grid textarea{
+min-height:80px;
+resize:vertical
 }
 
-.submit-btn{
-width:100%;
+.form-full{grid-column:1/-1}
+
+.add-btn{
 border:0;
-border-radius:7px;
-padding:13px;
 background:#0879bd;
 color:#fff;
-font-weight:bold;
+padding:11px 18px;
+border-radius:7px;
 font-size:10px;
 cursor:pointer
 }
 
-.submit-btn:disabled{
-opacity:.6;
-cursor:wait
-}
-
-.form-message{
+.message{
 display:none;
-margin-top:12px;
-padding:11px;
+padding:10px;
 border-radius:7px;
 font-size:10px;
-text-align:center
+margin-top:12px
 }
 
-.form-message.success{
+.message.success{
 display:block;
-background:#e8f8ef;
+background:#e9f8ef;
 color:#176b3b
 }
 
-.form-message.error{
+.message.error{
 display:block;
 background:#fff0f0;
 color:#a22626
 }
 
-/* ARTICLES */
-
-.article-grid{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:17px
-}
-
-.article{
-border:1px solid #e2e8ed;
-border-radius:9px;
-overflow:hidden
-}
-
-.article-img{
-height:150px;
-background:#edf4f7;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:48px
-}
-
-.article-body{padding:20px}
-
-.article-body small{
-color:#0879bd;
-font-size:9px
-}
-
-.article-body h3{
-color:#071b31;
-font-size:14px
-}
-
-.article-body p{
-color:#718192;
-font-size:10px;
-line-height:1.9
-}
-
-/* CTA */
-
-.cta{
-background:#071b31;
-color:#fff;
-border-radius:10px;
-padding:45px;
-display:flex;
-justify-content:space-between;
-align-items:center
-}
-
-.cta h2{
-margin:0;
-font-size:25px
-}
-
-.cta p{
-color:#bdcad5;
+.empty{
+text-align:center;
+padding:30px;
+color:#8a99a7;
 font-size:11px
 }
 
-.cta a{
-background:#0879bd;
-padding:13px 25px;
-border-radius:8px;
-font-size:11px;
-font-weight:bold
-}
-
-/* FOOTER */
-
-footer{
-background:#06182c;
-color:#fff;
-padding:60px 0 90px
-}
-
-.footer-grid{
+.chat-list{
 display:grid;
-grid-template-columns:2fr 1fr 1fr 1fr;
-gap:35px
+grid-template-columns:300px 1fr;
+gap:15px;
+min-height:300px
 }
 
-.footer-logo{
-font-family:Arial,sans-serif;
-font-size:22px;
-font-weight:bold;
-direction:ltr;
-unicode-bidi:isolate
+.chat-users{
+border:1px solid #e1e7ec;
+border-radius:9px;
+overflow:auto;
+max-height:400px
 }
 
-.footer-logo span{color:#6cccf3}
-
-footer h3{font-size:13px}
-
-footer p,
-footer a{
-color:#aebdca;
-font-size:10px;
-line-height:2
-}
-
-footer a{display:block}
-
-.copyright{
-border-top:1px solid rgba(255,255,255,.1);
-margin-top:40px;
-padding-top:18px;
-text-align:center;
-color:#8193a5;
-font-size:9px
-}
-
-/* CHAT */
-
-.chat-button{
-position:fixed;
-left:22px;
-bottom:90px;
-width:58px;
-height:58px;
-border-radius:50%;
-border:0;
-background:#0879bd;
-box-shadow:0 12px 35px rgba(0,0,0,.25);
-display:flex;
-align-items:center;
-justify-content:center;
-cursor:pointer;
-z-index:9998;
-animation:pulse 3s infinite;
-font-size:25px
-}
-
-.chat-window{
-position:fixed;
-left:22px;
-bottom:158px;
-width:330px;
-background:#fff;
-border-radius:16px;
-overflow:hidden;
-box-shadow:0 20px 60px rgba(7,27,49,.25);
-border:1px solid #e3e9ed;
-z-index:9999;
-display:none
-}
-
-.chat-window.open{display:block}
-
-.chat-head{
-background:#071b31;
-color:#fff;
-padding:18px;
-display:flex;
-align-items:center;
-gap:12px
-}
-
-.chat-avatar{
-width:42px;
-height:42px;
-border-radius:50%;
-background:#0879bd;
-display:flex;
-align-items:center;
-justify-content:center
-}
-
-.chat-head strong{
-display:block;
-font-size:12px
-}
-
-.chat-head small{
-color:#bcd0df;
-font-size:9px
-}
-
-.chat-close{
-margin-right:auto;
-border:0;
-background:transparent;
-color:#fff;
-font-size:20px;
-cursor:pointer
-}
-
-.chat-body{padding:18px}
-
-.chat-message{
-background:#f1f6f9;
-border-radius:12px 12px 12px 3px;
+.chat-user{
 padding:13px;
-font-size:10px;
-color:#334b60;
-line-height:1.9;
-margin-bottom:15px
-}
-
-.chat-options{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:7px
-}
-
-.chat-option{
-border:1px solid #dfe7ec;
-background:#fff;
-border-radius:8px;
-padding:10px 5px;
-color:#263f54;
-font-size:9px;
+border-bottom:1px solid #edf1f4;
 cursor:pointer
 }
 
-.chat-input{
-margin-top:12px;
-width:100%;
-border:1px solid #dfe7ec;
-border-radius:8px;
-padding:11px;
+.chat-user:hover,
+.chat-user.active{
+background:#edf7fb
+}
+
+.chat-user strong{
+display:block;
+font-size:10px
+}
+
+.chat-user small{
+color:#81909d;
+font-size:8px
+}
+
+.chat-box{
+border:1px solid #e1e7ec;
+border-radius:9px;
+padding:15px;
+display:flex;
+flex-direction:column
+}
+
+.messages{
+flex:1;
+max-height:300px;
+overflow:auto;
+padding:5px
+}
+
+.msg{
+max-width:75%;
+padding:9px 11px;
+border-radius:10px;
+margin-bottom:8px;
+font-size:9px;
+line-height:1.8
+}
+
+.msg.customer{
+background:#edf3f7;
+margin-left:auto;
+border-radius:10px 10px 3px 10px
+}
+
+.msg.admin{
+background:#0879bd;
+color:#fff;
+margin-right:auto;
+border-radius:10px 10px 10px 3px
+}
+
+.reply{
+display:flex;
+gap:7px;
+margin-top:10px
+}
+
+.reply input{
+flex:1;
+border:1px solid #dce5eb;
+border-radius:7px;
+padding:10px;
 font-size:9px;
 outline:none
 }
 
-/* MOBILE BAR */
-
-.mobile-bar{display:none}
-
-@media(max-width:900px){
-
-.mobile-bar a span{
-display:flex;
-align-items:center;
-justify-content:center;
-width:32px;
-height:32px;
-font-size:23px;
-line-height:1;
-margin-bottom:2px
-}
-
-.mobile-bar a{
-gap:2px;
+.reply button{
+border:0;
+background:#071b31;
+color:#fff;
+border-radius:7px;
+padding:0 16px;
+cursor:pointer;
 font-size:9px
 }
 
+@media(max-width:800px){
+
+.cards{grid-template-columns:1fr 1fr}
+
+.form-grid{grid-template-columns:1fr}
+
+.form-full{grid-column:auto}
+
+.chat-list{grid-template-columns:1fr}
+
+table{
+display:block;
+overflow-x:auto;
+white-space:nowrap
 }
-
-/* ANIMATION */
-
-@keyframes fadeUp{
-from{
-opacity:0;
-transform:translateY(25px)
-}
-to{
-opacity:1;
-transform:translateY(0)
-}
-}
-
-@keyframes heroZoom{
-from{transform:scale(1)}
-to{transform:scale(1.05)}
-}
-
-@keyframes pulse{
-0%,100%{box-shadow:0 12px 35px rgba(0,0,0,.25)}
-50%{box-shadow:0 12px 35px rgba(8,121,189,.42)}
-}
-
-/* RESPONSIVE */
-
-@media(max-width:900px){
-
-.header{height:68px}
-
-.menu-panel{top:68px}
-
-.menu-inner{
-grid-template-columns:1fr 1fr
-}
-
-.hero{
-height:calc(100vh - 68px);
-min-height:600px
-}
-
-.hero-logo{font-size:40px}
-
-.hero-subtitle{font-size:14px}
-
-.hero-description{font-size:10px}
-
-.grid4{
-grid-template-columns:1fr 1fr
-}
-
-.brand-grid{
-grid-template-columns:repeat(3,1fr)
-}
-
-.about-grid,
-.why-grid,
-.request-grid{
-grid-template-columns:1fr
-}
-
-.product-grid{
-grid-template-columns:1fr 1fr
-}
-
-.review-grid{
-grid-template-columns:1fr
-}
-
-.article-grid{
-grid-template-columns:1fr
-}
-
-.footer-grid{
-grid-template-columns:1fr 1fr
-}
-
-.mobile-bar{
-position:fixed;
-right:0;
-left:0;
-bottom:0;
-height:68px;
-background:#fff;
-border-top:1px solid #dfe6eb;
-display:flex;
-z-index:9990;
-box-shadow:0 -10px 30px rgba(0,0,0,.1)
-}
-
-.mobile-bar a{
-flex:1;
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-gap:2px;
-font-size:9px;
-color:#53697b
-}
-
-.mobile-bar a.active{color:#0879bd}
-
-.chat-button{bottom:82px}
-
-.chat-window{bottom:150px}
 
 }
 
 @media(max-width:500px){
 
-.logo{
-font-size:17px;
-direction:ltr;
-flex-direction:row
-}
+.cards{grid-template-columns:1fr 1fr}
 
-.logo-text{
-width:40px;
-height:40px;
-font-size:14px;
-direction:ltr;
-unicode-bidi:isolate;
-white-space:nowrap
-}
+.container{width:94%}
 
-.logo-symbol{
-font-size:17px;
-direction:ltr;
-unicode-bidi:isolate;
-white-space:nowrap
-}
-
-.header-icon{
-width:38px;
-height:38px
-}
-
-.hero-logo{font-size:34px}
-
-.hero-subtitle{font-size:13px}
-
-.hero-buttons{
-display:grid;
-grid-template-columns:1fr 1fr
-}
-
-.glass-button{
-min-width:0;
-padding:12px 7px;
-font-size:9px
-}
-
-.grid4{
-grid-template-columns:1fr
-}
-
-.brand-grid{
-grid-template-columns:1fr 1fr
-}
-
-.product-grid{
-grid-template-columns:1fr 1fr
-}
-
-.why-items{
-grid-template-columns:1fr
-}
-
-.form-row{
-grid-template-columns:1fr
-}
-
-.cta{
-display:block;
-text-align:center
-}
-
-.cta a{
-display:inline-block;
-margin-top:15px
-}
-
-.footer-grid{
-grid-template-columns:1fr
-}
-
-.chat-window{
-left:12px;
-right:12px;
-width:auto
-}
-
-.request-form{
-padding:20px
-}
-
-.mobile-bar a span{
-font-size:24px;
-width:34px;
-height:34px
-}
-
-.mobile-bar a{
-font-size:9px
-}
-
-}
-
-@media(prefers-reduced-motion:reduce){
-
-*{
-animation:none!important;
-transition:none!important
-}
+.header{padding:15px 3%}
 
 }
 </style>
@@ -1197,840 +346,1019 @@ transition:none!important
 
 <header class="header">
 
-<div class="header-inner">
-
-<a href="#home" class="logo" dir="ltr">
-<span class="logo-text">DB</span>
-<span class="logo-symbol">+ ❄️</span>
-</a>
-
-<div class="header-tools">
-
-<button class="header-icon" aria-label="جستجو" onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})">
-
-<svg class="icon-svg" viewBox="0 0 24 24">
-<circle cx="11" cy="11" r="6.5"></circle>
-<path d="M16 16l5 5"></path>
-</svg>
-
-</button>
-
-<a href="shop.html" class="header-icon" aria-label="فروشگاه">
-
-<svg class="icon-svg" viewBox="0 0 24 24">
-<path d="M4 8h16l-1 11H5L4 8z"></path>
-<path d="M8 8V6a4 4 0 0 1 8 0v2"></path>
-</svg>
-
-</a>
-
-<button class="header-icon" onclick="toggleMenu()" aria-label="منو">
-
-<svg class="icon-svg" viewBox="0 0 24 24">
-<path d="M4 7h16"></path>
-<path d="M4 12h16"></path>
-<path d="M4 17h16"></path>
-</svg>
-
-</button>
-
+<div class="logo">
+Dr <span>Borodat</span>
 </div>
 
-</div>
-
-<div class="menu-panel" id="menu">
-
-<div class="menu-inner">
-
-<a class="menu-item" href="#home">خانه</a>
-<a class="menu-item" href="shop.html">فروشگاه</a>
-<a class="menu-item" href="#services">دسته‌بندی‌ها</a>
-<a class="menu-item" href="#brands">برندها</a>
-<a class="menu-item" href="#contact">تماس با ما</a>
-<a class="menu-item" href="#about">درباره ما</a>
-
-</div>
-
+<div class="status" id="status">
+در حال اتصال...
 </div>
 
 </header>
 
+<main class="container">
 
-<section class="hero" id="home">
+<div class="cards">
 
-<img
-class="hero-image"
-src="IMG_20260823_213954.png"
-alt="دکتر برودت - خدمات سرمایشی"
->
-
-<div class="hero-overlay"></div>
-
-<div class="hero-content">
-
-<div class="hero-text">
-
-<div class="hero-line"></div>
-
-<div class="hero-logo" dir="ltr">
-Dr <span>Borodat</span>
+<div class="stat-card">
+<small>درخواست‌های خدمات</small>
+<strong id="requestCount">0</strong>
 </div>
 
-<div class="hero-subtitle">
-تأمین‌کننده و ارائه‌دهنده راهکارهای تخصصی سرمایش
+<div class="stat-card">
+<small>گفتگوها</small>
+<strong id="chatCount">0</strong>
 </div>
 
-<div class="hero-description">
-نصب، سرویس، تعمیر و تأمین تجهیزات سرمایشی
-با خدمات حرفه‌ای و قابل اعتماد.
+<div class="stat-card">
+<small>محصولات</small>
+<strong id="productCount">0</strong>
 </div>
 
-<div class="hero-buttons">
-
-<a href="shop.html" class="glass-button primary">
-مشاهده فروشگاه
-</a>
-
-<a href="tel:09197701790" class="glass-button">
-ارتباط با مهندس
-</a>
-
+<div class="stat-card">
+<small>سفارش‌ها</small>
+<strong id="orderCount">0</strong>
 </div>
 
 </div>
 
-</div>
+<section class="panel">
 
-</section>
+<div class="panel-title">
 
+<h2>📥 درخواست‌های خدمات</h2>
 
-<section class="services" id="services">
-
-<div class="container">
-
-<div class="heading">
-
-<small>SERVICES</small>
-
-<h2>خدمات تخصصی</h2>
-
-<p>تمام خدمات مورد نیاز سیستم‌های سرمایشی در یک مجموعه</p>
-
-</div>
-
-<div class="grid4">
-
-<div class="card">
-<div class="service-icon">❄️</div>
-<h3>نصب کولر گازی</h3>
-<p>نصب اصولی و راه‌اندازی انواع کولر گازی و اسپلیت.</p>
-<a href="#request">درخواست خدمت ←</a>
-</div>
-
-<div class="card">
-<div class="service-icon">🛠️</div>
-<h3>سرویس کولر</h3>
-<p>سرویس، شست‌وشو و بررسی عملکرد دستگاه.</p>
-<a href="#request">درخواست خدمت ←</a>
-</div>
-
-<div class="card">
-<div class="service-icon">🔧</div>
-<h3>تعمیر کولر</h3>
-<p>عیب‌یابی و تعمیر تخصصی انواع دستگاه.</p>
-<a href="#request">درخواست خدمت ←</a>
-</div>
-
-<div class="card">
-<div class="service-icon">💧</div>
-<h3>شارژ گاز</h3>
-<p>بررسی و شارژ گاز کولر در صورت نیاز.</p>
-<a href="#request">درخواست خدمت ←</a>
-</div>
-
-</div>
-</div>
-</section>
-
-
-<section class="why">
-
-<div class="container why-grid">
-
-<div class="why-text">
-
-<small style="color:#0879bd;font-weight:bold">
-WHY DR BORODAT
-</small>
-
-<h2>چرا دکتر برودت؟</h2>
-
-<p>
-تلاش ما این است که مشتری از اولین تماس تا پایان کار،
-یک تجربه حرفه‌ای، مطمئن و راحت داشته باشد.
-</p>
-
-<div class="why-items">
-
-<div class="why-item">
-<div class="why-icon">⚙️</div>
-<h3>تخصص فنی</h3>
-<p>ارائه خدمات تخصصی نصب، سرویس و تعمیر.</p>
-</div>
-
-<div class="why-item">
-<div class="why-icon">⚡</div>
-<h3>پاسخگویی سریع</h3>
-<p>پیگیری درخواست‌ها با سرعت و نظم.</p>
-</div>
-
-<div class="why-item">
-<div class="why-icon">🛠️</div>
-<h3>خدمات کامل</h3>
-<p>از مشاوره و نصب تا سرویس و تعمیر.</p>
-</div>
-
-<div class="why-item">
-<div class="why-icon">✓</div>
-<h3>اعتماد و کیفیت</h3>
-<p>تمرکز بر کیفیت انجام کار و رضایت مشتری.</p>
-</div>
-
-</div>
-
-</div>
-
-<div class="stats-box">
-
-<div class="stats-title">آمار دکتر برودت</div>
-
-<div class="stats">
-
-<div class="stat">
-<strong>+</strong>
-<span>خدمات انجام‌شده</span>
-</div>
-
-<div class="stat">
-<strong>+</strong>
-<span>سال تجربه</span>
-</div>
-
-<div class="stat">
-<strong>24/7</strong>
-<span>پشتیبانی</span>
-</div>
-
-<div class="stat">
-<strong>★</strong>
-<span>رضایت مشتری</span>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-
-<section class="brands" id="brands">
-
-<div class="container">
-
-<div class="heading">
-
-<small>BRANDS</small>
-
-<h2>برندهای تحت پوشش</h2>
-
-<p>ارائه خدمات برای برندهای مختلف سیستم‌های سرمایشی</p>
-
-</div>
-
-<div class="brand-grid">
-
-<div class="brand">LG</div>
-<div class="brand">GREE</div>
-<div class="brand">SAMSUNG</div>
-<div class="brand">DAIKIN</div>
-<div class="brand">MIDEA</div>
-<div class="brand">GENERAL</div>
-
-</div>
-
-</div>
-
-</section>
-
-
-<section class="products">
-
-<div class="container">
-
-<div class="heading">
-
-<small>SHOP</small>
-
-<h2>محصولات منتخب</h2>
-
-<p>برخی از محصولات و تجهیزات قابل ارائه توسط دکتر برودت</p>
-
-</div>
-
-<div class="product-grid">
-
-<div class="product">
-<div class="product-image">❄️</div>
-<div class="product-info">
-<small>کولر گازی</small>
-<h3>اسپلیت دیواری</h3>
-<p>مناسب برای فضاهای مسکونی و اداری.</p>
-<a class="product-btn" href="shop.html">مشاهده محصول</a>
-</div>
-</div>
-
-<div class="product">
-<div class="product-image">🌬️</div>
-<div class="product-info">
-<small>تجهیزات سرمایشی</small>
-<h3>تجهیزات تهویه</h3>
-<p>راهکارهای مناسب برای سیستم‌های سرمایشی.</p>
-<a class="product-btn" href="shop.html">مشاهده محصول</a>
-</div>
-</div>
-
-<div class="product">
-<div class="product-image">🔧</div>
-<div class="product-info">
-<small>قطعات</small>
-<h3>قطعات و لوازم</h3>
-<p>قطعات مورد نیاز سرویس و تعمیر دستگاه.</p>
-<a class="product-btn" href="shop.html">مشاهده فروشگاه</a>
-</div>
-</div>
-
-<div class="product">
-<div class="product-image">⚙️</div>
-<div class="product-info">
-<small>خدمات</small>
-<h3>خدمات تخصصی</h3>
-<p>درخواست خدمات تخصصی دکتر برودت.</p>
-<a class="product-btn" href="#request">درخواست خدمت</a>
-</div>
-</div>
-
-</div>
-</div>
-</section>
-
-
-<section class="about" id="about">
-
-<div class="container about-grid">
-
-<div>
-
-<small style="color:#0879bd;font-weight:bold">
-ABOUT US
-</small>
-
-<h2>راهکارهای حرفه‌ای برای سرمایش</h2>
-
-<p>
-دکتر برودت با تمرکز بر خدمات و تجهیزات سیستم‌های سرمایشی
-تلاش می‌کند یک تجربه کامل و مطمئن برای مشتریان ایجاد کند.
-</p>
-
-<p>
-از انتخاب تجهیزات تا نصب، سرویس و تعمیر؛ هدف ما ارائه
-خدماتی حرفه‌ای و قابل اعتماد است.
-</p>
-
-</div>
-
-<div class="about-panel">
-
-<strong>360°</strong>
-
-<h3>یک مجموعه برای تمام نیازهای سرمایشی</h3>
-
-<p>خدمات فنی، فروش تجهیزات و پشتیبانی مشتری در کنار یکدیگر.</p>
-
-</div>
-
-</div>
-
-</section>
-
-
-<section class="reviews">
-
-<div class="container">
-
-<div class="heading">
-
-<small>REVIEWS</small>
-
-<h2>رضایت مشتریان</h2>
-
-<p>تجربه مشتریان از خدمات دکتر برودت</p>
-
-</div>
-
-<div class="review-grid">
-
-<div class="review">
-<div class="stars">★★★★★</div>
-<p>«از نصب کولر کاملاً راضی بودم؛ کار تمیز و با دقت انجام شد.»</p>
-<strong>مشتری دکتر برودت</strong>
-</div>
-
-<div class="review">
-<div class="stars">★★★★★</div>
-<p>«پاسخگویی خوب و برخورد حرفه‌ای. از خدمات راضی بودم.»</p>
-<strong>مشتری دکتر برودت</strong>
-</div>
-
-<div class="review">
-<div class="stars">★★★★★</div>
-<p>«سرویس کولر سریع انجام شد و دستگاه خیلی بهتر کار می‌کند.»</p>
-<strong>مشتری دکتر برودت</strong>
-</div>
-
-</div>
-</div>
-</section>
-
-
-<section class="request" id="request">
-
-<div class="container request-grid">
-
-<div class="request-text">
-
-<small style="color:#6cccf3;font-weight:bold">
-SERVICE REQUEST
-</small>
-
-<h2>درخواست خدمات</h2>
-
-<p>
-برای نصب، سرویس یا تعمیر کولر گازی اطلاعات خود را
-ثبت کنید تا با شما تماس بگیریم.
-</p>
-
-<div class="request-list">
-
-<div>✓ نصب و راه‌اندازی</div>
-<div>✓ سرویس و شست‌وشو</div>
-<div>✓ تعمیر و عیب‌یابی</div>
-<div>✓ مشاوره و راهنمایی</div>
-
-</div>
-
-</div>
-
-<form class="request-form" id="serviceForm">
-
-<div class="form-row">
-
-<input id="name" name="name" type="text" placeholder="نام و نام خانوادگی" required>
-
-<input id="phone" name="phone" type="tel" placeholder="شماره تماس" dir="rtl" required>
-
-</div>
-
-<select id="service" name="service" required>
-
-<option value="">نوع خدمت را انتخاب کنید</option>
-
-<option value="🔧 نصب کولر گازی">نصب کولر گازی</option>
-<option value="🛠️ سرویس کولر">سرویس کولر</option>
-<option value="❄️ تعمیر کولر">تعمیر کولر</option>
-<option value="💧 شارژ گاز">شارژ گاز</option>
-<option value="📞 مشاوره">مشاوره</option>
-
-</select>
-
-<textarea
-id="description"
-name="description"
-placeholder="توضیحات درخواست..."
-></textarea>
-
-<button class="submit-btn" id="submitBtn" type="submit">
-ثبت درخواست خدمات
+<button class="refresh" onclick="loadDashboard()">
+↻ بروزرسانی
 </button>
 
-<div id="formMessage" class="form-message"></div>
+</div>
+
+<div id="requests"></div>
+
+</section>
+
+<section class="panel">
+
+<div class="panel-title">
+<h2>🛒 مدیریت محصولات</h2>
+</div>
+
+<form id="productForm">
+
+<div class="form-grid">
+
+<input id="productName" placeholder="نام محصول" required>
+
+<input id="productPrice" placeholder="قیمت" required>
+
+<input id="productStock" placeholder="موجودی" value="0">
+
+<input id="productCategory" placeholder="دسته‌بندی" required>
+
+<input
+class="form-full"
+id="productImage"
+placeholder="آدرس تصویر محصول"
+>
+
+<textarea
+class="form-full"
+id="productDescription"
+placeholder="توضیحات محصول"
+></textarea>
+
+<div class="form-full">
+
+<button class="add-btn" type="submit">
+➕ افزودن محصول
+</button>
+
+</div>
+
+</div>
 
 </form>
 
-</div>
+<div id="productMessage" class="message"></div>
 
 </section>
 
+<section class="panel">
 
-<section>
-
-<div class="container">
-
-<div class="heading">
-
-<small>MAGAZINE</small>
-
-<h2>مقالات و آموزش‌ها</h2>
-
-<p>مطالب کاربردی درباره کولر گازی و سیستم‌های سرمایشی</p>
-
+<div class="panel-title">
+<h2>📦 محصولات</h2>
 </div>
 
-<div class="article-grid">
-
-<article class="article">
-<div class="article-img">❄</div>
-<div class="article-body">
-<small>آموزش</small>
-<h3>چه زمانی کولر گازی نیاز به سرویس دارد؟</h3>
-<p>نشانه‌های مهمی که زمان سرویس دستگاه را مشخص می‌کنند.</p>
-</div>
-</article>
-
-<article class="article">
-<div class="article-img">🔧</div>
-<div class="article-body">
-<small>تعمیرات</small>
-<h3>چرا کولر باد گرم می‌زند؟</h3>
-<p>دلایل رایج گرم شدن باد کولر گازی.</p>
-</div>
-</article>
-
-<article class="article">
-<div class="article-img">◌</div>
-<div class="article-body">
-<small>نگهداری</small>
-<h3>چطور مصرف کولر را کاهش دهیم؟</h3>
-<p>چند نکته ساده برای استفاده بهتر از کولر.</p>
-</div>
-</article>
-
-</div>
-
-</div>
+<div id="products"></div>
 
 </section>
 
+<section class="panel">
 
-<section>
-
-<div class="container">
-
-<div class="cta">
-
-<div>
-
-<h2>نیاز به مشاوره دارید؟</h2>
-
-<p>برای ارتباط مستقیم با مهندس با ما تماس بگیرید.</p>
-
+<div class="panel-title">
+<h2>🛍️ سفارش‌ها</h2>
 </div>
 
-<a href="tel:09197701790" dir="ltr">
-0919 770 1790
-</a>
-
-</div>
-
-</div>
+<div id="orders"></div>
 
 </section>
 
+<section class="panel">
 
-<footer id="contact">
-
-<div class="container footer-grid">
-
-<div>
-
-<div class="footer-logo">
-Dr <span>Borodat</span>
+<div class="panel-title">
+<h2>💬 پشتیبانی آنلاین</h2>
 </div>
 
-<p>
-تأمین‌کننده و ارائه‌دهنده خدمات تخصصی سرمایش و تهویه.
-</p>
+<div class="chat-list">
 
+<div class="chat-users" id="chatUsers">
+<div class="empty">
+هنوز گفتگویی ثبت نشده است.
+</div>
 </div>
 
-<div>
+<div class="chat-box">
 
-<h3>دسترسی سریع</h3>
+<div class="messages" id="messages">
 
-<a href="#home">خانه</a>
-<a href="shop.html">فروشگاه</a>
-<a href="#services">خدمات</a>
-
-</div>
-
-<div>
-
-<h3>اطلاعات</h3>
-
-<a href="#brands">برندها</a>
-<a href="#about">درباره ما</a>
-<a href="#request">درخواست خدمات</a>
-
-</div>
-
-<div>
-
-<h3>تماس با ما</h3>
-
-<a href="tel:09197701790" dir="ltr">
-0919 770 1790
-</a>
-
-<a href="tel:09120704028" dir="ltr">
-0912 070 4028
-</a>
-
+<div class="empty">
+یک گفتگو را انتخاب کنید.
 </div>
 
 </div>
 
-<div class="container copyright">
-© 2026 Dr Borodat — تمامی حقوق محفوظ است.
-</div>
-
-</footer>
-
-
-<div class="mobile-bar">
-
-<a href="#home" class="active">
-<span>⌂</span>
-خانه
-</a>
-
-<a href="#services">
-<span>✦</span>
-خدمات
-</a>
-
-<a href="shop.html">
-<span>🛒</span>
-فروشگاه
-</a>
-
-<a href="tel:09197701790">
-<span>☎</span>
-تماس
-</a>
-
-<a href="javascript:void(0)" onclick="toggleChat()">
-<span>💬</span>
-پشتیبانی
-</a>
-
-</div>
-
-
-<button
-class="chat-button"
-onclick="toggleChat()"
-aria-label="پشتیبانی آنلاین"
->
-💬
-</button>
-
-
-<div class="chat-window" id="chatWindow">
-
-<div class="chat-head">
-
-<div class="chat-avatar">🎧</div>
-
-<div>
-
-<strong>پشتیبانی آنلاین</strong>
-
-<small>Dr Borodat</small>
-
-</div>
-
-<button class="chat-close" onclick="toggleChat()">
-×
-</button>
-
-</div>
-
-<div class="chat-body">
-
-<div class="chat-message">
-
-سلام 👋<br>
-چطور می‌تونم کمکتون کنم؟
-
-</div>
-
-<div class="chat-options">
-
-<button class="chat-option" onclick="chatChoice('تعمیر کولر')">
-تعمیر کولر
-</button>
-
-<button class="chat-option" onclick="chatChoice('سرویس کولر')">
-سرویس کولر
-</button>
-
-<button class="chat-option" onclick="chatChoice('نصب کولر')">
-نصب کولر
-</button>
-
-<button class="chat-option" onclick="chatChoice('راهنمای خرید')">
-راهنمای خرید
-</button>
-
-</div>
+<div class="reply">
 
 <input
-class="chat-input"
-id="chatInput"
-placeholder="پیامتان را بنویسید..."
+id="replyInput"
+placeholder="پاسخ خود را بنویسید..."
 >
 
+<button onclick="sendReply()">
+ارسال
+</button>
+
+</div>
+
 </div>
 
 </div>
 
+</section>
+
+</main>
 
 <script>
 
-function toggleMenu(){
+/* =====================================================
+SERVER ADDRESS
+===================================================== */
 
-document
-.getElementById("menu")
-.classList
-.toggle("open");
+const API_BASE = "https://dr-borodat.onrender.com";
 
-}
 
-function toggleChat(){
+/* =====================================================
+DATA
+===================================================== */
 
-document
-.getElementById("chatWindow")
-.classList
-.toggle("open");
-
-}
-
-function chatChoice(text){
-
-document
-.getElementById("chatInput")
-.value=text;
-
-document
-.getElementById("chatInput")
-.focus();
-
-}
-
-document
-.getElementById("serviceForm")
-.addEventListener("submit",async function(e){
-
-e.preventDefault();
-
-const button=document.getElementById("submitBtn");
-const message=document.getElementById("formMessage");
-
-const data={
-
-name:document.getElementById("name").value.trim(),
-
-phone:document.getElementById("phone").value.trim(),
-
-service:document.getElementById("service").value,
-
-description:document.getElementById("description").value.trim()
-
+let dashboardData={
+requests:[],
+chats:[],
+products:[],
+orders:[]
 };
 
-message.className="form-message";
-message.textContent="";
+let selectedChat=null;
 
-button.disabled=true;
-button.textContent="در حال ارسال...";
 
-try{
+/* =====================================================
+API
+===================================================== */
 
-const response=await fetch("/api/request",{
+async function apiFetch(path,options={}){
 
-method:"POST",
-
+const response=await fetch(
+API_BASE+path,
+{
+...options,
 headers:{
-"Content-Type":"application/json"
-},
+"Accept":"application/json",
+...(options.headers||{})
+}
+}
+);
 
-body:JSON.stringify(data)
-
-});
-
-const result=await response.json();
-
-if(result.success){
-
-message.className="form-message success";
-
-message.textContent="✅ "+result.message;
-
-document
-.getElementById("serviceForm")
-.reset();
-
-}else{
+if(!response.ok){
 
 throw new Error(
-result.message ||
-"ارسال درخواست انجام نشد."
+"خطای سرور: "+response.status
 );
 
 }
 
+return response.json();
+
+}
+
+
+/* =====================================================
+LOAD DASHBOARD
+===================================================== */
+
+async function loadDashboard(){
+
+const status=document.getElementById("status");
+
+status.textContent="در حال دریافت اطلاعات...";
+status.style.color="#bcd0df";
+
+try{
+
+const data=await apiFetch(
+"/api/admin/dashboard"
+);
+
+if(!data.success){
+
+throw new Error(
+"دریافت اطلاعات ناموفق بود."
+);
+
+}
+
+dashboardData={
+
+requests:Array.isArray(data.requests)
+?data.requests:[],
+
+chats:Array.isArray(data.chats)
+?data.chats:[],
+
+products:Array.isArray(data.products)
+?data.products:[],
+
+orders:Array.isArray(data.orders)
+?data.orders:[]
+
+};
+
+renderAll();
+
+status.textContent="● آنلاین";
+status.style.color="#78e08f";
+
 }catch(error){
 
-message.className="form-message error";
+console.error(error);
 
-message.textContent="❌ "+error.message;
+status.textContent="● خطا در اتصال";
+status.style.color="#ff8b8b";
 
-}finally{
+}
 
-button.disabled=false;
-button.textContent="ثبت درخواست خدمات";
+}
+
+
+/* =====================================================
+RENDER ALL
+===================================================== */
+
+function renderAll(){
+
+document.getElementById("requestCount").textContent=
+dashboardData.requests.length;
+
+document.getElementById("chatCount").textContent=
+dashboardData.chats.length;
+
+document.getElementById("productCount").textContent=
+dashboardData.products.length;
+
+document.getElementById("orderCount").textContent=
+dashboardData.orders.length;
+
+renderRequests();
+renderProducts();
+renderOrders();
+renderChats();
+
+}
+
+
+/* =====================================================
+REQUESTS
+===================================================== */
+
+function renderRequests(){
+
+const box=document.getElementById("requests");
+
+if(!dashboardData.requests.length){
+
+box.innerHTML=
+'<div class="empty">درخواستی ثبت نشده است.</div>';
+
+return;
+
+}
+
+box.innerHTML=`
+
+<table>
+
+<thead>
+
+<tr>
+<th>نام</th>
+<th>شماره</th>
+<th>خدمت</th>
+<th>توضیحات</th>
+<th>زمان</th>
+<th>وضعیت</th>
+<th>عملیات</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+${dashboardData.requests.map(item=>`
+
+<tr>
+
+<td>${escapeHtml(item.name)}</td>
+
+<td dir="ltr">${escapeHtml(item.phone)}</td>
+
+<td>${escapeHtml(item.service)}</td>
+
+<td>${escapeHtml(item.description||"-")}</td>
+
+<td dir="ltr">${escapeHtml(item.created_at)}</td>
+
+<td>
+<span class="badge">
+${escapeHtml(item.status||"new")}
+</span>
+</td>
+
+<td>
+
+<div class="actions">
+
+<button
+onclick="updateRequest('${item.id}','done')">
+انجام شد
+</button>
+
+<button
+onclick="updateRequest('${item.id}','processing')">
+در حال انجام
+</button>
+
+</div>
+
+</td>
+
+</tr>
+
+`).join("")}
+
+</tbody>
+
+</table>
+
+`;
+
+}
+
+
+/* =====================================================
+PRODUCTS
+===================================================== */
+
+function renderProducts(){
+
+const box=document.getElementById("products");
+
+if(!dashboardData.products.length){
+
+box.innerHTML=
+'<div class="empty">محصولی ثبت نشده است.</div>';
+
+return;
+
+}
+
+box.innerHTML=`
+
+<table>
+
+<thead>
+
+<tr>
+<th>نام</th>
+<th>دسته‌بندی</th>
+<th>قیمت</th>
+<th>موجودی</th>
+<th>عملیات</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+${dashboardData.products.map(product=>`
+
+<tr>
+
+<td>${escapeHtml(product.name)}</td>
+
+<td>${escapeHtml(product.category)}</td>
+
+<td>${escapeHtml(product.price)}</td>
+
+<td>${escapeHtml(product.stock)}</td>
+
+<td>
+
+<div class="actions">
+
+<button onclick="editProduct('${product.id}')">
+ویرایش
+</button>
+
+<button onclick="deleteProduct('${product.id}')">
+حذف
+</button>
+
+</div>
+
+</td>
+
+</tr>
+
+`).join("")}
+
+</tbody>
+
+</table>
+
+`;
+
+}
+
+
+/* =====================================================
+ORDERS
+===================================================== */
+
+function renderOrders(){
+
+const box=document.getElementById("orders");
+
+if(!dashboardData.orders.length){
+
+box.innerHTML=
+'<div class="empty">سفارشی ثبت نشده است.</div>';
+
+return;
+
+}
+
+box.innerHTML=`
+
+<table>
+
+<thead>
+
+<tr>
+<th>نام</th>
+<th>شماره</th>
+<th>محصول</th>
+<th>تعداد</th>
+<th>زمان</th>
+<th>وضعیت</th>
+<th>عملیات</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+${dashboardData.orders.map(order=>`
+
+<tr>
+
+<td>${escapeHtml(order.name)}</td>
+
+<td dir="ltr">${escapeHtml(order.phone)}</td>
+
+<td>${escapeHtml(order.product_name)}</td>
+
+<td>${escapeHtml(order.quantity)}</td>
+
+<td dir="ltr">${escapeHtml(order.created_at)}</td>
+
+<td>
+<span class="badge">
+${escapeHtml(order.status||"new")}
+</span>
+</td>
+
+<td>
+
+<div class="actions">
+
+<button
+onclick="updateOrder('${order.id}','processing')">
+در حال انجام
+</button>
+
+<button
+onclick="updateOrder('${order.id}','done')">
+تکمیل شد
+</button>
+
+</div>
+
+</td>
+
+</tr>
+
+`).join("")}
+
+</tbody>
+
+</table>
+
+`;
+
+}
+
+
+/* =====================================================
+CHATS
+===================================================== */
+
+function renderChats(){
+
+const box=document.getElementById("chatUsers");
+
+if(!dashboardData.chats.length){
+
+box.innerHTML=
+'<div class="empty">هنوز گفتگویی ثبت نشده است.</div>';
+
+return;
+
+}
+
+box.innerHTML=
+dashboardData.chats.map(chat=>`
+
+<div
+class="chat-user ${
+selectedChat===chat.id?"active":""
+}"
+onclick="selectChat('${chat.id}')"
+>
+
+<strong>
+${escapeHtml(chat.name)}
+</strong>
+
+<small dir="ltr">
+${escapeHtml(chat.phone)}
+</small>
+
+</div>
+
+`).join("");
+
+}
+
+
+/* =====================================================
+SELECT CHAT
+===================================================== */
+
+function selectChat(id){
+
+selectedChat=id;
+
+renderChats();
+
+const chat=
+dashboardData.chats.find(
+item=>item.id===id
+);
+
+const box=
+document.getElementById("messages");
+
+if(!chat){
+
+box.innerHTML=
+'<div class="empty">گفتگو پیدا نشد.</div>';
+
+return;
+
+}
+
+const messages=
+Array.isArray(chat.messages)
+?chat.messages:[];
+
+if(!messages.length){
+
+box.innerHTML=
+'<div class="empty">پیامی ثبت نشده است.</div>';
+
+return;
+
+}
+
+box.innerHTML=
+messages.map(message=>`
+
+<div class="msg ${
+message.sender==="admin"
+?"admin"
+:"customer"
+}">
+
+${escapeHtml(message.message)}
+
+<br>
+
+<small>
+${escapeHtml(message.created_at)}
+</small>
+
+</div>
+
+`).join("");
+
+}
+
+
+/* =====================================================
+SEND REPLY
+===================================================== */
+
+async function sendReply(){
+
+if(!selectedChat){
+
+alert("ابتدا یک گفتگو را انتخاب کنید.");
+
+return;
+
+}
+
+const input=
+document.getElementById("replyInput");
+
+const message=
+input.value.trim();
+
+if(!message)return;
+
+try{
+
+const data=
+await apiFetch(
+"/api/admin/chat/reply",
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+chat_id:selectedChat,
+message:message
+})
+}
+);
+
+if(!data.success){
+
+throw new Error(
+data.message||"ارسال پاسخ ناموفق بود."
+);
+
+}
+
+input.value="";
+
+await loadDashboard();
+
+selectChat(selectedChat);
+
+}catch(error){
+
+alert(error.message);
+
+}
+
+}
+
+
+/* =====================================================
+ADD PRODUCT
+===================================================== */
+
+document
+.getElementById("productForm")
+.addEventListener(
+"submit",
+async function(e){
+
+e.preventDefault();
+
+const message=
+document.getElementById("productMessage");
+
+const payload={
+
+name:
+document.getElementById("productName").value.trim(),
+
+price:
+document.getElementById("productPrice").value.trim(),
+
+stock:
+document.getElementById("productStock").value.trim(),
+
+category:
+document.getElementById("productCategory").value.trim(),
+
+image:
+document.getElementById("productImage").value.trim(),
+
+description:
+document.getElementById("productDescription").value.trim()
+
+};
+
+try{
+
+const data=
+await apiFetch(
+"/api/admin/products",
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify(payload)
+}
+);
+
+if(!data.success){
+
+throw new Error(
+data.message||"ثبت محصول ناموفق بود."
+);
+
+}
+
+message.className=
+"message success";
+
+message.textContent=
+"محصول با موفقیت اضافه شد.";
+
+this.reset();
+
+await loadDashboard();
+
+}catch(error){
+
+message.className=
+"message error";
+
+message.textContent=
+error.message;
 
 }
 
 });
 
 
-document.addEventListener("click",function(e){
+/* =====================================================
+DELETE PRODUCT
+===================================================== */
 
-const menu=document.getElementById("menu");
+async function deleteProduct(id){
 
-if(
-menu.classList.contains("open") &&
-!e.target.closest(".menu-panel") &&
-!e.target.closest(".header-icon")
-){
+if(!confirm("این محصول حذف شود؟"))return;
 
-menu.classList.remove("open");
+try{
+
+const data=
+await apiFetch(
+"/api/admin/products/"+id,
+{
+method:"DELETE"
+}
+);
+
+if(!data.success){
+
+throw new Error(
+data.message||"حذف محصول ناموفق بود."
+);
 
 }
 
-});
+await loadDashboard();
+
+}catch(error){
+
+alert(error.message);
+
+}
+
+}
+
+
+/* =====================================================
+EDIT PRODUCT
+===================================================== */
+
+async function editProduct(id){
+
+const product=
+dashboardData.products.find(
+item=>item.id===id
+);
+
+if(!product)return;
+
+const name=
+prompt("نام محصول:",product.name);
+
+if(name===null)return;
+
+const price=
+prompt("قیمت:",product.price);
+
+if(price===null)return;
+
+const stock=
+prompt("موجودی:",product.stock);
+
+if(stock===null)return;
+
+const category=
+prompt("دسته‌بندی:",product.category);
+
+if(category===null)return;
+
+try{
+
+const data=
+await apiFetch(
+"/api/admin/products/"+id,
+{
+method:"PATCH",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+name:name,
+price:price,
+stock:stock,
+category:category
+})
+}
+);
+
+if(!data.success){
+
+throw new Error(
+data.message||"ویرایش ناموفق بود."
+);
+
+}
+
+await loadDashboard();
+
+}catch(error){
+
+alert(error.message);
+
+}
+
+}
+
+
+/* =====================================================
+UPDATE ORDER
+===================================================== */
+
+async function updateOrder(id,status){
+
+try{
+
+const data=
+await apiFetch(
+"/api/admin/orders/"+id,
+{
+method:"PATCH",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+status:status
+})
+}
+);
+
+if(!data.success){
+
+throw new Error(
+data.message||"تغییر وضعیت ناموفق بود."
+);
+
+}
+
+await loadDashboard();
+
+}catch(error){
+
+alert(error.message);
+
+}
+
+}
+
+
+/* =====================================================
+UPDATE REQUEST
+===================================================== */
+
+async function updateRequest(id,status){
+
+try{
+
+const data=
+await apiFetch(
+"/api/admin/requests/"+id,
+{
+method:"PATCH",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+status:status
+})
+}
+);
+
+if(!data.success){
+
+throw new Error(
+data.message||"تغییر وضعیت ناموفق بود."
+);
+
+}
+
+await loadDashboard();
+
+}catch(error){
+
+alert(error.message);
+
+}
+
+}
+
+
+/* =====================================================
+ESCAPE HTML
+===================================================== */
+
+function escapeHtml(value){
+
+return String(value??"")
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
+
+}
+
+
+/* =====================================================
+START
+===================================================== */
+
+loadDashboard();
 
 </script>
 
