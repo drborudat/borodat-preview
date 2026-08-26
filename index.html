@@ -43,7 +43,6 @@ align-items:center
 
 /* LOGO */
 
-
 .logo{
 display:flex;
 align-items:center;
@@ -63,20 +62,19 @@ text-decoration:none;
 display:flex;
 align-items:center;
 justify-content:center;
-width:40px;
-height:40px;
-border-radius:10px;
-background:#071b31;
-color:#fff;
+width:auto;
+height:auto;
+border-radius:0;
+background:transparent;
+color:#071b31;
 font-family:Arial,sans-serif;
-font-size:14px;
+font-size:18px;
 font-weight:900;
 direction:ltr !important;
 unicode-bidi:isolate;
 white-space:nowrap;
 flex-shrink:0;
 }
-
 
 .header-tools{
 margin-right:auto;
@@ -1091,7 +1089,11 @@ flex-direction:row
 .logo-text{
 direction:ltr;
 unicode-bidi:isolate;
-white-space:nowrap
+white-space:nowrap;
+font-size:17px;
+background:transparent;
+width:auto;
+height:auto
 }
 
 .header-icon{
@@ -1242,7 +1244,6 @@ transition:none!important
 
 </header>
 
-
 <section class="hero" id="home">
 
 <img
@@ -1289,7 +1290,6 @@ Dr <span>Borodat</span>
 </div>
 
 </section>
-
 
 <section class="services" id="services">
 
@@ -1338,7 +1338,6 @@ Dr <span>Borodat</span>
 </div>
 </div>
 </section>
-
 
 <section class="why">
 
@@ -1421,7 +1420,6 @@ WHY DR BORODAT
 
 </section>
 
-
 <section class="brands" id="brands">
 
 <div class="container">
@@ -1450,7 +1448,6 @@ WHY DR BORODAT
 </div>
 
 </section>
-
 
 <section class="products">
 
@@ -1512,7 +1509,6 @@ WHY DR BORODAT
 </div>
 </section>
 
-
 <section class="about" id="about">
 
 <div class="container about-grid">
@@ -1551,7 +1547,6 @@ ABOUT US
 
 </section>
 
-
 <section class="reviews">
 
 <div class="container">
@@ -1589,7 +1584,6 @@ ABOUT US
 </div>
 </div>
 </section>
-
 
 <section class="request" id="request">
 
@@ -1659,7 +1653,6 @@ placeholder="توضیحات درخواست..."
 
 </section>
 
-
 <section>
 
 <div class="container">
@@ -1709,7 +1702,6 @@ placeholder="توضیحات درخواست..."
 
 </section>
 
-
 <section>
 
 <div class="container">
@@ -1733,7 +1725,6 @@ placeholder="توضیحات درخواست..."
 </div>
 
 </section>
-
 
 <footer id="contact">
 
@@ -1793,7 +1784,6 @@ Dr <span>Borodat</span>
 
 </footer>
 
-
 <div class="mobile-bar">
 
 <a href="#home" class="active">
@@ -1823,7 +1813,6 @@ Dr <span>Borodat</span>
 
 </div>
 
-
 <button
 class="chat-button"
 onclick="toggleChat()"
@@ -1831,7 +1820,6 @@ aria-label="پشتیبانی آنلاین"
 >
 💬
 </button>
-
 
 <div class="chat-window" id="chatWindow">
 
@@ -1891,7 +1879,6 @@ placeholder="پیامتان را بنویسید..."
 </div>
 
 </div>
-
 
 <script>
 
@@ -2001,7 +1988,6 @@ button.textContent="ثبت درخواست خدمات";
 }
 
 });
-
 
 document.addEventListener("click",function(e){
 
