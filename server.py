@@ -14,7 +14,7 @@ import requests
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-app = Flask(__name__, static_folder=BASE_DIR)
+app = Flask(__name__)
 CORS(app)
 
 
@@ -110,7 +110,7 @@ def send_bale_message(text):
 
 
 # =========================================================
-# WEBSITE / FRONTEND
+# FRONTEND ROUTES
 # =========================================================
 
 @app.route("/")
@@ -118,21 +118,12 @@ def home():
 
     return send_from_directory(
         BASE_DIR,
-        "index.html"
-    )
-
-
-@app.route("/index.html")
-def index_page():
-
-    return send_from_directory(
-        BASE_DIR,
-        "index.html"
+        "admin.html"
     )
 
 
 @app.route("/admin")
-def admin_redirect():
+def admin():
 
     return send_from_directory(
         BASE_DIR,
@@ -146,6 +137,24 @@ def admin_page():
     return send_from_directory(
         BASE_DIR,
         "admin.html"
+    )
+
+
+@app.route("/index.html")
+def index_page():
+
+    return send_from_directory(
+        BASE_DIR,
+        "index.html"
+    )
+
+
+@app.route("/shop.html")
+def shop_page():
+
+    return send_from_directory(
+        BASE_DIR,
+        "shop.html"
     )
 
 
