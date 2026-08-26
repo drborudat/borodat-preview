@@ -41,7 +41,7 @@ display:flex;
 align-items:center
 }
 
-  /* LOGO */
+/* LOGO */
 
 .logo{
 display:flex;
@@ -55,13 +55,14 @@ direction:ltr !important;
 unicode-bidi:isolate;
 white-space:nowrap;
 flex-direction:row !important;
-text-decoration:none;
+text-decoration:none
 }
 
 .logo-text{
 display:flex;
 align-items:center;
 justify-content:center;
+gap:4px;
 width:72px;
 height:40px;
 padding:0 8px;
@@ -75,9 +76,25 @@ direction:ltr !important;
 unicode-bidi:isolate;
 white-space:nowrap;
 flex-shrink:0;
-overflow:hidden;
+overflow:hidden
 }
 
+.logo-db{
+display:inline-block;
+direction:ltr !important;
+unicode-bidi:isolate;
+font-family:Arial,sans-serif;
+font-weight:900;
+color:#fff
+}
+
+.logo-snow{
+display:inline-block;
+font-family:Arial,sans-serif;
+font-size:13px;
+line-height:1;
+color:#fff
+}
 
 .header-tools{
 margin-right:auto;
@@ -1085,18 +1102,16 @@ color:#53697b
 
 .logo{
 font-size:17px;
-direction:ltr;
-flex-direction:row
+direction:ltr !important;
+flex-direction:row !important
 }
 
 .logo-text{
-direction:ltr;
+width:72px;
+height:40px;
+direction:ltr !important;
 unicode-bidi:isolate;
-white-space:nowrap;
-font-size:17px;
-background:transparent;
-width:auto;
-height:auto
+white-space:nowrap
 }
 
 .header-icon{
@@ -1193,7 +1208,12 @@ transition:none!important
 <div class="header-inner">
 
 <a href="#home" class="logo" dir="ltr">
-<span class="logo-text">DB + ❄️</span>
+
+<span class="logo-text" dir="ltr">
+<span class="logo-db">DB</span>
+<span class="logo-snow">❄</span>
+</span>
+
 </a>
 
 <div class="header-tools">
@@ -1247,6 +1267,7 @@ transition:none!important
 
 </header>
 
+
 <section class="hero" id="home">
 
 <img
@@ -1293,6 +1314,7 @@ Dr <span>Borodat</span>
 </div>
 
 </section>
+
 
 <section class="services" id="services">
 
@@ -1341,6 +1363,7 @@ Dr <span>Borodat</span>
 </div>
 </div>
 </section>
+
 
 <section class="why">
 
@@ -1423,6 +1446,7 @@ WHY DR BORODAT
 
 </section>
 
+
 <section class="brands" id="brands">
 
 <div class="container">
@@ -1451,6 +1475,7 @@ WHY DR BORODAT
 </div>
 
 </section>
+
 
 <section class="products">
 
@@ -1512,6 +1537,7 @@ WHY DR BORODAT
 </div>
 </section>
 
+
 <section class="about" id="about">
 
 <div class="container about-grid">
@@ -1550,6 +1576,7 @@ ABOUT US
 
 </section>
 
+
 <section class="reviews">
 
 <div class="container">
@@ -1587,6 +1614,7 @@ ABOUT US
 </div>
 </div>
 </section>
+
 
 <section class="request" id="request">
 
@@ -1656,6 +1684,7 @@ placeholder="توضیحات درخواست..."
 
 </section>
 
+
 <section>
 
 <div class="container">
@@ -1705,6 +1734,7 @@ placeholder="توضیحات درخواست..."
 
 </section>
 
+
 <section>
 
 <div class="container">
@@ -1728,6 +1758,7 @@ placeholder="توضیحات درخواست..."
 </div>
 
 </section>
+
 
 <footer id="contact">
 
@@ -1787,6 +1818,7 @@ Dr <span>Borodat</span>
 
 </footer>
 
+
 <div class="mobile-bar">
 
 <a href="#home" class="active">
@@ -1816,6 +1848,7 @@ Dr <span>Borodat</span>
 
 </div>
 
+
 <button
 class="chat-button"
 onclick="toggleChat()"
@@ -1823,6 +1856,7 @@ aria-label="پشتیبانی آنلاین"
 >
 💬
 </button>
+
 
 <div class="chat-window" id="chatWindow">
 
@@ -1882,6 +1916,7 @@ placeholder="پیامتان را بنویسید..."
 </div>
 
 </div>
+
 
 <script>
 
@@ -1991,6 +2026,7 @@ button.textContent="ثبت درخواست خدمات";
 }
 
 });
+
 
 document.addEventListener("click",function(e){
 
