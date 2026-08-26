@@ -8,7 +8,6 @@
 <style>
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-
 body{
 margin:0;
 font-family:Tahoma,Arial,sans-serif;
@@ -16,12 +15,10 @@ background:#fff;
 color:#102238;
 overflow-x:hidden
 }
-
 a{text-decoration:none;color:inherit}
 button,input,select,textarea{font-family:inherit}
 
 /* HEADER */
-
 .header{
 height:78px;
 background:#fff;
@@ -32,7 +29,6 @@ position:sticky;
 top:0;
 z-index:1000
 }
-
 .header-inner{
 width:92%;
 max-width:1280px;
@@ -40,7 +36,6 @@ margin:auto;
 display:flex;
 align-items:center
 }
-
 .logo{
 display:flex;
 align-items:center;
@@ -52,10 +47,8 @@ color:#071b31;
 direction:ltr!important;
 unicode-bidi:isolate;
 white-space:nowrap;
-flex-direction:row!important;
-text-decoration:none
+flex-direction:row!important
 }
-
 .logo-text{
 display:flex;
 align-items:center;
@@ -68,31 +61,22 @@ color:#fff;
 font-family:Arial,sans-serif;
 font-size:14px;
 font-weight:900;
-direction:ltr!important;
-unicode-bidi:isolate;
-white-space:nowrap;
 flex-shrink:0
 }
-
 .logo-symbol{
 display:flex;
 align-items:center;
 font-family:Arial,sans-serif;
 font-size:20px;
 font-weight:900;
-color:#071b31;
-direction:ltr!important;
-unicode-bidi:isolate;
-white-space:nowrap
+color:#071b31
 }
-
 .header-tools{
 margin-right:auto;
 display:flex;
 align-items:center;
 gap:9px
 }
-
 .header-icon{
 width:42px;
 height:42px;
@@ -104,7 +88,6 @@ align-items:center;
 justify-content:center;
 cursor:pointer
 }
-
 .icon-svg{
 width:20px;
 height:20px;
@@ -116,7 +99,6 @@ stroke-linejoin:round
 }
 
 /* MENU */
-
 .menu-panel{
 display:none;
 position:absolute;
@@ -127,9 +109,7 @@ background:#fff;
 border-bottom:1px solid #e4e9ed;
 box-shadow:0 20px 45px rgba(7,27,49,.12)
 }
-
 .menu-panel.open{display:block}
-
 .menu-inner{
 width:92%;
 max-width:1280px;
@@ -139,7 +119,6 @@ display:grid;
 grid-template-columns:repeat(6,1fr);
 gap:10px
 }
-
 .menu-item{
 padding:18px 14px;
 border:1px solid #e4e9ed;
@@ -149,14 +128,12 @@ font-weight:bold;
 color:#253c50;
 text-align:center
 }
-
 .menu-item:hover{
 background:#071b31;
 color:#fff
 }
 
 /* HERO */
-
 .hero{
 height:calc(100vh - 78px);
 min-height:620px;
@@ -164,7 +141,6 @@ position:relative;
 overflow:hidden;
 background:#071b31
 }
-
 .hero-image{
 position:absolute;
 inset:0;
@@ -173,7 +149,6 @@ height:100%;
 object-fit:cover;
 animation:heroZoom 12s ease-in-out infinite alternate
 }
-
 .hero-overlay{
 position:absolute;
 inset:0;
@@ -184,7 +159,6 @@ rgba(4,20,37,.58),
 rgba(4,20,37,.43)
 )
 }
-
 .hero-content{
 position:relative;
 z-index:2;
@@ -197,20 +171,17 @@ align-items:center;
 justify-content:center;
 text-align:center
 }
-
 .hero-text{
 color:#fff;
 max-width:760px;
 animation:fadeUp .9s ease both
 }
-
 .hero-line{
 width:55px;
 height:2px;
 background:#6bc9ee;
 margin:0 auto 20px
 }
-
 .hero-logo{
 font-family:Arial,sans-serif;
 font-size:58px;
@@ -220,16 +191,13 @@ margin-bottom:12px;
 direction:ltr;
 unicode-bidi:isolate
 }
-
 .hero-logo span{color:#70cff2}
-
 .hero-subtitle{
 font-size:18px;
 line-height:2;
 margin:0 auto 14px;
 font-weight:500
 }
-
 .hero-description{
 max-width:600px;
 margin:0 auto 30px;
@@ -237,14 +205,12 @@ color:#e2edf4;
 font-size:12px;
 line-height:2.1
 }
-
 .hero-buttons{
 display:flex;
 justify-content:center;
 gap:12px;
 flex-wrap:wrap
 }
-
 .glass-button{
 min-width:165px;
 padding:14px 24px;
@@ -262,60 +228,49 @@ justify-content:center;
 gap:9px;
 transition:.25s
 }
-
 .glass-button:hover{
 background:#fff;
 color:#071b31;
 transform:translateY(-3px)
 }
-
 .glass-button.primary{
 background:rgba(12,122,187,.72);
 border-color:#62c7ed
 }
 
 /* GENERAL */
-
 section{padding:85px 0}
-
 .container{
 width:92%;
 max-width:1280px;
 margin:auto
 }
-
 .heading{
 text-align:center;
 margin-bottom:42px
 }
-
 .heading small{
 color:#0879bd;
 font-size:10px;
 font-weight:bold
 }
-
 .heading h2{
 color:#071b31;
 font-size:30px;
 margin:8px 0
 }
-
 .heading p{
 color:#718192;
 font-size:11px
 }
 
 /* SERVICES */
-
 .services{background:#f5f7f9}
-
 .grid4{
 display:grid;
 grid-template-columns:repeat(4,1fr);
 gap:16px
 }
-
 .card{
 background:#fff;
 border:1px solid #e1e7ec;
@@ -323,12 +278,10 @@ border-radius:9px;
 padding:28px 22px;
 transition:.3s
 }
-
 .card:hover{
 transform:translateY(-6px);
 box-shadow:0 20px 45px rgba(7,27,49,.08)
 }
-
 .service-icon{
 width:50px;
 height:50px;
@@ -339,19 +292,16 @@ align-items:center;
 justify-content:center;
 font-size:25px
 }
-
 .card h3{
 font-size:15px;
 color:#071b31;
 margin:15px 0 7px
 }
-
 .card p{
 font-size:10px;
 color:#718192;
 line-height:1.9
 }
-
 .card a{
 color:#0879bd;
 font-size:10px;
@@ -359,35 +309,29 @@ font-weight:bold
 }
 
 /* WHY */
-
 .why{background:#fff}
-
 .why-grid{
 display:grid;
 grid-template-columns:1fr 1fr;
 gap:55px;
 align-items:center
 }
-
 .why-text h2{
 font-size:32px;
 color:#071b31;
 margin:8px 0 18px
 }
-
 .why-text>p{
 font-size:12px;
 color:#718192;
 line-height:2
 }
-
 .why-items{
 display:grid;
 grid-template-columns:1fr 1fr;
 gap:13px;
 margin-top:25px
 }
-
 .why-item{
 padding:18px;
 border:1px solid #e1e7ec;
@@ -395,30 +339,25 @@ border-radius:9px;
 background:#fff;
 transition:.3s
 }
-
 .why-item:hover{
 transform:translateY(-4px);
 box-shadow:0 15px 35px rgba(7,27,49,.07)
 }
-
 .why-icon{
 font-size:23px;
 margin-bottom:8px
 }
-
 .why-item h3{
 font-size:12px;
 margin:5px 0;
 color:#071b31
 }
-
 .why-item p{
 font-size:9px;
 line-height:1.8;
 color:#718192;
 margin:0
 }
-
 .stats-box{
 background:#071b31;
 border-radius:14px;
@@ -426,43 +365,35 @@ padding:38px 25px;
 color:#fff;
 box-shadow:0 25px 55px rgba(7,27,49,.16)
 }
-
 .stats-title{
 font-size:13px;
 color:#bcd0df;
 margin-bottom:25px
 }
-
 .stats{
 display:grid;
 grid-template-columns:1fr 1fr;
 gap:25px 10px
 }
-
 .stat{text-align:center}
-
 .stat strong{
 display:block;
 font-family:Arial,sans-serif;
 font-size:32px;
 color:#6cccf3
 }
-
 .stat span{
 font-size:9px;
 color:#c5d3de
 }
 
 /* BRANDS */
-
 .brands{background:#fff}
-
 .brand-grid{
 display:grid;
 grid-template-columns:repeat(6,1fr);
 gap:12px
 }
-
 .brand{
 height:75px;
 border:1px solid #e1e7ec;
@@ -476,22 +407,18 @@ font-size:14px;
 font-weight:bold;
 transition:.25s
 }
-
 .brand:hover{
 border-color:#8dcbe3;
 transform:translateY(-3px)
 }
 
 /* PRODUCTS */
-
 .products{background:#f5f7f9}
-
 .product-grid{
 display:grid;
 grid-template-columns:repeat(4,1fr);
 gap:16px
 }
-
 .product{
 background:#fff;
 border:1px solid #e1e7ec;
@@ -499,12 +426,10 @@ border-radius:10px;
 overflow:hidden;
 transition:.3s
 }
-
 .product:hover{
 transform:translateY(-5px);
 box-shadow:0 20px 45px rgba(7,27,49,.09)
 }
-
 .product-image{
 height:170px;
 background:linear-gradient(135deg,#edf5f8,#dcecf2);
@@ -513,26 +438,21 @@ align-items:center;
 justify-content:center;
 font-size:50px
 }
-
 .product-info{padding:18px}
-
 .product-info small{
 font-size:9px;
 color:#0879bd
 }
-
 .product-info h3{
 font-size:12px;
 color:#071b31;
 margin:8px 0
 }
-
 .product-info p{
 font-size:9px;
 color:#718192;
 line-height:1.8
 }
-
 .product-btn{
 display:block;
 text-align:center;
@@ -545,28 +465,23 @@ margin-top:12px
 }
 
 /* ABOUT */
-
 .about{background:#fff}
-
 .about-grid{
 display:grid;
 grid-template-columns:1fr 1fr;
 gap:55px;
 align-items:center
 }
-
 .about h2{
 color:#071b31;
 font-size:33px;
 line-height:1.5
 }
-
 .about p{
 color:#718192;
 font-size:12px;
 line-height:2
 }
-
 .about-panel{
 min-height:320px;
 background:#071b31;
@@ -574,93 +489,77 @@ border-radius:12px;
 padding:45px;
 color:#fff
 }
-
 .about-panel strong{
 font-family:Arial,sans-serif;
 font-size:60px;
 color:#6cccf3
 }
-
 .about-panel h3{font-size:20px}
 
 /* REVIEWS */
-
 .reviews{background:#f5f7f9}
-
 .review-grid{
 display:grid;
 grid-template-columns:repeat(3,1fr);
 gap:16px
 }
-
 .review{
 background:#fff;
 border:1px solid #e1e7ec;
 border-radius:10px;
 padding:25px
 }
-
 .stars{
 color:#e4a928;
 letter-spacing:2px;
 font-size:12px
 }
-
 .review p{
 font-size:11px;
 color:#596d7e;
 line-height:2;
 margin:15px 0
 }
-
 .review strong{
 font-size:10px;
 color:#071b31
 }
 
 /* REQUEST */
-
 .request{
 background:#071b31;
 color:#fff
 }
-
 .request-grid{
 display:grid;
 grid-template-columns:.8fr 1.2fr;
 gap:50px;
 align-items:center
 }
-
 .request-text h2{
 font-size:30px;
 margin:8px 0 15px
 }
-
 .request-text p{
 font-size:11px;
 color:#b9cbd8;
 line-height:2
 }
-
 .request-list div{
 font-size:10px;
 color:#d9e5ec;
 margin:12px 0
 }
-
 .request-form{
 background:#fff;
 padding:28px;
 border-radius:12px
 }
-
 .form-row{
 display:grid;
 grid-template-columns:1fr 1fr;
 gap:10px
 }
-
 .request-form input,
 .request-form select,
 .request-form textarea{
@@ -674,12 +573,10 @@ outline:none;
 color:#263e52;
 background:#fff
 }
-
 .request-form textarea{
 height:100px;
 resize:none
 }
-
 .submit-btn{
 width:100%;
 border:0;
@@ -691,12 +588,10 @@ font-weight:bold;
 font-size:10px;
 cursor:pointer
 }
-
 .submit-btn:disabled{
 opacity:.6;
 cursor:wait
 }
-
 .form-message{
 display:none;
 margin-top:12px;
@@ -705,13 +600,11 @@ border-radius:7px;
 font-size:10px;
 text-align:center
 }
-
 .form-message.success{
 display:block;
 background:#e8f8ef;
 color:#176b3b
 }
-
 .form-message.error{
 display:block;
 background:#fff0f0;
@@ -719,19 +612,16 @@ color:#a22626
 }
 
 /* ARTICLES */
-
 .article-grid{
 display:grid;
 grid-template-columns:repeat(3,1fr);
 gap:17px
 }
-
 .article{
 border:1px solid #e2e8ed;
 border-radius:9px;
 overflow:hidden
 }
-
 .article-img{
 height:150px;
 background:#edf4f7;
@@ -740,19 +630,15 @@ align-items:center;
 justify-content:center;
 font-size:48px
 }
-
 .article-body{padding:20px}
-
 .article-body small{
 color:#0879bd;
 font-size:9px
 }
-
 .article-body h3{
 color:#071b31;
 font-size:14px
 }
-
 .article-body p{
 color:#718192;
 font-size:10px;
@@ -760,7 +646,6 @@ line-height:1.9
 }
 
 /* CTA */
-
 .cta{
 background:#071b31;
 color:#fff;
@@ -770,17 +655,14 @@ display:flex;
 justify-content:space-between;
 align-items:center
 }
-
 .cta h2{
 margin:0;
 font-size:25px
 }
-
 .cta p{
 color:#bdcad5;
 font-size:11px
 }
-
 .cta a{
 background:#0879bd;
 padding:13px 25px;
@@ -790,19 +672,16 @@ font-weight:bold
 }
 
 /* FOOTER */
-
 footer{
 background:#06182c;
 color:#fff;
 padding:60px 0 90px
 }
-
 .footer-grid{
 display:grid;
 grid-template-columns:2fr 1fr 1fr 1fr;
 gap:35px
 }
-
 .footer-logo{
 font-family:Arial,sans-serif;
 font-size:22px;
@@ -810,20 +689,15 @@ font-weight:bold;
 direction:ltr;
 unicode-bidi:isolate
 }
-
 .footer-logo span{color:#6cccf3}
-
 footer h3{font-size:13px}
-
 footer p,
 footer a{
 color:#aebdca;
 font-size:10px;
 line-height:2
 }
-
 footer a{display:block}
-
 .copyright{
 border-top:1px solid rgba(255,255,255,.1);
 margin-top:40px;
@@ -833,7 +707,7 @@ color:#8193a5;
 font-size:9px
 }
 
-/* CHAT */
+/* ================= CHAT ================= */
 
 .chat-button{
 position:fixed;
@@ -859,17 +733,21 @@ font-size:25px
 position:fixed;
 left:22px;
 bottom:158px;
-width:350px;
+width:390px;
+height:570px;
 background:#fff;
-border-radius:16px;
+border-radius:18px;
 overflow:hidden;
-box-shadow:0 20px 60px rgba(7,27,49,.25);
-border:1px solid #e3e9ed;
+box-shadow:0 20px 70px rgba(7,27,49,.30);
+border:1px solid #dce5eb;
 z-index:9999;
-display:none
+display:none;
+flex-direction:column
 }
 
-.chat-window.open{display:block}
+.chat-window.open{
+display:flex
+}
 
 .chat-head{
 background:#071b31;
@@ -877,22 +755,24 @@ color:#fff;
 padding:18px;
 display:flex;
 align-items:center;
-gap:12px
+gap:12px;
+flex-shrink:0
 }
 
 .chat-avatar{
-width:42px;
-height:42px;
+width:44px;
+height:44px;
 border-radius:50%;
 background:#0879bd;
 display:flex;
 align-items:center;
-justify-content:center
+justify-content:center;
+font-size:20px
 }
 
 .chat-head strong{
 display:block;
-font-size:12px
+font-size:13px
 }
 
 .chat-head small{
@@ -905,110 +785,197 @@ margin-right:auto;
 border:0;
 background:transparent;
 color:#fff;
-font-size:20px;
+font-size:25px;
 cursor:pointer
 }
 
-.chat-body{padding:18px}
-
-.chat-message{
-background:#f1f6f9;
-border-radius:12px 12px 12px 3px;
-padding:13px;
-font-size:10px;
-color:#334b60;
-line-height:1.9;
-margin-bottom:15px
+.chat-body{
+padding:16px;
+display:flex;
+flex-direction:column;
+flex:1;
+min-height:0;
+background:#f7fafc
 }
 
-.chat-fields{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:7px;
-margin-bottom:10px
-}
-
-.chat-fields input{
-width:100%;
-border:1px solid #dfe7ec;
-border-radius:8px;
-padding:10px;
-font-size:9px;
-outline:none
-}
-
-.chat-options{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:7px
-}
-
-.chat-option{
-border:1px solid #dfe7ec;
+.chat-login{
 background:#fff;
-border-radius:8px;
-padding:10px 5px;
-color:#263f54;
-font-size:9px;
-cursor:pointer
+border:1px solid #e1e8ed;
+border-radius:12px;
+padding:18px;
+margin:auto 0
 }
 
-.chat-input{
-margin-top:12px;
-width:100%;
-border:1px solid #dfe7ec;
-border-radius:8px;
-padding:11px;
-font-size:9px;
-outline:none
+.chat-login h3{
+font-size:14px;
+color:#071b31;
+margin:0 0 8px
 }
 
-.chat-send{
+.chat-login p{
+font-size:10px;
+color:#718192;
+line-height:1.8;
+margin:0 0 15px
+}
+
+.chat-login input{
 width:100%;
-margin-top:8px;
+border:1px solid #dce5eb;
+border-radius:8px;
+padding:12px;
+font-size:10px;
+outline:none;
+margin-bottom:9px
+}
+
+.chat-start{
+width:100%;
 border:0;
-border-radius:8px;
-padding:11px;
 background:#0879bd;
 color:#fff;
+border-radius:8px;
+padding:12px;
 font-size:10px;
 font-weight:bold;
 cursor:pointer
 }
 
+.chat-messages{
+flex:1;
+overflow-y:auto;
+padding:4px 2px 12px;
+display:flex;
+flex-direction:column;
+gap:8px
+}
+
+.chat-messages::-webkit-scrollbar{
+width:5px
+}
+
+.chat-messages::-webkit-scrollbar-thumb{
+background:#c8d6df;
+border-radius:10px
+}
+
+.chat-welcome{
+background:#eaf2f6;
+color:#334b60;
+padding:11px 13px;
+border-radius:13px 13px 13px 3px;
+font-size:10px;
+line-height:1.9;
+align-self:flex-start;
+max-width:85%
+}
+
+.chat-msg{
+max-width:82%;
+padding:10px 12px;
+border-radius:13px;
+font-size:10px;
+line-height:1.9;
+word-break:break-word
+}
+
+.chat-msg.customer{
+background:#0879bd;
+color:#fff;
+align-self:flex-end;
+border-radius:13px 13px 3px 13px
+}
+
+.chat-msg.admin{
+background:#fff;
+color:#334b60;
+align-self:flex-start;
+border:1px solid #e1e8ed;
+border-radius:13px 13px 13px 3px
+}
+
+.chat-time{
+display:block;
+font-size:7px;
+opacity:.65;
+margin-top:4px
+}
+
+.chat-options{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:7px;
+margin-top:8px
+}
+
+.chat-option{
+border:1px solid #d9e4ea;
+background:#fff;
+border-radius:8px;
+padding:9px 5px;
+color:#263f54;
+font-size:9px;
+cursor:pointer
+}
+
+.chat-option:hover{
+background:#edf7fb
+}
+
+.chat-input-area{
+display:flex;
+gap:7px;
+padding-top:9px;
+border-top:1px solid #e1e8ed;
+margin-top:5px;
+flex-shrink:0
+}
+
+.chat-input{
+flex:1;
+border:1px solid #d9e4ea;
+border-radius:9px;
+padding:11px;
+font-size:10px;
+outline:none;
+background:#fff
+}
+
+.chat-send{
+width:48px;
+border:0;
+border-radius:9px;
+background:#0879bd;
+color:#fff;
+font-size:17px;
+cursor:pointer
+}
+
 .chat-send:disabled{
-opacity:.6;
-cursor:wait
+opacity:.5
 }
 
 .chat-status{
-display:none;
-margin-top:8px;
-padding:9px;
-border-radius:7px;
-font-size:9px;
-text-align:center
-}
-
-.chat-status.success{
-display:block;
-background:#e8f8ef;
-color:#176b3b
-}
-
-.chat-status.error{
-display:block;
-background:#fff0f0;
-color:#a22626
+font-size:8px;
+color:#718192;
+text-align:center;
+min-height:12px;
+margin-top:5px
 }
 
 /* MOBILE BAR */
-
 .mobile-bar{display:none}
 
+/* ANIMATION */
 @keyframes fadeUp{
-from{opacity:0;transform:translateY(25px)}
-to{opacity:1;transform:translateY(0)}
+from{
+opacity:0;
+transform:translateY(25px)
+}
+to{
+opacity:1;
+transform:translateY(0)
+}
 }
 
 @keyframes heroZoom{
@@ -1021,12 +988,15 @@ to{transform:scale(1.05)}
 50%{box-shadow:0 12px 35px rgba(8,121,189,.42)}
 }
 
+/* RESPONSIVE */
 @media(max-width:900px){
 
 .header{height:68px}
 .menu-panel{top:68px}
 
-.menu-inner{grid-template-columns:1fr 1fr}
+.menu-inner{
+grid-template-columns:1fr 1fr
+}
 
 .hero{
 height:calc(100vh - 68px);
@@ -1039,13 +1009,9 @@ min-height:600px
 
 .grid4{grid-template-columns:1fr 1fr}
 .brand-grid{grid-template-columns:repeat(3,1fr)}
-
 .about-grid,
 .why-grid,
-.request-grid{
-grid-template-columns:1fr
-}
-
+.request-grid{grid-template-columns:1fr}
 .product-grid{grid-template-columns:1fr 1fr}
 .review-grid{grid-template-columns:1fr}
 .article-grid{grid-template-columns:1fr}
@@ -1084,11 +1050,24 @@ justify-content:center;
 width:32px;
 height:32px;
 font-size:23px;
-line-height:1
+line-height:1;
+margin-bottom:2px
 }
 
-.chat-button{bottom:82px}
-.chat-window{bottom:150px}
+.chat-button{
+bottom:82px;
+left:16px
+}
+
+.chat-window{
+left:10px;
+right:10px;
+bottom:150px;
+width:auto;
+height:calc(100vh - 175px);
+max-height:620px;
+min-height:460px
+}
 
 }
 
@@ -1146,10 +1125,15 @@ margin-top:15px
 .footer-grid{grid-template-columns:1fr}
 
 .chat-window{
-left:12px;
-right:12px;
-width:auto
+left:7px;
+right:7px;
+bottom:145px;
+height:calc(100vh - 165px);
+min-height:450px;
+border-radius:15px
 }
+
+.chat-body{padding:12px}
 
 .request-form{padding:20px}
 
@@ -1161,19 +1145,13 @@ height:34px
 
 .mobile-bar a{font-size:9px}
 
-.chat-fields{
-grid-template-columns:1fr
-}
-
 }
 
 @media(prefers-reduced-motion:reduce){
-
 *{
 animation:none!important;
 transition:none!important
 }
-
 }
 </style>
 </head>
@@ -1191,9 +1169,7 @@ transition:none!important
 
 <div class="header-tools">
 
-<button
-class="header-icon"
-aria-label="جستجو"
+<button class="header-icon" aria-label="جستجو"
 onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})">
 
 <svg class="icon-svg" viewBox="0 0 24 24">
@@ -1238,7 +1214,6 @@ onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})
 
 </div>
 </div>
-
 </header>
 
 
@@ -1293,9 +1268,13 @@ Dr <span>Borodat</span>
 <div class="container">
 
 <div class="heading">
+
 <small>SERVICES</small>
+
 <h2>خدمات تخصصی</h2>
+
 <p>تمام خدمات مورد نیاز سیستم‌های سرمایشی در یک مجموعه</p>
+
 </div>
 
 <div class="grid4">
@@ -1417,9 +1396,13 @@ WHY DR BORODAT
 <div class="container">
 
 <div class="heading">
+
 <small>BRANDS</small>
+
 <h2>برندهای تحت پوشش</h2>
+
 <p>ارائه خدمات برای برندهای مختلف سیستم‌های سرمایشی</p>
+
 </div>
 
 <div class="brand-grid">
@@ -1441,9 +1424,13 @@ WHY DR BORODAT
 <div class="container">
 
 <div class="heading">
+
 <small>SHOP</small>
+
 <h2>محصولات منتخب</h2>
+
 <p>برخی از محصولات و تجهیزات قابل ارائه توسط دکتر برودت</p>
+
 </div>
 
 <div class="product-grid">
@@ -1536,9 +1523,13 @@ ABOUT US
 <div class="container">
 
 <div class="heading">
+
 <small>REVIEWS</small>
+
 <h2>رضایت مشتریان</h2>
+
 <p>تجربه مشتریان از خدمات دکتر برودت</p>
+
 </div>
 
 <div class="review-grid">
@@ -1593,27 +1584,13 @@ SERVICE REQUEST
 </div>
 </div>
 
-
 <form class="request-form" id="serviceForm">
 
 <div class="form-row">
 
-<input
-id="name"
-name="name"
-type="text"
-placeholder="نام و نام خانوادگی"
-required
->
+<input id="name" name="name" type="text" placeholder="نام و نام خانوادگی" required>
 
-<input
-id="phone"
-name="phone"
-type="tel"
-placeholder="شماره تماس"
-dir="rtl"
-required
->
+<input id="phone" name="phone" type="tel" placeholder="شماره تماس" dir="rtl" required>
 
 </div>
 
@@ -1634,18 +1611,13 @@ name="description"
 placeholder="توضیحات درخواست..."
 ></textarea>
 
-<button
-class="submit-btn"
-id="submitBtn"
-type="submit"
->
+<button class="submit-btn" id="submitBtn" type="submit">
 ثبت درخواست خدمات
 </button>
 
 <div id="formMessage" class="form-message"></div>
 
 </form>
-
 </div>
 </section>
 
@@ -1829,35 +1801,32 @@ aria-label="پشتیبانی آنلاین"
 
 <strong>پشتیبانی آنلاین</strong>
 
-<small>Dr Borodat</small>
+<small>Dr Borodat • پاسخگویی آنلاین</small>
 
 </div>
 
-<button
-class="chat-close"
-onclick="toggleChat()"
-aria-label="بستن"
->
+<button class="chat-close" onclick="toggleChat()">
 ×
 </button>
 
 </div>
 
-
 <div class="chat-body">
 
-<div class="chat-message">
-سلام 👋<br>
-برای ارتباط با پشتیبانی، نام و شماره تماس خود را وارد کنید.
-</div>
+<div class="chat-login" id="chatLogin">
 
+<h3>شروع گفتگو 👋</h3>
 
-<div class="chat-fields">
+<p>
+برای شروع پشتیبانی، فقط نام و شماره تماس خود را وارد کنید.
+این اطلاعات فقط برای ادامه گفتگو استفاده می‌شود.
+</p>
 
 <input
 id="chatName"
 type="text"
-placeholder="نام شما"
+placeholder="نام و نام خانوادگی"
+autocomplete="name"
 >
 
 <input
@@ -1865,105 +1834,418 @@ id="chatPhone"
 type="tel"
 placeholder="شماره تماس"
 dir="rtl"
+autocomplete="tel"
 >
+
+<button class="chat-start" onclick="startChat()">
+شروع گفتگو
+</button>
 
 </div>
 
+
+<div id="chatArea" style="display:none;flex:1;min-height:0;flex-direction:column">
+
+<div class="chat-messages" id="chatMessages">
+
+<div class="chat-welcome">
+سلام 👋<br>
+به پشتیبانی دکتر برودت خوش آمدید.
+پیامتان را بنویسید؛ در اولین فرصت پاسخ می‌دهیم.
+</div>
+
+</div>
 
 <div class="chat-options">
 
-<button
-class="chat-option"
-onclick="chatChoice('تعمیر کولر')"
->
-تعمیر کولر
+<button class="chat-option" onclick="chatChoice('تعمیر کولر')">
+🔧 تعمیر کولر
 </button>
 
-<button
-class="chat-option"
-onclick="chatChoice('سرویس کولر')"
->
-سرویس کولر
+<button class="chat-option" onclick="chatChoice('سرویس کولر')">
+🛠️ سرویس کولر
 </button>
 
-<button
-class="chat-option"
-onclick="chatChoice('نصب کولر')"
->
-نصب کولر
+<button class="chat-option" onclick="chatChoice('نصب کولر')">
+❄️ نصب کولر
 </button>
 
-<button
-class="chat-option"
-onclick="chatChoice('راهنمای خرید')"
->
-راهنمای خرید
+<button class="chat-option" onclick="chatChoice('راهنمای خرید')">
+🛒 راهنمای خرید
 </button>
 
 </div>
 
+<div class="chat-input-area">
 
 <input
 class="chat-input"
 id="chatInput"
 placeholder="پیامتان را بنویسید..."
+onkeydown="if(event.key==='Enter') sendChat()"
 >
 
 <button
 class="chat-send"
 id="chatSend"
-onclick="sendChatMessage()"
+onclick="sendChat()"
+aria-label="ارسال پیام"
 >
-ارسال پیام
+➤
 </button>
 
-<div
-class="chat-status"
-id="chatStatus"
-></div>
+</div>
+
+<div class="chat-status" id="chatStatus"></div>
 
 </div>
+
+</div>
+
 </div>
 
 
 <script>
 
-/* =====================================================
-   CONFIG
-===================================================== */
-
-const API_BASE = "https://borodat-panel.onrender.com";
-
-
-/* =====================================================
+/* =========================
    MENU
-===================================================== */
+========================= */
 
 function toggleMenu(){
 
-const menu=document.getElementById("menu");
-
-menu.classList.toggle("open");
+document.getElementById("menu").classList.toggle("open");
 
 }
 
 
-/* =====================================================
-   CHAT OPEN / CLOSE
-===================================================== */
+/* =========================
+   CHAT STORAGE
+========================= */
+
+const CHAT_NAME_KEY="dr_borodat_chat_name";
+const CHAT_PHONE_KEY="dr_borodat_chat_phone";
+const CHAT_ID_KEY="dr_borodat_chat_id";
+
+
+function getChatName(){
+return localStorage.getItem(CHAT_NAME_KEY) || "";
+}
+
+
+function getChatPhone(){
+return localStorage.getItem(CHAT_PHONE_KEY) || "";
+}
+
+
+function getChatId(){
+return localStorage.getItem(CHAT_ID_KEY) || "";
+}
+
+
+/* =========================
+   CHAT OPEN
+========================= */
 
 function toggleChat(){
 
-const chat=document.getElementById("chatWindow");
+const windowEl=document.getElementById("chatWindow");
 
-chat.classList.toggle("open");
+windowEl.classList.toggle("open");
+
+if(windowEl.classList.contains("open")){
+
+prepareChat();
+
+}
 
 }
 
 
-/* =====================================================
-   CHAT QUICK OPTIONS
-===================================================== */
+/* =========================
+   PREPARE CHAT
+========================= */
+
+function prepareChat(){
+
+const name=getChatName();
+const phone=getChatPhone();
+
+if(name && phone){
+
+document.getElementById("chatLogin").style.display="none";
+
+const area=document.getElementById("chatArea");
+
+area.style.display="flex";
+
+loadChat();
+
+}else{
+
+document.getElementById("chatLogin").style.display="block";
+
+document.getElementById("chatArea").style.display="none";
+
+}
+
+}
+
+
+/* =========================
+   START CHAT
+========================= */
+
+function startChat(){
+
+const name=document.getElementById("chatName").value.trim();
+const phone=document.getElementById("chatPhone").value.trim();
+
+if(!name || !phone){
+
+alert("لطفاً نام و شماره تماس را وارد کنید.");
+
+return;
+
+}
+
+localStorage.setItem(CHAT_NAME_KEY,name);
+localStorage.setItem(CHAT_PHONE_KEY,phone);
+
+document.getElementById("chatLogin").style.display="none";
+
+const area=document.getElementById("chatArea");
+
+area.style.display="flex";
+
+loadChat();
+
+}
+
+
+/* =========================
+   LOAD CHAT
+========================= */
+
+async function loadChat(){
+
+const phone=getChatPhone();
+
+if(!phone) return;
+
+try{
+
+const response=await fetch(
+"/chat?phone="+encodeURIComponent(phone),
+{
+cache:"no-store"
+}
+);
+
+if(!response.ok){
+
+throw new Error("خطا در دریافت گفتگو");
+
+}
+
+const result=await response.json();
+
+if(result.success){
+
+if(result.chat_id){
+
+localStorage.setItem(
+CHAT_ID_KEY,
+result.chat_id
+);
+
+}
+
+renderMessages(result.messages || []);
+
+}
+
+}catch(error){
+
+console.error(error);
+
+}
+
+}
+
+
+/* =========================
+   RENDER MESSAGES
+========================= */
+
+function renderMessages(messages){
+
+const box=document.getElementById("chatMessages");
+
+box.innerHTML="";
+
+if(!messages.length){
+
+const welcome=document.createElement("div");
+
+welcome.className="chat-welcome";
+
+welcome.innerHTML=
+"سلام 👋<br>به پشتیبانی دکتر برودت خوش آمدید. پیامتان را بنویسید؛ در اولین فرصت پاسخ می‌دهیم.";
+
+box.appendChild(welcome);
+
+}else{
+
+messages.forEach(function(item){
+
+const message=document.createElement("div");
+
+message.className=
+"chat-msg "+
+(item.sender==="admin" ? "admin" : "customer");
+
+const text=document.createElement("div");
+
+text.textContent=item.message || "";
+
+message.appendChild(text);
+
+if(item.created_at){
+
+const time=document.createElement("span");
+
+time.className="chat-time";
+
+time.textContent=item.created_at;
+
+message.appendChild(time);
+
+}
+
+box.appendChild(message);
+
+});
+
+}
+
+scrollChatBottom();
+
+}
+
+
+/* =========================
+   SEND CHAT
+========================= */
+
+async function sendChat(){
+
+const input=document.getElementById("chatInput");
+const button=document.getElementById("chatSend");
+const status=document.getElementById("chatStatus");
+
+const message=input.value.trim();
+
+const name=getChatName();
+const phone=getChatPhone();
+
+if(!name || !phone){
+
+prepareChat();
+
+return;
+
+}
+
+if(!message){
+
+return;
+
+}
+
+button.disabled=true;
+status.textContent="در حال ارسال...";
+
+try{
+
+const response=await fetch(
+"/chat/send",
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+name:name,
+phone:phone,
+message:message
+})
+}
+);
+
+const text=await response.text();
+
+let result;
+
+try{
+
+result=JSON.parse(text);
+
+}catch(e){
+
+throw new Error(
+"پاسخ سرور نامعتبر است."
+);
+
+}
+
+if(!response.ok || !result.success){
+
+throw new Error(
+result.message || "ارسال پیام انجام نشد."
+);
+
+}
+
+if(result.chat_id){
+
+localStorage.setItem(
+CHAT_ID_KEY,
+result.chat_id
+);
+
+}
+
+input.value="";
+
+status.textContent="پیام ارسال شد ✓";
+
+await loadChat();
+
+setTimeout(function(){
+
+status.textContent="";
+
+},2000);
+
+}catch(error){
+
+console.error(error);
+
+status.textContent="❌ "+error.message;
+
+}finally{
+
+button.disabled=false;
+input.focus();
+
+}
+
+}
+
+
+/* =========================
+   QUICK CHAT BUTTONS
+========================= */
 
 function chatChoice(text){
 
@@ -1976,125 +2258,94 @@ input.focus();
 }
 
 
-/* =====================================================
-   SAFE JSON
-   جلوگیری از Unexpected end of JSON input
-===================================================== */
+/* =========================
+   SCROLL CHAT
+========================= */
 
-async function safeJson(response){
+function scrollChatBottom(){
 
-const text=await response.text();
+const box=document.getElementById("chatMessages");
 
-if(!text){
+setTimeout(function(){
 
-throw new Error(
-"پاسخی از سرور دریافت نشد."
-);
+box.scrollTop=box.scrollHeight;
 
-}
-
-try{
-
-return JSON.parse(text);
-
-}catch(error){
-
-throw new Error(
-"پاسخ سرور قابل پردازش نیست."
-);
-
-}
+},50);
 
 }
 
 
-/* =====================================================
-   SERVICE REQUEST
-===================================================== */
+/* =========================
+   SERVICE FORM
+========================= */
 
 document
 .getElementById("serviceForm")
-.addEventListener(
-"submit",
-async function(e){
+.addEventListener("submit",async function(e){
 
 e.preventDefault();
 
-const button=
-document.getElementById("submitBtn");
-
-const message=
-document.getElementById("formMessage");
+const button=document.getElementById("submitBtn");
+const message=document.getElementById("formMessage");
 
 const data={
 
-name:
-document.getElementById("name")
-.value
-.trim(),
+name:document.getElementById("name").value.trim(),
 
-phone:
-document.getElementById("phone")
-.value
-.trim(),
+phone:document.getElementById("phone").value.trim(),
 
-service:
-document.getElementById("service")
-.value,
+service:document.getElementById("service").value,
 
-description:
-document.getElementById("description")
-.value
-.trim()
+description:document.getElementById("description").value.trim()
 
 };
 
-
-if(!data.name || !data.phone || !data.service){
-
-message.className="form-message error";
-
-message.textContent=
-"❌ لطفاً نام، شماره تماس و نوع خدمت را وارد کنید.";
-
-return;
-
-}
-
-
-button.disabled=true;
-
-button.textContent=
-"در حال ارسال...";
-
-message.className=
-"form-message";
-
+message.className="form-message";
 message.textContent="";
 
+button.disabled=true;
+button.textContent="در حال ارسال...";
 
 try{
 
-const response=
-await fetch(
-API_BASE + "/api/request",
+const response=await fetch(
+"/api/request",
 {
 method:"POST",
-
 headers:{
 "Content-Type":"application/json"
 },
-
 body:JSON.stringify(data)
 }
 );
 
+const text=await response.text();
 
-const result=
-await safeJson(response);
+let result;
 
+try{
 
-if(!response.ok || !result.success){
+result=JSON.parse(text);
+
+}catch(e){
+
+throw new Error(
+"پاسخ سرور نامعتبر است."
+);
+
+}
+
+if(result.success){
+
+message.className="form-message success";
+
+message.textContent="✅ "+result.message;
+
+document
+.getElementById("serviceForm")
+.reset();
+
+}else{
 
 throw new Error(
 result.message ||
@@ -2103,204 +2354,29 @@ result.message ||
 
 }
 
-
-message.className=
-"form-message success";
-
-message.textContent=
-"✅ "+(
-result.message ||
-"درخواست شما با موفقیت ثبت شد."
-);
-
-
-document
-.getElementById("serviceForm")
-.reset();
-
-
 }catch(error){
 
-message.className=
-"form-message error";
+message.className="form-message error";
 
-message.textContent=
-"❌ "+error.message;
+message.textContent="❌ "+error.message;
 
 }finally{
 
 button.disabled=false;
-
-button.textContent=
-"ثبت درخواست خدمات";
+button.textContent="ثبت درخواست خدمات";
 
 }
 
 });
 
 
-/* =====================================================
-   CHAT SEND
-===================================================== */
+/* =========================
+   CLOSE MENU OUTSIDE
+========================= */
 
-async function sendChatMessage(){
+document.addEventListener("click",function(e){
 
-const name=
-document.getElementById("chatName")
-.value
-.trim();
-
-const phone=
-document.getElementById("chatPhone")
-.value
-.trim();
-
-const message=
-document.getElementById("chatInput")
-.value
-.trim();
-
-const button=
-document.getElementById("chatSend");
-
-const status=
-document.getElementById("chatStatus");
-
-
-status.className="chat-status";
-
-status.textContent="";
-
-
-if(!name){
-
-status.className=
-"chat-status error";
-
-status.textContent=
-"❌ لطفاً نام خود را وارد کنید.";
-
-return;
-
-}
-
-
-if(!phone){
-
-status.className=
-"chat-status error";
-
-status.textContent=
-"❌ لطفاً شماره تماس را وارد کنید.";
-
-return;
-
-}
-
-
-if(!message){
-
-status.className=
-"chat-status error";
-
-status.textContent=
-"❌ لطفاً پیام خود را بنویسید.";
-
-return;
-
-}
-
-
-button.disabled=true;
-
-button.textContent=
-"در حال ارسال...";
-
-
-try{
-
-const response=
-await fetch(
-API_BASE + "/chat/send",
-{
-method:"POST",
-
-headers:{
-"Content-Type":"application/json"
-},
-
-body:JSON.stringify({
-
-name:name,
-
-phone:phone,
-
-message:message
-
-})
-}
-);
-
-
-const result=
-await safeJson(response);
-
-
-if(!response.ok || !result.success){
-
-throw new Error(
-result.message ||
-"ارسال پیام انجام نشد."
-);
-
-}
-
-
-status.className=
-"chat-status success";
-
-status.textContent=
-"✅ "+(
-result.message ||
-"پیام شما ارسال شد."
-);
-
-
-document
-.getElementById("chatInput")
-.value="";
-
-
-}catch(error){
-
-status.className=
-"chat-status error";
-
-status.textContent=
-"❌ "+error.message;
-
-}finally{
-
-button.disabled=false;
-
-button.textContent=
-"ارسال پیام";
-
-}
-
-}
-
-
-/* =====================================================
-   CLOSE MENU WHEN CLICKING OUTSIDE
-===================================================== */
-
-document.addEventListener(
-"click",
-function(e){
-
-const menu=
-document.getElementById("menu");
+const menu=document.getElementById("menu");
 
 if(
 menu.classList.contains("open") &&
@@ -2315,73 +2391,26 @@ menu.classList.remove("open");
 });
 
 
-/* =====================================================
-   ENTER KEY FOR CHAT
-===================================================== */
+/* =========================
+   REFRESH CHAT
+   هر 5 ثانیه پاسخ ادمین
+   بررسی می‌شود
+========================= */
 
-document
-.getElementById("chatInput")
-.addEventListener(
-"keydown",
-function(e){
+setInterval(function(){
 
-if(e.key==="Enter"){
+const chatWindow=document.getElementById("chatWindow");
 
-e.preventDefault();
+if(
+chatWindow.classList.contains("open") &&
+getChatPhone()
+){
 
-sendChatMessage();
-
-}
-
-});
-
-
-/* =====================================================
-   LOAD PUBLIC PRODUCTS
-   فعلاً فقط آماده اتصال به فروشگاه
-===================================================== */
-
-async function checkPanelConnection(){
-
-try{
-
-const response=
-await fetch(
-API_BASE + "/health",
-{
-method:"GET"
-}
-);
-
-if(!response.ok){
-
-console.warn(
-"Panel API is not responding normally."
-);
-
-return false;
+loadChat();
 
 }
 
-const result=
-await safeJson(response);
-
-return result.success===true;
-
-}catch(error){
-
-console.warn(
-"Panel connection failed:",
-error
-);
-
-return false;
-
-}
-
-}
-
-checkPanelConnection();
+},5000);
 
 </script>
 
