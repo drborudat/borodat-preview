@@ -22,9 +22,7 @@ text-decoration:none;
 color:inherit
 }
 
-button{
-font-family:inherit
-}
+button{font-family:inherit}
 
 /* HEADER */
 .header{
@@ -46,6 +44,7 @@ display:flex;
 align-items:center
 }
 
+/* LOGO */
 .logo{
 display:flex;
 align-items:center;
@@ -127,9 +126,7 @@ border-bottom:1px solid #e4e9ed;
 box-shadow:0 20px 45px rgba(7,27,49,.12)
 }
 
-.menu-panel.open{
-display:block
-}
+.menu-panel.open{display:block}
 
 .menu-inner{
 width:92%;
@@ -156,7 +153,7 @@ background:#071b31;
 color:#fff
 }
 
-/* HERO SLIDER */
+/* HERO */
 .slider{
 position:relative;
 height:500px;
@@ -187,9 +184,7 @@ transform:scale(1.02);
 transition:transform 6s ease
 }
 
-.slide.active img{
-transform:scale(1.07)
-}
+.slide.active img{transform:scale(1.07)}
 
 .slide-overlay{
 position:absolute;
@@ -302,9 +297,7 @@ max-width:1280px;
 margin:auto
 }
 
-section{
-padding:70px 0
-}
+section{padding:70px 0}
 
 .heading{
 text-align:center;
@@ -347,7 +340,13 @@ border-radius:10px;
 padding:22px;
 display:flex;
 align-items:center;
-gap:15px
+gap:15px;
+transition:.25s
+}
+
+.category:hover{
+transform:translateY(-3px);
+box-shadow:0 12px 30px rgba(7,27,49,.08)
 }
 
 .category-icon{
@@ -375,10 +374,8 @@ margin:0;
 line-height:1.8
 }
 
-/* SPECIAL OFFER */
-.special{
-background:#f5f7f9
-}
+/* SPECIAL */
+.special{background:#f5f7f9}
 
 .special-box{
 background:#fff;
@@ -453,7 +450,13 @@ padding:20px
 border:1px solid #e1e7ec;
 border-radius:9px;
 overflow:hidden;
-background:#fff
+background:#fff;
+transition:.25s
+}
+
+.deal-card:hover{
+transform:translateY(-4px);
+box-shadow:0 12px 30px rgba(7,27,49,.08)
 }
 
 .deal-image{
@@ -472,9 +475,7 @@ height:100%;
 object-fit:cover
 }
 
-.deal-info{
-padding:14px
-}
+.deal-info{padding:14px}
 
 .deal-info small{
 color:#0879bd;
@@ -515,13 +516,14 @@ background:#0879bd;
 color:#fff;
 font-size:9px;
 font-weight:bold;
-cursor:pointer
+cursor:pointer;
+transition:.2s
 }
 
+.cart-btn:hover{background:#071b31}
+
 /* PRODUCTS */
-.products{
-background:#fff
-}
+.products{background:#fff}
 
 .product-grid{
 display:grid;
@@ -533,7 +535,13 @@ gap:17px
 background:#fff;
 border:1px solid #e1e7ec;
 border-radius:10px;
-overflow:hidden
+overflow:hidden;
+transition:.25s
+}
+
+.product:hover{
+transform:translateY(-4px);
+box-shadow:0 12px 30px rgba(7,27,49,.08)
 }
 
 .product-image{
@@ -552,9 +560,7 @@ height:100%;
 object-fit:cover
 }
 
-.product-info{
-padding:18px
-}
+.product-info{padding:18px}
 
 .product-info small{
 font-size:9px;
@@ -596,8 +602,11 @@ border-radius:7px;
 background:#071b31;
 color:#fff;
 cursor:pointer;
-font-size:16px
+font-size:16px;
+transition:.2s
 }
+
+.product-cart:hover{background:#0879bd}
 
 /* FOOTER */
 footer{
@@ -620,13 +629,9 @@ direction:ltr;
 unicode-bidi:isolate
 }
 
-.footer-logo span{
-color:#6cccf3
-}
+.footer-logo span{color:#6cccf3}
 
-footer h3{
-font-size:13px
-}
+footer h3{font-size:13px}
 
 footer p,
 footer a{
@@ -636,9 +641,7 @@ line-height:2;
 display:block
 }
 
-footer a:hover{
-color:#6cccf3
-}
+footer a:hover{color:#6cccf3}
 
 .copyright{
 border-top:1px solid rgba(255,255,255,.1);
@@ -650,9 +653,7 @@ font-size:9px
 }
 
 /* MOBILE */
-.mobile-bar{
-display:none
-}
+.mobile-bar{display:none}
 
 .cart-message{
 position:fixed;
@@ -665,7 +666,8 @@ padding:13px 22px;
 border-radius:9px;
 font-size:10px;
 z-index:9999;
-transition:.3s
+transition:.3s;
+white-space:nowrap
 }
 
 .cart-message.show{
@@ -675,25 +677,17 @@ transform:translate(-50%,0)
 /* RESPONSIVE */
 @media(max-width:900px){
 
-.header{
-height:68px
-}
+.header{height:68px}
 
-.menu-panel{
-top:68px
-}
+.menu-panel{top:68px}
 
 .menu-inner{
 grid-template-columns:1fr 1fr
 }
 
-.slider{
-height:450px
-}
+.slider{height:450px}
 
-.slide-text h1{
-font-size:30px
-}
+.slide-text h1{font-size:30px}
 
 .category-grid{
 grid-template-columns:1fr 1fr
@@ -735,9 +729,7 @@ font-size:9px;
 color:#53697b
 }
 
-.mobile-bar a.active{
-color:#0879bd
-}
+.mobile-bar a.active{color:#0879bd}
 
 .mobile-bar span{
 font-size:21px;
@@ -749,9 +741,7 @@ align-items:center
 
 @media(max-width:500px){
 
-.logo{
-font-size:17px
-}
+.logo{font-size:17px}
 
 .logo-mark{
 width:35px;
@@ -759,18 +749,14 @@ height:35px;
 font-size:13px
 }
 
-.logo-plus{
-font-size:16px
-}
+.logo-plus{font-size:16px}
 
 .header-icon{
 width:38px;
 height:38px
 }
 
-.slider{
-height:470px
-}
+.slider{height:470px}
 
 .slide-content{
 align-items:center;
@@ -782,13 +768,9 @@ justify-content:center
 max-width:100%
 }
 
-.slide-text h1{
-font-size:27px
-}
+.slide-text h1{font-size:27px}
 
-.slide-text p{
-font-size:10px
-}
+.slide-text p{font-size:10px}
 
 .slide-button{
 font-size:9px;
@@ -819,21 +801,13 @@ text-align:center
 margin:0 auto 8px
 }
 
-.category h3{
-font-size:10px
-}
+.category h3{font-size:10px}
 
-.category p{
-font-size:8px
-}
+.category p{font-size:8px}
 
-section{
-padding:55px 0
-}
+section{padding:55px 0}
 
-.heading h2{
-font-size:24px
-}
+.heading h2{font-size:24px}
 
 .special-head{
 display:block;
@@ -845,9 +819,7 @@ justify-content:center;
 margin-bottom:15px
 }
 
-.countdown{
-justify-content:center
-}
+.countdown{justify-content:center}
 
 .special-products{
 grid-template-columns:1fr 1fr;
@@ -855,54 +827,32 @@ padding:12px;
 gap:9px
 }
 
-.deal-image{
-height:125px
-}
+.deal-image{height:125px}
 
-.deal-info{
-padding:10px
-}
+.deal-info{padding:10px}
 
-.deal-info h3{
-font-size:10px
-}
+.deal-info h3{font-size:10px}
 
-.deal-price strong{
-font-size:10px
-}
+.deal-price strong{font-size:10px}
 
 .product-grid{
 grid-template-columns:1fr 1fr;
 gap:9px
 }
 
-.product-image{
-height:135px
-}
+.product-image{height:135px}
 
-.product-info{
-padding:12px
-}
+.product-info{padding:12px}
 
-.product-info h3{
-font-size:10px
-}
+.product-info h3{font-size:10px}
 
-.product-info p{
-font-size:8px
-}
+.product-info p{font-size:8px}
 
-.product-price{
-font-size:9px
-}
+.product-price{font-size:9px}
 
-.footer-grid{
-grid-template-columns:1fr
-}
+.footer-grid{grid-template-columns:1fr}
 
-footer{
-padding-bottom:100px
-}
+footer{padding-bottom:100px}
 }
 </style>
 </head>
@@ -921,7 +871,6 @@ padding-bottom:100px
 
 <div class="header-tools">
 
-<!-- SEARCH -->
 <button class="header-icon" aria-label="جستجو" onclick="showSearch()">
 <svg class="icon-svg" viewBox="0 0 24 24">
 <circle cx="11" cy="11" r="6.5"></circle>
@@ -929,7 +878,6 @@ padding-bottom:100px
 </svg>
 </button>
 
-<!-- CART -->
 <button class="header-icon" aria-label="سبد خرید" onclick="showCart()">
 <svg class="icon-svg" viewBox="0 0 24 24">
 <path d="M4 8h16l-1 11H5L4 8z"></path>
@@ -939,7 +887,6 @@ padding-bottom:100px
 </svg>
 </button>
 
-<!-- MENU -->
 <button class="header-icon" aria-label="منو" onclick="toggleMenu()">
 <svg class="icon-svg" viewBox="0 0 24 24">
 <path d="M4 7h16"></path>
@@ -968,7 +915,7 @@ padding-bottom:100px
 </header>
 
 
-<!-- HERO SLIDER -->
+<!-- HERO -->
 <section class="slider" id="home">
 
 <div class="slide active">
@@ -1097,7 +1044,7 @@ aria-label="اسلاید دوم"></button>
 </section>
 
 
-<!-- SPECIAL OFFER -->
+<!-- SPECIAL -->
 <section class="special" id="special">
 
 <div class="container">
@@ -1249,7 +1196,7 @@ onclick="addCart('لوازم و متعلقات')">
 </section>
 
 
-<!-- NEW PRODUCTS -->
+<!-- PRODUCTS -->
 <section class="products" id="products">
 
 <div class="container">
@@ -1270,200 +1217,128 @@ onclick="addCart('لوازم و متعلقات')">
 <div class="product-grid">
 
 <div class="product">
-
 <div class="product-image">❄️</div>
-
 <div class="product-info">
-
 <small>کولر گازی</small>
-
 <h3>اسپلیت دیواری</h3>
-
 <p>مناسب برای فضاهای مسکونی و اداری.</p>
-
 <div class="product-bottom">
-
 <div class="product-price">تماس بگیرید</div>
-
 <button class="product-cart"
 onclick="addCart('اسپلیت دیواری')"
 aria-label="افزودن به سبد">🛒</button>
-
 </div>
 </div>
 </div>
 
 
 <div class="product">
-
 <div class="product-image">🌬️</div>
-
 <div class="product-info">
-
 <small>تجهیزات سرمایشی</small>
-
 <h3>تجهیزات تهویه</h3>
-
 <p>تجهیزات مورد نیاز سیستم‌های سرمایشی.</p>
-
 <div class="product-bottom">
-
 <div class="product-price">تماس بگیرید</div>
-
 <button class="product-cart"
 onclick="addCart('تجهیزات تهویه')"
 aria-label="افزودن به سبد">🛒</button>
-
 </div>
 </div>
 </div>
 
 
 <div class="product">
-
 <div class="product-image">🔧</div>
-
 <div class="product-info">
-
 <small>قطعات</small>
-
 <h3>قطعات و لوازم کولر</h3>
-
 <p>قطعات مورد نیاز سرویس و تعمیر دستگاه.</p>
-
 <div class="product-bottom">
-
 <div class="product-price">تماس بگیرید</div>
-
 <button class="product-cart"
 onclick="addCart('قطعات و لوازم کولر')"
 aria-label="افزودن به سبد">🛒</button>
-
 </div>
 </div>
 </div>
 
 
 <div class="product">
-
 <div class="product-image">⚙️</div>
-
 <div class="product-info">
-
 <small>قطعات</small>
-
 <h3>برد کولر گازی</h3>
-
 <p>قطعات و تجهیزات مورد نیاز تعمیرات.</p>
-
 <div class="product-bottom">
-
 <div class="product-price">تماس بگیرید</div>
-
 <button class="product-cart"
 onclick="addCart('برد کولر گازی')"
 aria-label="افزودن به سبد">🛒</button>
-
 </div>
 </div>
 </div>
 
 
 <div class="product">
-
 <div class="product-image">💨</div>
-
 <div class="product-info">
-
 <small>قطعات</small>
-
 <h3>موتور فن</h3>
-
 <p>مناسب برای انواع سیستم‌های سرمایشی.</p>
-
 <div class="product-bottom">
-
 <div class="product-price">تماس بگیرید</div>
-
 <button class="product-cart"
 onclick="addCart('موتور فن')"
 aria-label="افزودن به سبد">🛒</button>
-
 </div>
 </div>
 </div>
 
 
 <div class="product">
-
 <div class="product-image">🔩</div>
-
 <div class="product-info">
-
 <small>لوازم</small>
-
 <h3>قطعات مصرفی</h3>
-
 <p>لوازم مورد نیاز سرویس و نگهداری.</p>
-
 <div class="product-bottom">
-
 <div class="product-price">تماس بگیرید</div>
-
 <button class="product-cart"
 onclick="addCart('قطعات مصرفی')"
 aria-label="افزودن به سبد">🛒</button>
-
 </div>
 </div>
 </div>
 
 
 <div class="product">
-
 <div class="product-image">🎛️</div>
-
 <div class="product-info">
-
 <small>لوازم جانبی</small>
-
 <h3>ریموت کنترل</h3>
-
 <p>ریموت و متعلقات سیستم‌های سرمایشی.</p>
-
 <div class="product-bottom">
-
 <div class="product-price">تماس بگیرید</div>
-
 <button class="product-cart"
 onclick="addCart('ریموت کنترل')"
 aria-label="افزودن به سبد">🛒</button>
-
 </div>
 </div>
 </div>
 
 
 <div class="product">
-
 <div class="product-image">🧰</div>
-
 <div class="product-info">
-
 <small>تجهیزات</small>
-
 <h3>ابزار و تجهیزات فنی</h3>
-
 <p>ابزار مورد نیاز خدمات تخصصی سرمایش.</p>
-
 <div class="product-bottom">
-
 <div class="product-price">تماس بگیرید</div>
-
 <button class="product-cart"
 onclick="addCart('ابزار و تجهیزات فنی')"
 aria-label="افزودن به سبد">🛒</button>
-
 </div>
 </div>
 </div>
@@ -1579,7 +1454,7 @@ Dr <span>Borodat</span>
 </div>
 
 
-<!-- CART MESSAGE -->
+<!-- MESSAGE -->
 <div class="cart-message" id="cartMessage"></div>
 
 
@@ -1588,9 +1463,7 @@ Dr <span>Borodat</span>
 /* MENU */
 
 function toggleMenu(){
-
 document.getElementById("menu").classList.toggle("open");
-
 }
 
 
@@ -1736,7 +1609,8 @@ document.addEventListener("click",function(e){
 
 const menu=document.getElementById("menu");
 
-const insideMenu=e.target.closest(".menu-panel");
+const insideMenu=
+e.target.closest(".menu-panel");
 
 const menuButton=
 e.target.closest('[aria-label="منو"]');
