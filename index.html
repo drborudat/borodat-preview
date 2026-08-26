@@ -41,8 +41,6 @@ display:flex;
 align-items:center
 }
 
-/* LOGO */
-
 .logo{
 display:flex;
 align-items:center;
@@ -51,10 +49,10 @@ font-family:Arial,sans-serif;
 font-size:20px;
 font-weight:800;
 color:#071b31;
-direction:ltr !important;
+direction:ltr!important;
 unicode-bidi:isolate;
 white-space:nowrap;
-flex-direction:row !important;
+flex-direction:row!important;
 text-decoration:none
 }
 
@@ -70,7 +68,7 @@ color:#fff;
 font-family:Arial,sans-serif;
 font-size:14px;
 font-weight:900;
-direction:ltr !important;
+direction:ltr!important;
 unicode-bidi:isolate;
 white-space:nowrap;
 flex-shrink:0
@@ -83,7 +81,7 @@ font-family:Arial,sans-serif;
 font-size:20px;
 font-weight:900;
 color:#071b31;
-direction:ltr !important;
+direction:ltr!important;
 unicode-bidi:isolate;
 white-space:nowrap
 }
@@ -846,6 +844,7 @@ height:58px;
 border-radius:50%;
 border:0;
 background:#0879bd;
+color:#fff;
 box-shadow:0 12px 35px rgba(0,0,0,.25);
 display:flex;
 align-items:center;
@@ -910,26 +909,7 @@ font-size:20px;
 cursor:pointer
 }
 
-.chat-body{
-padding:18px
-}
-
-.chat-login{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:7px;
-margin-bottom:12px
-}
-
-.chat-login input{
-width:100%;
-border:1px solid #dfe7ec;
-border-radius:8px;
-padding:10px;
-font-size:9px;
-outline:none;
-color:#263f54
-}
+.chat-body{padding:18px}
 
 .chat-message{
 background:#f1f6f9;
@@ -941,59 +921,26 @@ line-height:1.9;
 margin-bottom:15px
 }
 
-.chat-messages{
-max-height:230px;
-overflow-y:auto;
-padding:3px 2px 5px;
+.chat-fields{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:7px;
 margin-bottom:10px
 }
 
-.chat-item{
-display:flex;
-margin-bottom:8px
-}
-
-.chat-item.customer{
-justify-content:flex-end
-}
-
-.chat-item.admin{
-justify-content:flex-start
-}
-
-.chat-bubble{
-max-width:82%;
-padding:10px 12px;
-border-radius:12px;
-font-size:10px;
-line-height:1.8;
-word-break:break-word
-}
-
-.chat-item.customer .chat-bubble{
-background:#0879bd;
-color:#fff;
-border-radius:12px 12px 3px 12px
-}
-
-.chat-item.admin .chat-bubble{
-background:#f1f6f9;
-color:#334b60;
-border-radius:12px 12px 12px 3px
-}
-
-.chat-time{
-display:block;
-font-size:7px;
-opacity:.65;
-margin-top:4px
+.chat-fields input{
+width:100%;
+border:1px solid #dfe7ec;
+border-radius:8px;
+padding:10px;
+font-size:9px;
+outline:none
 }
 
 .chat-options{
 display:grid;
 grid-template-columns:1fr 1fr;
-gap:7px;
-margin-bottom:10px
+gap:7px
 }
 
 .chat-option{
@@ -1006,19 +953,8 @@ font-size:9px;
 cursor:pointer
 }
 
-.chat-option:hover{
-background:#edf7fb;
-border-color:#9fd3e8
-}
-
-.chat-compose{
-display:flex;
-gap:7px;
-align-items:center
-}
-
 .chat-input{
-flex:1;
+margin-top:12px;
 width:100%;
 border:1px solid #dfe7ec;
 border-radius:8px;
@@ -1028,13 +964,14 @@ outline:none
 }
 
 .chat-send{
-width:70px;
+width:100%;
+margin-top:8px;
 border:0;
 border-radius:8px;
-padding:11px 5px;
+padding:11px;
 background:#0879bd;
 color:#fff;
-font-size:9px;
+font-size:10px;
 font-weight:bold;
 cursor:pointer
 }
@@ -1045,48 +982,33 @@ cursor:wait
 }
 
 .chat-status{
-font-size:8px;
-color:#718192;
-text-align:center;
+display:none;
 margin-top:8px;
-min-height:12px
+padding:9px;
+border-radius:7px;
+font-size:9px;
+text-align:center
+}
+
+.chat-status.success{
+display:block;
+background:#e8f8ef;
+color:#176b3b
+}
+
+.chat-status.error{
+display:block;
+background:#fff0f0;
+color:#a22626
 }
 
 /* MOBILE BAR */
 
 .mobile-bar{display:none}
 
-@media(max-width:900px){
-
-.mobile-bar a span{
-display:flex;
-align-items:center;
-justify-content:center;
-width:32px;
-height:32px;
-font-size:23px;
-line-height:1;
-margin-bottom:2px
-}
-
-.mobile-bar a{
-gap:2px;
-font-size:9px
-}
-
-}
-
-/* ANIMATION */
-
 @keyframes fadeUp{
-from{
-opacity:0;
-transform:translateY(25px)
-}
-to{
-opacity:1;
-transform:translateY(0)
-}
+from{opacity:0;transform:translateY(25px)}
+to{opacity:1;transform:translateY(0)}
 }
 
 @keyframes heroZoom{
@@ -1099,17 +1021,12 @@ to{transform:scale(1.05)}
 50%{box-shadow:0 12px 35px rgba(8,121,189,.42)}
 }
 
-/* RESPONSIVE */
-
 @media(max-width:900px){
 
 .header{height:68px}
-
 .menu-panel{top:68px}
 
-.menu-inner{
-grid-template-columns:1fr 1fr
-}
+.menu-inner{grid-template-columns:1fr 1fr}
 
 .hero{
 height:calc(100vh - 68px);
@@ -1117,18 +1034,11 @@ min-height:600px
 }
 
 .hero-logo{font-size:40px}
-
 .hero-subtitle{font-size:14px}
-
 .hero-description{font-size:10px}
 
-.grid4{
-grid-template-columns:1fr 1fr
-}
-
-.brand-grid{
-grid-template-columns:repeat(3,1fr)
-}
+.grid4{grid-template-columns:1fr 1fr}
+.brand-grid{grid-template-columns:repeat(3,1fr)}
 
 .about-grid,
 .why-grid,
@@ -1136,21 +1046,10 @@ grid-template-columns:repeat(3,1fr)
 grid-template-columns:1fr
 }
 
-.product-grid{
-grid-template-columns:1fr 1fr
-}
-
-.review-grid{
-grid-template-columns:1fr
-}
-
-.article-grid{
-grid-template-columns:1fr
-}
-
-.footer-grid{
-grid-template-columns:1fr 1fr
-}
+.product-grid{grid-template-columns:1fr 1fr}
+.review-grid{grid-template-columns:1fr}
+.article-grid{grid-template-columns:1fr}
+.footer-grid{grid-template-columns:1fr 1fr}
 
 .mobile-bar{
 position:fixed;
@@ -1178,11 +1077,18 @@ color:#53697b
 
 .mobile-bar a.active{color:#0879bd}
 
-.chat-button{bottom:82px}
-
-.chat-window{
-bottom:150px
+.mobile-bar a span{
+display:flex;
+align-items:center;
+justify-content:center;
+width:32px;
+height:32px;
+font-size:23px;
+line-height:1
 }
+
+.chat-button{bottom:82px}
+.chat-window{bottom:150px}
 
 }
 
@@ -1197,18 +1103,10 @@ flex-direction:row
 .logo-text{
 width:40px;
 height:40px;
-font-size:14px;
-direction:ltr;
-unicode-bidi:isolate;
-white-space:nowrap
+font-size:14px
 }
 
-.logo-symbol{
-font-size:17px;
-direction:ltr;
-unicode-bidi:isolate;
-white-space:nowrap
-}
+.logo-symbol{font-size:17px}
 
 .header-icon{
 width:38px;
@@ -1216,7 +1114,6 @@ height:38px
 }
 
 .hero-logo{font-size:34px}
-
 .hero-subtitle{font-size:13px}
 
 .hero-buttons{
@@ -1230,25 +1127,11 @@ padding:12px 7px;
 font-size:9px
 }
 
-.grid4{
-grid-template-columns:1fr
-}
-
-.brand-grid{
-grid-template-columns:1fr 1fr
-}
-
-.product-grid{
-grid-template-columns:1fr 1fr
-}
-
-.why-items{
-grid-template-columns:1fr
-}
-
-.form-row{
-grid-template-columns:1fr
-}
+.grid4{grid-template-columns:1fr}
+.brand-grid{grid-template-columns:1fr 1fr}
+.product-grid{grid-template-columns:1fr 1fr}
+.why-items{grid-template-columns:1fr}
+.form-row{grid-template-columns:1fr}
 
 .cta{
 display:block;
@@ -1260,9 +1143,7 @@ display:inline-block;
 margin-top:15px
 }
 
-.footer-grid{
-grid-template-columns:1fr
-}
+.footer-grid{grid-template-columns:1fr}
 
 .chat-window{
 left:12px;
@@ -1270,13 +1151,7 @@ right:12px;
 width:auto
 }
 
-.chat-login{
-grid-template-columns:1fr
-}
-
-.request-form{
-padding:20px
-}
+.request-form{padding:20px}
 
 .mobile-bar a span{
 font-size:24px;
@@ -1284,8 +1159,10 @@ width:34px;
 height:34px
 }
 
-.mobile-bar a{
-font-size:9px
+.mobile-bar a{font-size:9px}
+
+.chat-fields{
+grid-template-columns:1fr
 }
 
 }
@@ -1314,7 +1191,10 @@ transition:none!important
 
 <div class="header-tools">
 
-<button class="header-icon" aria-label="جستجو" onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})">
+<button
+class="header-icon"
+aria-label="جستجو"
+onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})">
 
 <svg class="icon-svg" viewBox="0 0 24 24">
 <circle cx="11" cy="11" r="6.5"></circle>
@@ -1343,7 +1223,6 @@ transition:none!important
 </button>
 
 </div>
-
 </div>
 
 <div class="menu-panel" id="menu">
@@ -1358,7 +1237,6 @@ transition:none!important
 <a class="menu-item" href="#about">درباره ما</a>
 
 </div>
-
 </div>
 
 </header>
@@ -1406,9 +1284,7 @@ Dr <span>Borodat</span>
 </div>
 
 </div>
-
 </div>
-
 </section>
 
 
@@ -1417,13 +1293,9 @@ Dr <span>Borodat</span>
 <div class="container">
 
 <div class="heading">
-
 <small>SERVICES</small>
-
 <h2>خدمات تخصصی</h2>
-
 <p>تمام خدمات مورد نیاز سیستم‌های سرمایشی در یک مجموعه</p>
-
 </div>
 
 <div class="grid4">
@@ -1505,7 +1377,6 @@ WHY DR BORODAT
 </div>
 
 </div>
-
 </div>
 
 <div class="stats-box">
@@ -1535,11 +1406,9 @@ WHY DR BORODAT
 </div>
 
 </div>
-
 </div>
 
 </div>
-
 </section>
 
 
@@ -1548,13 +1417,9 @@ WHY DR BORODAT
 <div class="container">
 
 <div class="heading">
-
 <small>BRANDS</small>
-
 <h2>برندهای تحت پوشش</h2>
-
 <p>ارائه خدمات برای برندهای مختلف سیستم‌های سرمایشی</p>
-
 </div>
 
 <div class="brand-grid">
@@ -1567,9 +1432,7 @@ WHY DR BORODAT
 <div class="brand">GENERAL</div>
 
 </div>
-
 </div>
-
 </section>
 
 
@@ -1578,13 +1441,9 @@ WHY DR BORODAT
 <div class="container">
 
 <div class="heading">
-
 <small>SHOP</small>
-
 <h2>محصولات منتخب</h2>
-
 <p>برخی از محصولات و تجهیزات قابل ارائه توسط دکتر برودت</p>
-
 </div>
 
 <div class="product-grid">
@@ -1669,7 +1528,6 @@ ABOUT US
 </div>
 
 </div>
-
 </section>
 
 
@@ -1678,13 +1536,9 @@ ABOUT US
 <div class="container">
 
 <div class="heading">
-
 <small>REVIEWS</small>
-
 <h2>رضایت مشتریان</h2>
-
 <p>تجربه مشتریان از خدمات دکتر برودت</p>
-
 </div>
 
 <div class="review-grid">
@@ -1737,23 +1591,35 @@ SERVICE REQUEST
 <div>✓ مشاوره و راهنمایی</div>
 
 </div>
-
 </div>
+
 
 <form class="request-form" id="serviceForm">
 
 <div class="form-row">
 
-<input id="name" name="name" type="text" placeholder="نام و نام خانوادگی" required>
+<input
+id="name"
+name="name"
+type="text"
+placeholder="نام و نام خانوادگی"
+required
+>
 
-<input id="phone" name="phone" type="tel" placeholder="شماره تماس" dir="rtl" required>
+<input
+id="phone"
+name="phone"
+type="tel"
+placeholder="شماره تماس"
+dir="rtl"
+required
+>
 
 </div>
 
 <select id="service" name="service" required>
 
 <option value="">نوع خدمت را انتخاب کنید</option>
-
 <option value="🔧 نصب کولر گازی">نصب کولر گازی</option>
 <option value="🛠️ سرویس کولر">سرویس کولر</option>
 <option value="❄️ تعمیر کولر">تعمیر کولر</option>
@@ -1768,7 +1634,11 @@ name="description"
 placeholder="توضیحات درخواست..."
 ></textarea>
 
-<button class="submit-btn" id="submitBtn" type="submit">
+<button
+class="submit-btn"
+id="submitBtn"
+type="submit"
+>
 ثبت درخواست خدمات
 </button>
 
@@ -1777,7 +1647,6 @@ placeholder="توضیحات درخواست..."
 </form>
 
 </div>
-
 </section>
 
 
@@ -1825,9 +1694,7 @@ placeholder="توضیحات درخواست..."
 </article>
 
 </div>
-
 </div>
-
 </section>
 
 
@@ -1850,9 +1717,7 @@ placeholder="توضیحات درخواست..."
 </a>
 
 </div>
-
 </div>
-
 </section>
 
 
@@ -1968,21 +1833,31 @@ aria-label="پشتیبانی آنلاین"
 
 </div>
 
-<button class="chat-close" onclick="toggleChat()">
+<button
+class="chat-close"
+onclick="toggleChat()"
+aria-label="بستن"
+>
 ×
 </button>
 
 </div>
 
+
 <div class="chat-body">
 
-<div class="chat-login">
+<div class="chat-message">
+سلام 👋<br>
+برای ارتباط با پشتیبانی، نام و شماره تماس خود را وارد کنید.
+</div>
+
+
+<div class="chat-fields">
 
 <input
 id="chatName"
 type="text"
 placeholder="نام شما"
-autocomplete="name"
 >
 
 <input
@@ -1990,151 +1865,105 @@ id="chatPhone"
 type="tel"
 placeholder="شماره تماس"
 dir="rtl"
-autocomplete="tel"
 >
 
 </div>
 
-<div class="chat-message">
-سلام 👋<br>
-چطور می‌تونم کمکتون کنم؟
-</div>
-
-<div class="chat-messages" id="chatMessages"></div>
 
 <div class="chat-options">
 
-<button class="chat-option" onclick="chatChoice('تعمیر کولر')">
+<button
+class="chat-option"
+onclick="chatChoice('تعمیر کولر')"
+>
 تعمیر کولر
 </button>
 
-<button class="chat-option" onclick="chatChoice('سرویس کولر')">
+<button
+class="chat-option"
+onclick="chatChoice('سرویس کولر')"
+>
 سرویس کولر
 </button>
 
-<button class="chat-option" onclick="chatChoice('نصب کولر')">
+<button
+class="chat-option"
+onclick="chatChoice('نصب کولر')"
+>
 نصب کولر
 </button>
 
-<button class="chat-option" onclick="chatChoice('راهنمای خرید')">
+<button
+class="chat-option"
+onclick="chatChoice('راهنمای خرید')"
+>
 راهنمای خرید
 </button>
 
 </div>
 
-<div class="chat-compose">
 
 <input
 class="chat-input"
 id="chatInput"
 placeholder="پیامتان را بنویسید..."
-autocomplete="off"
 >
 
 <button
 class="chat-send"
 id="chatSend"
-type="button"
 onclick="sendChatMessage()"
 >
-ارسال
+ارسال پیام
 </button>
 
+<div
+class="chat-status"
+id="chatStatus"
+></div>
+
 </div>
-
-<div class="chat-status" id="chatStatus"></div>
-
-</div>
-
 </div>
 
 
 <script>
 
-/* =========================================================
+/* =====================================================
+   CONFIG
+===================================================== */
+
+const API_BASE = "https://borodat-panel.onrender.com";
+
+
+/* =====================================================
    MENU
-========================================================= */
+===================================================== */
 
 function toggleMenu(){
 
-document
-.getElementById("menu")
-.classList
-.toggle("open");
+const menu=document.getElementById("menu");
+
+menu.classList.toggle("open");
 
 }
 
 
-/* =========================================================
-   CHAT
-========================================================= */
-
-let currentChatPhone="";
-let chatPolling=null;
-let lastChatSignature="";
-
+/* =====================================================
+   CHAT OPEN / CLOSE
+===================================================== */
 
 function toggleChat(){
 
-const windowElement=document.getElementById("chatWindow");
+const chat=document.getElementById("chatWindow");
 
-windowElement.classList.toggle("open");
-
-if(windowElement.classList.contains("open")){
-
-loadChat();
-
-startChatPolling();
-
-setTimeout(function(){
-
-document.getElementById("chatInput").focus();
-
-},150);
-
-}else{
-
-stopChatPolling();
-
-}
+chat.classList.toggle("open");
 
 }
 
 
-function startChatPolling(){
-
-stopChatPolling();
-
-chatPolling=setInterval(function(){
-
-const phone=document
-.getElementById("chatPhone")
-.value
-.trim();
-
-if(phone){
-
-loadChat(true);
-
-}
-
-},5000);
-
-}
-
-
-function stopChatPolling(){
-
-if(chatPolling){
-
-clearInterval(chatPolling);
-
-chatPolling=null;
-
-}
-
-}
-
+/* =====================================================
+   CHAT QUICK OPTIONS
+===================================================== */
 
 function chatChoice(text){
 
@@ -2147,225 +1976,275 @@ input.focus();
 }
 
 
-function escapeHtml(value){
+/* =====================================================
+   SAFE JSON
+   جلوگیری از Unexpected end of JSON input
+===================================================== */
 
-return String(value)
-.replace(/&/g,"&amp;")
-.replace(/</g,"&lt;")
-.replace(/>/g,"&gt;")
-.replace(/"/g,"&quot;")
-.replace(/'/g,"&#039;");
+async function safeJson(response){
 
-}
+const text=await response.text();
 
+if(!text){
 
-function renderChatMessages(messages){
-
-const container=document.getElementById("chatMessages");
-
-if(!Array.isArray(messages)){
-
-container.innerHTML="";
-
-return;
-
-}
-
-const signature=JSON.stringify(messages);
-
-if(signature===lastChatSignature){
-
-return;
-
-}
-
-lastChatSignature=signature;
-
-container.innerHTML="";
-
-messages.forEach(function(item){
-
-const wrapper=document.createElement("div");
-
-wrapper.className=
-"chat-item "+
-(
-item.sender==="admin"
-? "admin"
-: "customer"
+throw new Error(
+"پاسخی از سرور دریافت نشد."
 );
 
-const bubble=document.createElement("div");
-
-bubble.className="chat-bubble";
-
-const messageText=escapeHtml(
-item.message || ""
-).replace(/\n/g,"<br>");
-
-bubble.innerHTML=
-messageText+
-(
-item.created_at
-?
-'<span class="chat-time">'+
-escapeHtml(item.created_at)+
-"</span>"
-:
-""
-);
-
-wrapper.appendChild(bubble);
-
-container.appendChild(wrapper);
-
-});
-
-container.scrollTop=container.scrollHeight;
-
 }
-
-
-async function loadChat(silent=false){
-
-const phone=document
-.getElementById("chatPhone")
-.value
-.trim();
-
-if(!phone){
-
-if(!silent){
-
-document.getElementById("chatStatus").textContent=
-"شماره تماس را وارد کنید.";
-
-}
-
-return;
-
-}
-
-currentChatPhone=phone;
 
 try{
 
-const response=await fetch(
-"/chat?phone="+encodeURIComponent(phone),
-{
-method:"GET",
-cache:"no-store"
-}
-);
-
-const result=await response.json();
-
-if(result.success){
-
-renderChatMessages(
-result.messages || []
-);
-
-if(!silent){
-
-document.getElementById("chatStatus").textContent="";
-
-}
-
-}else if(!silent){
-
-document.getElementById("chatStatus").textContent=
-result.message || "خطا در دریافت گفتگو.";
-
-}
+return JSON.parse(text);
 
 }catch(error){
 
-if(!silent){
-
-document.getElementById("chatStatus").textContent=
-"خطا در اتصال به پشتیبانی.";
-
-}
+throw new Error(
+"پاسخ سرور قابل پردازش نیست."
+);
 
 }
 
 }
 
 
-async function sendChatMessage(){
+/* =====================================================
+   SERVICE REQUEST
+===================================================== */
 
-const name=document
-.getElementById("chatName")
+document
+.getElementById("serviceForm")
+.addEventListener(
+"submit",
+async function(e){
+
+e.preventDefault();
+
+const button=
+document.getElementById("submitBtn");
+
+const message=
+document.getElementById("formMessage");
+
+const data={
+
+name:
+document.getElementById("name")
 .value
-.trim();
+.trim(),
 
-const phone=document
-.getElementById("chatPhone")
+phone:
+document.getElementById("phone")
 .value
-.trim();
+.trim(),
 
-const input=document.getElementById("chatInput");
+service:
+document.getElementById("service")
+.value,
 
-const button=document.getElementById("chatSend");
+description:
+document.getElementById("description")
+.value
+.trim()
 
-const status=document.getElementById("chatStatus");
+};
 
-const message=input.value.trim();
 
-if(!name){
+if(!data.name || !data.phone || !data.service){
 
-status.textContent="لطفاً نام خود را وارد کنید.";
+message.className="form-message error";
 
-document.getElementById("chatName").focus();
-
-return;
-
-}
-
-if(!phone){
-
-status.textContent="لطفاً شماره تماس خود را وارد کنید.";
-
-document.getElementById("chatPhone").focus();
+message.textContent=
+"❌ لطفاً نام، شماره تماس و نوع خدمت را وارد کنید.";
 
 return;
 
 }
 
-if(!message){
-
-status.textContent="لطفاً پیام خود را بنویسید.";
-
-input.focus();
-
-return;
-
-}
 
 button.disabled=true;
-button.textContent="...";
 
-status.textContent="در حال ارسال...";
+button.textContent=
+"در حال ارسال...";
+
+message.className=
+"form-message";
+
+message.textContent="";
+
 
 try{
 
-const response=await fetch(
-"/chat/send",
+const response=
+await fetch(
+API_BASE + "/api/request",
 {
 method:"POST",
+
 headers:{
 "Content-Type":"application/json"
 },
+
+body:JSON.stringify(data)
+}
+);
+
+
+const result=
+await safeJson(response);
+
+
+if(!response.ok || !result.success){
+
+throw new Error(
+result.message ||
+"ارسال درخواست انجام نشد."
+);
+
+}
+
+
+message.className=
+"form-message success";
+
+message.textContent=
+"✅ "+(
+result.message ||
+"درخواست شما با موفقیت ثبت شد."
+);
+
+
+document
+.getElementById("serviceForm")
+.reset();
+
+
+}catch(error){
+
+message.className=
+"form-message error";
+
+message.textContent=
+"❌ "+error.message;
+
+}finally{
+
+button.disabled=false;
+
+button.textContent=
+"ثبت درخواست خدمات";
+
+}
+
+});
+
+
+/* =====================================================
+   CHAT SEND
+===================================================== */
+
+async function sendChatMessage(){
+
+const name=
+document.getElementById("chatName")
+.value
+.trim();
+
+const phone=
+document.getElementById("chatPhone")
+.value
+.trim();
+
+const message=
+document.getElementById("chatInput")
+.value
+.trim();
+
+const button=
+document.getElementById("chatSend");
+
+const status=
+document.getElementById("chatStatus");
+
+
+status.className="chat-status";
+
+status.textContent="";
+
+
+if(!name){
+
+status.className=
+"chat-status error";
+
+status.textContent=
+"❌ لطفاً نام خود را وارد کنید.";
+
+return;
+
+}
+
+
+if(!phone){
+
+status.className=
+"chat-status error";
+
+status.textContent=
+"❌ لطفاً شماره تماس را وارد کنید.";
+
+return;
+
+}
+
+
+if(!message){
+
+status.className=
+"chat-status error";
+
+status.textContent=
+"❌ لطفاً پیام خود را بنویسید.";
+
+return;
+
+}
+
+
+button.disabled=true;
+
+button.textContent=
+"در حال ارسال...";
+
+
+try{
+
+const response=
+await fetch(
+API_BASE + "/chat/send",
+{
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
 body:JSON.stringify({
+
 name:name,
+
 phone:phone,
+
 message:message
+
 })
 }
 );
 
-const result=await response.json();
+
+const result=
+await safeJson(response);
+
 
 if(!response.ok || !result.success){
 
@@ -2376,21 +2255,26 @@ result.message ||
 
 }
 
-input.value="";
 
-status.textContent="پیام ارسال شد ✓";
+status.className=
+"chat-status success";
 
-lastChatSignature="";
+status.textContent=
+"✅ "+(
+result.message ||
+"پیام شما ارسال شد."
+);
 
-await loadChat(true);
 
-setTimeout(function(){
+document
+.getElementById("chatInput")
+.value="";
 
-status.textContent="";
-
-},2500);
 
 }catch(error){
+
+status.className=
+"chat-status error";
 
 status.textContent=
 "❌ "+error.message;
@@ -2398,132 +2282,25 @@ status.textContent=
 }finally{
 
 button.disabled=false;
-button.textContent="ارسال";
+
+button.textContent=
+"ارسال پیام";
 
 }
 
 }
 
 
-/* ENTER = SEND */
+/* =====================================================
+   CLOSE MENU WHEN CLICKING OUTSIDE
+===================================================== */
 
-document
-.getElementById("chatInput")
-.addEventListener("keydown",function(e){
+document.addEventListener(
+"click",
+function(e){
 
-if(e.key==="Enter"){
-
-e.preventDefault();
-
-sendChatMessage();
-
-}
-
-});
-
-
-/* LOAD CHAT WHEN PHONE CHANGES */
-
-document
-.getElementById("chatPhone")
-.addEventListener("change",function(){
-
-lastChatSignature="";
-
-loadChat();
-
-});
-
-
-/* =========================================================
-   SERVICE REQUEST
-========================================================= */
-
-document
-.getElementById("serviceForm")
-.addEventListener("submit",async function(e){
-
-e.preventDefault();
-
-const button=document.getElementById("submitBtn");
-const message=document.getElementById("formMessage");
-
-const data={
-
-name:document.getElementById("name").value.trim(),
-
-phone:document.getElementById("phone").value.trim(),
-
-service:document.getElementById("service").value,
-
-description:document.getElementById("description").value.trim()
-
-};
-
-message.className="form-message";
-message.textContent="";
-
-button.disabled=true;
-button.textContent="در حال ارسال...";
-
-try{
-
-const response=await fetch("/api/request",{
-
-method:"POST",
-
-headers:{
-"Content-Type":"application/json"
-},
-
-body:JSON.stringify(data)
-
-});
-
-const result=await response.json();
-
-if(result.success){
-
-message.className="form-message success";
-
-message.textContent="✅ "+result.message;
-
-document
-.getElementById("serviceForm")
-.reset();
-
-}else{
-
-throw new Error(
-result.message ||
-"ارسال درخواست انجام نشد."
-);
-
-}
-
-}catch(error){
-
-message.className="form-message error";
-
-message.textContent="❌ "+error.message;
-
-}finally{
-
-button.disabled=false;
-button.textContent="ثبت درخواست خدمات";
-
-}
-
-});
-
-
-/* =========================================================
-   CLOSE MENU
-========================================================= */
-
-document.addEventListener("click",function(e){
-
-const menu=document.getElementById("menu");
+const menu=
+document.getElementById("menu");
 
 if(
 menu.classList.contains("open") &&
@@ -2538,15 +2315,73 @@ menu.classList.remove("open");
 });
 
 
-/* =========================================================
-   CLEANUP
-========================================================= */
+/* =====================================================
+   ENTER KEY FOR CHAT
+===================================================== */
 
-window.addEventListener("beforeunload",function(){
+document
+.getElementById("chatInput")
+.addEventListener(
+"keydown",
+function(e){
 
-stopChatPolling();
+if(e.key==="Enter"){
+
+e.preventDefault();
+
+sendChatMessage();
+
+}
 
 });
+
+
+/* =====================================================
+   LOAD PUBLIC PRODUCTS
+   فعلاً فقط آماده اتصال به فروشگاه
+===================================================== */
+
+async function checkPanelConnection(){
+
+try{
+
+const response=
+await fetch(
+API_BASE + "/health",
+{
+method:"GET"
+}
+);
+
+if(!response.ok){
+
+console.warn(
+"Panel API is not responding normally."
+);
+
+return false;
+
+}
+
+const result=
+await safeJson(response);
+
+return result.success===true;
+
+}catch(error){
+
+console.warn(
+"Panel connection failed:",
+error
+);
+
+return false;
+
+}
+
+}
+
+checkPanelConnection();
 
 </script>
 
