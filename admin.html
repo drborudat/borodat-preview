@@ -358,6 +358,7 @@ width:94%
 .header{
 padding:15px 3%
 }
+
 }
 </style>
 </head>
@@ -402,7 +403,6 @@ Dr <span>Borodat</span>
 
 </div>
 
-
 <section class="panel">
 
 <div class="panel-title">
@@ -419,7 +419,6 @@ Dr <span>Borodat</span>
 
 </section>
 
-
 <section class="panel">
 
 <div class="panel-title">
@@ -432,35 +431,15 @@ Dr <span>Borodat</span>
 
 <div class="form-grid">
 
-<input
-id="productName"
-placeholder="نام محصول"
-required
->
+<input id="productName" placeholder="نام محصول" required>
 
-<input
-id="productPrice"
-placeholder="قیمت"
-required
->
+<input id="productPrice" placeholder="قیمت" required>
 
-<input
-id="productStock"
-placeholder="موجودی"
-value="0"
->
+<input id="productStock" placeholder="موجودی" value="0">
 
-<input
-id="productCategory"
-placeholder="دسته‌بندی"
-required
->
+<input id="productCategory" placeholder="دسته‌بندی" required>
 
-<input
-class="form-full"
-id="productImage"
-placeholder="آدرس تصویر محصول"
->
+<input class="form-full" id="productImage" placeholder="آدرس تصویر محصول">
 
 <textarea
 class="form-full"
@@ -484,7 +463,6 @@ placeholder="توضیحات محصول"
 
 </section>
 
-
 <section class="panel">
 
 <div class="panel-title">
@@ -496,7 +474,6 @@ placeholder="توضیحات محصول"
 <div id="products"></div>
 
 </section>
-
 
 <section class="panel">
 
@@ -510,7 +487,6 @@ placeholder="توضیحات محصول"
 
 </section>
 
-
 <section class="panel">
 
 <div class="panel-title">
@@ -522,9 +498,11 @@ placeholder="توضیحات محصول"
 <div class="chat-list">
 
 <div class="chat-users" id="chatUsers">
+
 <div class="empty">
 هنوز گفتگویی ثبت نشده است.
 </div>
+
 </div>
 
 <div class="chat-box">
@@ -558,17 +536,45 @@ placeholder="پاسخ خود را بنویسید..."
 
 </main>
 
-
 <script>
 
-let dashboardData={
-requests:[],
-chats:[],
-products:[],
-orders:[]
+/* =====================================================
+API
+===================================================== */
+
+/*
+اگر Admin و Server روی یک Render Service هستند،
+همین مقدار خالی درست است.
+
+اگر Admin را روی سرویس جدا گذاشته‌ای،
+فقط مقدار زیر را با آدرس Render مربوط به Server عوض می‌کنیم.
+*/
+const API_BASE = "";
+
+
+/* =====================================================
+DATA
+===================================================== */
+
+let dashboardData = {
+requests: [],
+chats: [],
+products: [],
+orders: []
 };
 
-let selectedChat=null;
+let selectedChat = null;
+
+
+/* =====================================================
+API URL
+===================================================== */
+
+function api(path){
+
+return API_BASE + path;
+
+}
 
 
 /* =====================================================
@@ -577,35 +583,80 @@ LOAD DASHBOARD
 
 async function loadDashboard(){
 
-const status=document.getElementById("status");
+const status = document.getElementById("status");
 
-status.textContent="در حال دریافت اطلاعات...";
+status.textContent = "در حال دریافت اطلاعات...";
 
 try{
 
-const response=await fetch("/api/admin/dashboard");
+const response = await fetch(
+api("/api/admin/dashboard"),
+{
+method:"GET",
+cache:"no-store",
+headers:{
+"Accept":"application/json"
+}
+}
+);
 
 if(!response.ok){
-throw new Error("خطا در اتصال به سرور");
+
+throw new Error(
+"سرور پاسخ صحیح نداد (" +
+response.status +
+")"
+);
+
 }
 
-const data=await response.json();
+const data = await response.json();
 
 if(!data.success){
-throw new Error("دریافت اطلاعات ناموفق بود");
+
+throw new Error(
+"دریافت اطلاعات ناموفق بود."
+);
+
 }
 
-dashboardData=data;
+dashboardData = {
+
+requests:Array.isArray(data.requests)
+? data.requests
+: [],
+
+chats:Array.isArray(data.chats)
+? data.chats
+: [],
+
+products:Array.isArray(data.products)
+? data.products
+: [],
+
+orders:Array.isArray(data.orders)
+? data.orders
+: []
+
+};
 
 renderAll();
 
-status.textContent="● آنلاین";
+status.textContent = "● آنلاین";
+
+status.style.color = "#78e08f";
 
 }catch(error){
 
-status.textContent="● خطا در اتصال";
+console.error(
+"Dashboard connection error:",
+error
+);
 
-console.error(error);
+status.textContent =
+"● خطا در اتصال";
+
+status.style.color = "#ff8b8b";
 
 }
 
@@ -613,21 +664,29 @@ console.error(error);
 
 
 /* =====================================================
-RENDER
+RENDER ALL
 ===================================================== */
 
 function renderAll(){
 
-document.getElementById("requestCount").textContent=
+document.getElementById(
+"requestCount"
+).textContent =
 dashboardData.requests.length;
 
-document.getElementById("chatCount").textContent=
+document.getElementById(
+"chatCount"
+).textContent =
 dashboardData.chats.length;
 
-document.getElementById("productCount").textContent=
+document.getElementById(
+"productCount"
+).textContent =
 dashboardData.products.length;
 
-document.getElementById("orderCount").textContent=
+document.getElementById(
+"orderCount"
+).textContent =
 dashboardData.orders.length;
 
 renderRequests();
@@ -644,18 +703,19 @@ REQUESTS
 
 function renderRequests(){
 
-const box=document.getElementById("requests");
+const box =
+document.getElementById("requests");
 
 if(!dashboardData.requests.length){
 
-box.innerHTML=
+box.innerHTML =
 '<div class="empty">درخواستی ثبت نشده است.</div>';
 
 return;
 
 }
 
-box.innerHTML=`
+box.innerHTML = `
 
 <table>
 
@@ -677,28 +737,36 @@ box.innerHTML=`
 
 <tbody>
 
-${dashboardData.requests.map(item=>`
+${dashboardData.requests.map(item => `
 
 <tr>
 
-<td>${escapeHtml(item.name)}</td>
+<td>
+${escapeHtml(item.name)}
+</td>
 
 <td dir="ltr">
 ${escapeHtml(item.phone)}
 </td>
 
-<td>${escapeHtml(item.service)}</td>
+<td>
+${escapeHtml(item.service)}
+</td>
 
-<td>${escapeHtml(item.description || "-")}</td>
+<td>
+${escapeHtml(item.description || "-")}
+</td>
 
 <td dir="ltr">
 ${escapeHtml(item.created_at)}
 </td>
 
 <td>
+
 <span class="badge">
 ${escapeHtml(item.status || "new")}
 </span>
+
 </td>
 
 <td>
@@ -724,6 +792,7 @@ ${escapeHtml(item.status || "new")}
 </tbody>
 
 </table>
+
 `;
 
 }
@@ -735,36 +804,39 @@ PRODUCTS
 
 function renderProducts(){
 
-const box=document.getElementById("products");
+const box =
+document.getElementById("products");
 
 if(!dashboardData.products.length){
 
-box.innerHTML=
+box.innerHTML =
 '<div class="empty">محصولی ثبت نشده است.</div>';
 
 return;
 
 }
 
-box.innerHTML=`
+box.innerHTML = `
 
 <table>
 
 <thead>
 
 <tr>
+
 <th>نام</th>
 <th>دسته‌بندی</th>
 <th>قیمت</th>
 <th>موجودی</th>
 <th>عملیات</th>
+
 </tr>
 
 </thead>
 
 <tbody>
 
-${dashboardData.products.map(product=>`
+${dashboardData.products.map(product => `
 
 <tr>
 
@@ -807,6 +879,7 @@ ${escapeHtml(product.stock)}
 </tbody>
 
 </table>
+
 `;
 
 }
@@ -818,24 +891,26 @@ ORDERS
 
 function renderOrders(){
 
-const box=document.getElementById("orders");
+const box =
+document.getElementById("orders");
 
 if(!dashboardData.orders.length){
 
-box.innerHTML=
+box.innerHTML =
 '<div class="empty">سفارشی ثبت نشده است.</div>';
 
 return;
 
 }
 
-box.innerHTML=`
+box.innerHTML = `
 
 <table>
 
 <thead>
 
 <tr>
+
 <th>نام</th>
 <th>شماره</th>
 <th>محصول</th>
@@ -843,34 +918,43 @@ box.innerHTML=`
 <th>زمان</th>
 <th>وضعیت</th>
 <th>عملیات</th>
+
 </tr>
 
 </thead>
 
 <tbody>
 
-${dashboardData.orders.map(order=>`
+${dashboardData.orders.map(order => `
 
 <tr>
 
-<td>${escapeHtml(order.name)}</td>
+<td>
+${escapeHtml(order.name)}
+</td>
 
 <td dir="ltr">
 ${escapeHtml(order.phone)}
 </td>
 
-<td>${escapeHtml(order.product_name)}</td>
+<td>
+${escapeHtml(order.product_name)}
+</td>
 
-<td>${escapeHtml(order.quantity)}</td>
+<td>
+${escapeHtml(order.quantity)}
+</td>
 
 <td dir="ltr">
 ${escapeHtml(order.created_at)}
 </td>
 
 <td>
+
 <span class="badge">
 ${escapeHtml(order.status || "new")}
 </span>
+
 </td>
 
 <td>
@@ -896,6 +980,7 @@ ${escapeHtml(order.status || "new")}
 </tbody>
 
 </table>
+
 `;
 
 }
@@ -907,22 +992,23 @@ CHATS
 
 function renderChats(){
 
-const box=document.getElementById("chatUsers");
+const box =
+document.getElementById("chatUsers");
 
 if(!dashboardData.chats.length){
 
-box.innerHTML=
+box.innerHTML =
 '<div class="empty">هنوز گفتگویی ثبت نشده است.</div>';
 
 return;
 
 }
 
-box.innerHTML=
-dashboardData.chats.map(chat=>`
+box.innerHTML =
+dashboardData.chats.map(chat => `
 
 <div
-class="chat-user ${selectedChat===chat.id ? "active":""}"
+class="chat-user ${selectedChat === chat.id ? "active" : ""}"
 onclick="selectChat('${chat.id}')"
 >
 
@@ -947,28 +1033,45 @@ SELECT CHAT
 
 function selectChat(id){
 
-selectedChat=id;
+selectedChat = id;
 
 renderChats();
 
-const chat=dashboardData.chats.find(
-item=>item.id===id
+const chat =
+dashboardData.chats.find(
+item => item.id === id
 );
 
-const box=document.getElementById("messages");
+const box =
+document.getElementById("messages");
 
 if(!chat){
 
-box.innerHTML=
+box.innerHTML =
 '<div class="empty">گفتگو پیدا نشد.</div>';
 
 return;
 
 }
 
-box.innerHTML=chat.messages.map(message=>`
+const messages =
+Array.isArray(chat.messages)
+? chat.messages
+: [];
 
-<div class="msg ${message.sender}">
+if(!messages.length){
+
+box.innerHTML =
+'<div class="empty">پیامی ثبت نشده است.</div>';
+
+return;
+
+}
+
+box.innerHTML =
+messages.map(message => `
+
+<div class="msg ${message.sender === "admin" ? "admin" : "customer"}">
 
 ${escapeHtml(message.message)}
 
@@ -999,22 +1102,28 @@ return;
 
 }
 
-const input=document.getElementById("replyInput");
+const input =
+document.getElementById("replyInput");
 
-const message=input.value.trim();
+const message =
+input.value.trim();
 
 if(!message){
+
 return;
+
 }
 
 try{
 
-const response=await fetch(
-"/api/admin/chat/reply",
+const response =
+await fetch(
+api("/api/admin/chat/reply"),
 {
 method:"POST",
 headers:{
-"Content-Type":"application/json"
+"Content-Type":"application/json",
+"Accept":"application/json"
 },
 body:JSON.stringify({
 chat_id:selectedChat,
@@ -1023,17 +1132,19 @@ message:message
 }
 );
 
-const data=await response.json();
+const data =
+await response.json();
 
 if(!data.success){
 
 throw new Error(
-data.message || "ارسال پاسخ ناموفق بود"
+data.message ||
+"ارسال پاسخ ناموفق بود."
 );
 
 }
 
-input.value="";
+input.value = "";
 
 await loadDashboard();
 
@@ -1054,60 +1165,83 @@ ADD PRODUCT
 
 document
 .getElementById("productForm")
-.addEventListener("submit",async function(e){
+.addEventListener(
+"submit",
+async function(e){
 
 e.preventDefault();
 
-const message=
-document.getElementById("productMessage");
+const message =
+document.getElementById(
+"productMessage"
+);
 
-const payload={
+const payload = {
 
 name:
-document.getElementById("productName").value.trim(),
+document.getElementById(
+"productName"
+).value.trim(),
 
 price:
-document.getElementById("productPrice").value.trim(),
+document.getElementById(
+"productPrice"
+).value.trim(),
 
 stock:
-document.getElementById("productStock").value.trim(),
+document.getElementById(
+"productStock"
+).value.trim(),
 
 category:
-document.getElementById("productCategory").value.trim(),
+document.getElementById(
+"productCategory"
+).value.trim(),
 
 image:
-document.getElementById("productImage").value.trim(),
+document.getElementById(
+"productImage"
+).value.trim(),
 
 description:
-document.getElementById("productDescription").value.trim()
+document.getElementById(
+"productDescription"
+).value.trim()
 
 };
 
 try{
 
-const response=await fetch(
-"/api/admin/products",
+const response =
+await fetch(
+api("/api/admin/products"),
 {
 method:"POST",
 headers:{
-"Content-Type":"application/json"
+"Content-Type":"application/json",
+"Accept":"application/json"
 },
 body:JSON.stringify(payload)
 }
 );
 
-const data=await response.json();
+const data =
+await response.json();
 
 if(!data.success){
 
 throw new Error(
-data.message || "ثبت محصول ناموفق بود"
+data.message ||
+"ثبت محصول ناموفق بود."
 );
 
 }
 
-message.className="message success";
-message.textContent="محصول با موفقیت اضافه شد.";
+message.className =
+"message success";
+
+message.textContent =
+"محصول با موفقیت اضافه شد.";
 
 this.reset();
 
@@ -1115,8 +1249,11 @@ await loadDashboard();
 
 }catch(error){
 
-message.className="message error";
-message.textContent=error.message;
+message.className =
+"message error";
+
+message.textContent =
+error.message;
 
 }
 
@@ -1129,25 +1266,35 @@ DELETE PRODUCT
 
 async function deleteProduct(id){
 
-if(!confirm("این محصول حذف شود؟")){
+if(!confirm(
+"این محصول حذف شود؟"
+)){
+
 return;
+
 }
 
 try{
 
-const response=await fetch(
-"/api/admin/products/"+id,
+const response =
+await fetch(
+api("/api/admin/products/" + id),
 {
-method:"DELETE"
+method:"DELETE",
+headers:{
+"Accept":"application/json"
+}
 }
 );
 
-const data=await response.json();
+const data =
+await response.json();
 
 if(!data.success){
 
 throw new Error(
-data.message || "حذف محصول ناموفق بود"
+data.message ||
+"حذف محصول ناموفق بود."
 );
 
 }
@@ -1169,59 +1316,75 @@ EDIT PRODUCT
 
 async function editProduct(id){
 
-const product=
+const product =
 dashboardData.products.find(
-item=>item.id===id
+item => item.id === id
 );
 
 if(!product){
+
 return;
+
 }
 
-const name=prompt(
+const name =
+prompt(
 "نام محصول:",
 product.name
 );
 
-if(name===null){
+if(name === null){
+
 return;
+
 }
 
-const price=prompt(
+const price =
+prompt(
 "قیمت:",
 product.price
 );
 
-if(price===null){
+if(price === null){
+
 return;
+
 }
 
-const stock=prompt(
+const stock =
+prompt(
 "موجودی:",
 product.stock
 );
 
-if(stock===null){
+if(stock === null){
+
 return;
+
 }
 
-const category=prompt(
+const category =
+prompt(
 "دسته‌بندی:",
 product.category
 );
 
-if(category===null){
+if(category === null){
+
 return;
+
 }
 
 try{
 
-const response=await fetch(
-"/api/admin/products/"+id,
+const response =
+await fetch(
+api("/api/admin/products/" + id),
 {
 method:"PATCH",
 headers:{
-"Content-Type":"application/json"
+"Content-Type":"application/json",
+"Accept":"application/json"
 },
 body:JSON.stringify({
 name:name,
@@ -1232,12 +1395,14 @@ category:category
 }
 );
 
-const data=await response.json();
+const data =
+await response.json();
 
 if(!data.success){
 
 throw new Error(
-data.message || "ویرایش ناموفق بود"
+data.message ||
+"ویرایش ناموفق بود."
 );
 
 }
@@ -1261,12 +1426,14 @@ async function updateOrder(id,status){
 
 try{
 
-const response=await fetch(
-"/api/admin/orders/"+id,
+const response =
+await fetch(
+api("/api/admin/orders/" + id),
 {
 method:"PATCH",
 headers:{
-"Content-Type":"application/json"
+"Content-Type":"application/json",
+"Accept":"application/json"
 },
 body:JSON.stringify({
 status:status
@@ -1274,12 +1441,14 @@ status:status
 }
 );
 
-const data=await response.json();
+const data =
+await response.json();
 
 if(!data.success){
 
 throw new Error(
-data.message || "تغییر وضعیت ناموفق بود"
+data.message ||
+"تغییر وضعیت ناموفق بود."
 );
 
 }
@@ -1303,12 +1472,14 @@ async function updateRequest(id,status){
 
 try{
 
-const response=await fetch(
-"/api/admin/requests/"+id,
+const response =
+await fetch(
+api("/api/admin/requests/" + id),
 {
 method:"PATCH",
 headers:{
-"Content-Type":"application/json"
+"Content-Type":"application/json",
+"Accept":"application/json"
 },
 body:JSON.stringify({
 status:status
@@ -1316,12 +1487,14 @@ status:status
 }
 );
 
-const data=await response.json();
+const data =
+await response.json();
 
 if(!data.success){
 
 throw new Error(
-data.message || "تغییر وضعیت ناموفق بود"
+data.message ||
+"تغییر وضعیت ناموفق بود."
 );
 
 }
@@ -1338,7 +1511,7 @@ alert(error.message);
 
 
 /* =====================================================
-HTML ESCAPE
+ESCAPE HTML
 ===================================================== */
 
 function escapeHtml(value){
