@@ -3,16 +3,12 @@ import json
 import uuid
 from datetime import datetime
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import requests
 
-
 app = Flask(__name__)
-
-# فعال کردن اتصال پنل به سرور
 CORS(app)
-
 
 # =========================================================
 # SETTINGS
@@ -25,7 +21,7 @@ DATA_FILE = "data.json"
 
 
 # =========================================================
-# DATA STORAGE
+# DATABASE
 # =========================================================
 
 def empty_database():
@@ -38,12 +34,14 @@ def empty_database():
 
 
 def load_data():
+
     if not os.path.exists(DATA_FILE):
         return empty_database()
 
     try:
-        with open(DATA_FILE, "r", encoding="utf-8") as f:
-            data = json.load(f)
+
+        with open(DATA_FILE, "r", encoding="utf-8") as file:
+            data = json.load(file)
 
         data.setdefault("requests", [])
         data.setdefault("chats", [])
@@ -53,14 +51,17 @@ def load_data():
         return data
 
     except Exception:
+
         return empty_database()
 
 
 def save_data(data):
-    with open(DATA_FILE, "w", encoding="utf-8") as f:
+
+    with open(DATA_FILE, "w", encoding="utf-8") as file:
+
         json.dump(
             data,
-            f,
+            file,
             ensure_ascii=False,
             indent=2
         )
@@ -71,6 +72,7 @@ def save_data(data):
 # =========================================================
 
 def now():
+
     return datetime.now().strftime("%Y-%m-%d %H:%M")
 
 
@@ -82,6 +84,7 @@ def send_bale_message(text):
     url = f"https://tapi.bale.ai/bot{BALE_TOKEN}/sendMessage"
 
     try:
+
         response = requests.post(
             url,
             json={
@@ -94,16 +97,52 @@ def send_bale_message(text):
         return response.ok
 
     except requests.RequestException:
+
         return False
 
 
 # =========================================================
-# HOME
+# WEBSITE
 # =========================================================
 
 @app.route("/")
 def home():
-    return "Dr Borodat Preview Server is running."
+
+    return send_from_directory(
+        ".",
+        "index.html"
+    )
+
+
+@app.route("/index.html")
+def index_page():
+
+    return send_from_directory(
+        ".",
+        "index.html"
+    )
+
+
+@app.route("/admin.html")
+def admin_page():
+
+    return send_from_directory(
+        ".",
+        "admin.html"
+    )
+
+
+# =========================================================
+# HEALTH
+# =========================================================
+
+@app.route("/health")
+def health():
+
+    return jsonify({
+        "success": True,
+        "status": "online"
+    })
 
 
 # =========================================================
@@ -118,11 +157,10 @@ def service_request():
     name = str(data.get("name", "")).strip()
     phone = str(data.get("phone", "")).strip()
     service = str(data.get("service", "")).strip()
-    description = str(
-        data.get("description", "")
-    ).strip()
+    description = str(data.get("description", "")).strip()
 
     if not name or not phone or not service:
+
         return jsonify({
             "success": False,
             "message": "لطفاً نام، شماره تماس و نوع خدمت را وارد کنید."
@@ -144,7 +182,7 @@ def service_request():
 
     save_data(database)
 
-    text = (
+    bale_text = (
         "📥 درخواست جدید دکتر برودت\n\n"
         f"👤 نام مشتری: {name}\n"
         f"📱 شماره تماس: {phone}\n"
@@ -152,7 +190,7 @@ def service_request():
         f"📝 توضیحات: {description or 'ثبت نشده'}"
     )
 
-    bale_sent = send_bale_message(text)
+    bale_sent = send_bale_message(bale_text)
 
     return jsonify({
         "success": True,
@@ -169,11 +207,15 @@ def service_request():
 @app.route("/chat", methods=["GET"])
 def get_chat():
 
-    phone = request.args.get("phone", "").strip()
+    phone = request.args.get(
+        "phone",
+        ""
+    ).strip()
 
     database = load_data()
 
     if not phone:
+
         return jsonify({
             "success": True,
             "messages": []
@@ -181,13 +223,15 @@ def get_chat():
 
     chat = next(
         (
-            item for item in database["chats"]
+            item
+            for item in database["chats"]
             if item.get("phone") == phone
         ),
         None
     )
 
     if not chat:
+
         return jsonify({
             "success": True,
             "messages": []
@@ -214,6 +258,7 @@ def send_chat():
     message = str(data.get("message", "")).strip()
 
     if not name or not phone or not message:
+
         return jsonify({
             "success": False,
             "message": "نام، شماره تماس و پیام الزامی است."
@@ -223,7 +268,8 @@ def send_chat():
 
     chat = next(
         (
-            item for item in database["chats"]
+            item
+            for item in database["chats"]
             if item.get("phone") == phone
         ),
         None
@@ -254,9 +300,10 @@ def send_chat():
         "created_at": now()
     }
 
-    chat.setdefault("messages", []).append(
-        customer_message
-    )
+    chat.setdefault(
+        "messages",
+        []
+    ).append(customer_message)
 
     chat["updated_at"] = now()
 
@@ -283,25 +330,31 @@ def send_chat():
 # ADMIN DASHBOARD
 # =========================================================
 
-@app.route("/api/admin/dashboard", methods=["GET"])
+@app.route(
+    "/api/admin/dashboard",
+    methods=["GET"]
+)
 def admin_dashboard():
 
     database = load_data()
 
     return jsonify({
         "success": True,
+        "requests": database["requests"],
         "chats": database["chats"],
         "products": database["products"],
-        "orders": database["orders"],
-        "requests": database["requests"]
+        "orders": database["orders"]
     })
 
 
 # =========================================================
-# ADMIN - CHAT REPLY
+# ADMIN CHAT REPLY
 # =========================================================
 
-@app.route("/api/admin/chat/reply", methods=["POST"])
+@app.route(
+    "/api/admin/chat/reply",
+    methods=["POST"]
+)
 def admin_chat_reply():
 
     data = request.get_json(silent=True) or {}
@@ -315,6 +368,7 @@ def admin_chat_reply():
     ).strip()
 
     if not chat_id or not message:
+
         return jsonify({
             "success": False,
             "message": "گفتگو و متن پاسخ الزامی است."
@@ -324,13 +378,15 @@ def admin_chat_reply():
 
     chat = next(
         (
-            item for item in database["chats"]
+            item
+            for item in database["chats"]
             if item.get("id") == chat_id
         ),
         None
     )
 
     if not chat:
+
         return jsonify({
             "success": False,
             "message": "گفتگو پیدا نشد."
@@ -343,9 +399,10 @@ def admin_chat_reply():
         "created_at": now()
     }
 
-    chat.setdefault("messages", []).append(
-        admin_message
-    )
+    chat.setdefault(
+        "messages",
+        []
+    ).append(admin_message)
 
     chat["updated_at"] = now()
 
@@ -359,10 +416,13 @@ def admin_chat_reply():
 
 
 # =========================================================
-# ADMIN - ADD PRODUCT
+# ADD PRODUCT
 # =========================================================
 
-@app.route("/api/admin/products", methods=["POST"])
+@app.route(
+    "/api/admin/products",
+    methods=["POST"]
+)
 def add_product():
 
     data = request.get_json(silent=True) or {}
@@ -371,15 +431,11 @@ def add_product():
     price = str(data.get("price", "")).strip()
     stock = str(data.get("stock", "0")).strip()
     category = str(data.get("category", "")).strip()
-    description = str(
-        data.get("description", "")
-    ).strip()
-
-    image = str(
-        data.get("image", "")
-    ).strip()
+    description = str(data.get("description", "")).strip()
+    image = str(data.get("image", "")).strip()
 
     if not name or not price or not category:
+
         return jsonify({
             "success": False,
             "message": "نام، قیمت و دسته‌بندی محصول الزامی است."
@@ -410,10 +466,13 @@ def add_product():
 
 
 # =========================================================
-# PRODUCTS - PUBLIC
+# PUBLIC PRODUCTS
 # =========================================================
 
-@app.route("/api/products", methods=["GET"])
+@app.route(
+    "/api/products",
+    methods=["GET"]
+)
 def get_products():
 
     database = load_data()
@@ -425,7 +484,7 @@ def get_products():
 
 
 # =========================================================
-# ADMIN - UPDATE PRODUCT
+# UPDATE PRODUCT
 # =========================================================
 
 @app.route(
@@ -448,6 +507,7 @@ def update_product(product_id):
     )
 
     if not product:
+
         return jsonify({
             "success": False,
             "message": "محصول پیدا نشد."
@@ -465,6 +525,7 @@ def update_product(product_id):
     for field in allowed_fields:
 
         if field in data:
+
             product[field] = str(
                 data[field]
             ).strip()
@@ -479,7 +540,7 @@ def update_product(product_id):
 
 
 # =========================================================
-# ADMIN - DELETE PRODUCT
+# DELETE PRODUCT
 # =========================================================
 
 @app.route(
@@ -501,6 +562,7 @@ def delete_product(product_id):
     ]
 
     if len(database["products"]) == old_count:
+
         return jsonify({
             "success": False,
             "message": "محصول پیدا نشد."
@@ -518,27 +580,22 @@ def delete_product(product_id):
 # CREATE ORDER
 # =========================================================
 
-@app.route("/api/order", methods=["POST"])
+@app.route(
+    "/api/order",
+    methods=["POST"]
+)
 def create_order():
 
     data = request.get_json(silent=True) or {}
 
     name = str(data.get("name", "")).strip()
     phone = str(data.get("phone", "")).strip()
-
-    product_id = str(
-        data.get("product_id", "")
-    ).strip()
-
-    product_name = str(
-        data.get("product_name", "")
-    ).strip()
-
-    quantity = str(
-        data.get("quantity", "1")
-    ).strip()
+    product_id = str(data.get("product_id", "")).strip()
+    product_name = str(data.get("product_name", "")).strip()
+    quantity = str(data.get("quantity", "1")).strip()
 
     if not name or not phone or not product_name:
+
         return jsonify({
             "success": False,
             "message": "نام، شماره تماس و محصول الزامی است."
@@ -574,7 +631,7 @@ def create_order():
 
     save_data(database)
 
-    text = (
+    bale_text = (
         "🛒 سفارش جدید دکتر برودت\n\n"
         f"👤 نام: {name}\n"
         f"📱 شماره: {phone}\n"
@@ -582,7 +639,7 @@ def create_order():
         f"🔢 تعداد: {quantity}"
     )
 
-    bale_sent = send_bale_message(text)
+    bale_sent = send_bale_message(bale_text)
 
     return jsonify({
         "success": True,
@@ -594,7 +651,7 @@ def create_order():
 
 
 # =========================================================
-# ADMIN - UPDATE ORDER STATUS
+# UPDATE ORDER
 # =========================================================
 
 @app.route(
@@ -610,6 +667,7 @@ def update_order(order_id):
     ).strip()
 
     if not status:
+
         return jsonify({
             "success": False,
             "message": "وضعیت سفارش مشخص نشده است."
@@ -627,6 +685,7 @@ def update_order(order_id):
     )
 
     if not order:
+
         return jsonify({
             "success": False,
             "message": "سفارش پیدا نشد."
@@ -644,7 +703,7 @@ def update_order(order_id):
 
 
 # =========================================================
-# ADMIN - SERVICE REQUESTS
+# ADMIN REQUESTS
 # =========================================================
 
 @app.route(
@@ -662,7 +721,7 @@ def admin_requests():
 
 
 # =========================================================
-# ADMIN - UPDATE SERVICE REQUEST
+# UPDATE REQUEST
 # =========================================================
 
 @app.route(
@@ -678,6 +737,7 @@ def update_service_request(request_id):
     ).strip()
 
     if not status:
+
         return jsonify({
             "success": False,
             "message": "وضعیت درخواست مشخص نشده است."
@@ -695,6 +755,7 @@ def update_service_request(request_id):
     )
 
     if not item:
+
         return jsonify({
             "success": False,
             "message": "درخواست پیدا نشد."
@@ -708,19 +769,6 @@ def update_service_request(request_id):
         "success": True,
         "message": "وضعیت درخواست تغییر کرد.",
         "request": item
-    })
-
-
-# =========================================================
-# HEALTH CHECK
-# =========================================================
-
-@app.route("/health", methods=["GET"])
-def health():
-
-    return jsonify({
-        "success": True,
-        "status": "online"
     })
 
 
