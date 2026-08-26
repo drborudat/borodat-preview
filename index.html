@@ -1840,7 +1840,18 @@ dir="ltr">
    API
 ================================ */
 
-const API_BASE = window.location.origin;
+/*
+   سایت:
+   borodat-preview
+
+   سرور پنل:
+   borodat-panel
+
+   درخواست‌های خدمات از سایت
+   مستقیماً به API پنل ارسال می‌شوند.
+*/
+
+const API_BASE = "https://borodat-panel.onrender.com";
 
 
 /* ===============================
@@ -1861,11 +1872,6 @@ async function readJSONResponse(response){
         raw
     );
 
-
-    /*
-      اگر پاسخ خالی ولی HTTP موفق باشد،
-      آن را موفق در نظر می‌گیریم.
-    */
 
     if(response.ok && !raw.trim()){
 
