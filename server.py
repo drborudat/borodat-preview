@@ -3,11 +3,15 @@ import json
 import uuid
 from datetime import datetime
 
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 import requests
 
 
-app = Flask(__name__, static_folder=".")
+app = Flask(__name__)
+
+# فعال کردن اتصال پنل به سرور
+CORS(app)
 
 
 # =========================================================
@@ -71,6 +75,7 @@ def now():
 
 
 def send_bale_message(text):
+
     if not BALE_TOKEN:
         return False
 
@@ -93,52 +98,12 @@ def send_bale_message(text):
 
 
 # =========================================================
-# FRONTEND FILES
+# HOME
 # =========================================================
 
 @app.route("/")
-def index():
-    return send_from_directory(".", "index.html")
-
-
-@app.route("/index.html")
-def index_html():
-    return send_from_directory(".", "index.html")
-
-
-@app.route("/shop.html")
-def shop_html():
-    return send_from_directory(".", "shop.html")
-
-
-@app.route("/admin.html")
-def admin_html():
-    return send_from_directory(".", "admin.html")
-
-
-@app.route("/<path:filename>")
-def frontend_files(filename):
-
-    allowed_extensions = (
-        ".html",
-        ".css",
-        ".js",
-        ".png",
-        ".jpg",
-        ".jpeg",
-        ".webp",
-        ".svg",
-        ".gif",
-        ".ico"
-    )
-
-    if filename.lower().endswith(allowed_extensions):
-        return send_from_directory(".", filename)
-
-    return jsonify({
-        "success": False,
-        "message": "File not found."
-    }), 404
+def home():
+    return "Dr Borodat Preview Server is running."
 
 
 # =========================================================
@@ -174,7 +139,9 @@ def service_request():
     }
 
     database = load_data()
+
     database["requests"].append(item)
+
     save_data(database)
 
     text = (
@@ -196,7 +163,7 @@ def service_request():
 
 
 # =========================================================
-# CHAT — GET
+# CHAT - GET
 # =========================================================
 
 @app.route("/chat", methods=["GET"])
@@ -234,7 +201,7 @@ def get_chat():
 
 
 # =========================================================
-# CHAT — SEND CUSTOMER MESSAGE
+# CHAT - SEND
 # =========================================================
 
 @app.route("/chat/send", methods=["POST"])
@@ -331,7 +298,7 @@ def admin_dashboard():
 
 
 # =========================================================
-# ADMIN — CHAT REPLY
+# ADMIN - CHAT REPLY
 # =========================================================
 
 @app.route("/api/admin/chat/reply", methods=["POST"])
@@ -392,7 +359,7 @@ def admin_chat_reply():
 
 
 # =========================================================
-# ADMIN — ADD PRODUCT
+# ADMIN - ADD PRODUCT
 # =========================================================
 
 @app.route("/api/admin/products", methods=["POST"])
@@ -407,6 +374,7 @@ def add_product():
     description = str(
         data.get("description", "")
     ).strip()
+
     image = str(
         data.get("image", "")
     ).strip()
@@ -429,7 +397,9 @@ def add_product():
     }
 
     database = load_data()
+
     database["products"].append(product)
+
     save_data(database)
 
     return jsonify({
@@ -440,7 +410,7 @@ def add_product():
 
 
 # =========================================================
-# PRODUCTS — PUBLIC
+# PRODUCTS - PUBLIC
 # =========================================================
 
 @app.route("/api/products", methods=["GET"])
@@ -455,7 +425,7 @@ def get_products():
 
 
 # =========================================================
-# ADMIN — UPDATE PRODUCT
+# ADMIN - UPDATE PRODUCT
 # =========================================================
 
 @app.route(
@@ -470,7 +440,8 @@ def update_product(product_id):
 
     product = next(
         (
-            item for item in database["products"]
+            item
+            for item in database["products"]
             if item.get("id") == product_id
         ),
         None
@@ -508,7 +479,7 @@ def update_product(product_id):
 
 
 # =========================================================
-# ADMIN — DELETE PRODUCT
+# ADMIN - DELETE PRODUCT
 # =========================================================
 
 @app.route(
@@ -519,7 +490,9 @@ def delete_product(product_id):
 
     database = load_data()
 
-    old_count = len(database["products"])
+    old_count = len(
+        database["products"]
+    )
 
     database["products"] = [
         product
@@ -598,6 +571,7 @@ def create_order():
     }
 
     database["orders"].append(order)
+
     save_data(database)
 
     text = (
@@ -620,7 +594,7 @@ def create_order():
 
 
 # =========================================================
-# ADMIN — UPDATE ORDER STATUS
+# ADMIN - UPDATE ORDER STATUS
 # =========================================================
 
 @app.route(
@@ -670,7 +644,7 @@ def update_order(order_id):
 
 
 # =========================================================
-# ADMIN — SERVICE REQUESTS
+# ADMIN - SERVICE REQUESTS
 # =========================================================
 
 @app.route(
@@ -688,7 +662,7 @@ def admin_requests():
 
 
 # =========================================================
-# ADMIN — UPDATE SERVICE REQUEST
+# ADMIN - UPDATE SERVICE REQUEST
 # =========================================================
 
 @app.route(
