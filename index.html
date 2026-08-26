@@ -8,6 +8,7 @@
 <style>
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
+
 body{
 margin:0;
 font-family:Tahoma,Arial,sans-serif;
@@ -15,6 +16,7 @@ background:#fff;
 color:#102238;
 overflow-x:hidden
 }
+
 a{text-decoration:none;color:inherit}
 button,input,select,textarea{font-family:inherit}
 
@@ -28,6 +30,7 @@ position:sticky;
 top:0;
 z-index:1000
 }
+
 .header-inner{
 width:92%;
 max-width:1280px;
@@ -35,6 +38,7 @@ margin:auto;
 display:flex;
 align-items:center
 }
+
 .logo{
 display:flex;
 align-items:center;
@@ -48,6 +52,7 @@ unicode-bidi:isolate;
 white-space:nowrap;
 flex-direction:row!important
 }
+
 .logo-text{
 display:flex;
 align-items:center;
@@ -61,17 +66,20 @@ font-size:14px;
 font-weight:900;
 flex-shrink:0
 }
+
 .logo-symbol{
 font-size:20px;
 font-weight:900;
 color:#071b31
 }
+
 .header-tools{
 margin-right:auto;
 display:flex;
 align-items:center;
 gap:9px
 }
+
 .header-icon{
 width:42px;
 height:42px;
@@ -83,6 +91,7 @@ align-items:center;
 justify-content:center;
 cursor:pointer
 }
+
 .icon-svg{
 width:20px;
 height:20px;
@@ -103,7 +112,9 @@ background:#fff;
 border-bottom:1px solid #e4e9ed;
 box-shadow:0 20px 45px rgba(7,27,49,.12)
 }
+
 .menu-panel.open{display:block}
+
 .menu-inner{
 width:92%;
 max-width:1280px;
@@ -113,6 +124,7 @@ display:grid;
 grid-template-columns:repeat(6,1fr);
 gap:10px
 }
+
 .menu-item{
 padding:18px 14px;
 border:1px solid #e4e9ed;
@@ -121,6 +133,7 @@ font-size:11px;
 font-weight:bold;
 text-align:center
 }
+
 .menu-item:hover{
 background:#071b31;
 color:#fff
@@ -133,6 +146,7 @@ position:relative;
 overflow:hidden;
 background:#071b31
 }
+
 .hero-image{
 position:absolute;
 inset:0;
@@ -141,11 +155,18 @@ height:100%;
 object-fit:cover;
 animation:heroZoom 12s ease-in-out infinite alternate
 }
+
 .hero-overlay{
 position:absolute;
 inset:0;
-background:linear-gradient(90deg,rgba(3,16,31,.84),rgba(4,20,37,.58),rgba(4,20,37,.43))
+background:linear-gradient(
+90deg,
+rgba(3,16,31,.84),
+rgba(4,20,37,.58),
+rgba(4,20,37,.43)
+)
 }
+
 .hero-content{
 position:relative;
 z-index:2;
@@ -158,17 +179,20 @@ align-items:center;
 justify-content:center;
 text-align:center
 }
+
 .hero-text{
 color:#fff;
 max-width:760px;
 animation:fadeUp .9s ease both
 }
+
 .hero-line{
 width:55px;
 height:2px;
 background:#6bc9ee;
 margin:0 auto 20px
 }
+
 .hero-logo{
 font-family:Arial,sans-serif;
 font-size:58px;
@@ -178,13 +202,16 @@ margin-bottom:12px;
 direction:ltr;
 unicode-bidi:isolate
 }
+
 .hero-logo span{color:#70cff2}
+
 .hero-subtitle{
 font-size:18px;
 line-height:2;
 margin:0 auto 14px;
 font-weight:500
 }
+
 .hero-description{
 max-width:600px;
 margin:0 auto 30px;
@@ -192,12 +219,14 @@ color:#e2edf4;
 font-size:12px;
 line-height:2.1
 }
+
 .hero-buttons{
 display:flex;
 justify-content:center;
 gap:12px;
 flex-wrap:wrap
 }
+
 .glass-button{
 min-width:165px;
 padding:14px 24px;
@@ -215,47 +244,56 @@ justify-content:center;
 gap:9px;
 transition:.25s
 }
+
 .glass-button:hover{
 background:#fff;
 color:#071b31;
 transform:translateY(-3px)
 }
+
 .glass-button.primary{
 background:rgba(12,122,187,.72);
 border-color:#62c7ed
 }
 
 section{padding:85px 0}
+
 .container{
 width:92%;
 max-width:1280px;
 margin:auto
 }
+
 .heading{
 text-align:center;
 margin-bottom:42px
 }
+
 .heading small{
 color:#0879bd;
 font-size:10px;
 font-weight:bold
 }
+
 .heading h2{
 color:#071b31;
 font-size:30px;
 margin:8px 0
 }
+
 .heading p{
 color:#718192;
 font-size:11px
 }
 
 .services{background:#f5f7f9}
+
 .grid4{
 display:grid;
 grid-template-columns:repeat(4,1fr);
 gap:16px
 }
+
 .card{
 background:#fff;
 border:1px solid #e1e7ec;
@@ -263,10 +301,12 @@ border-radius:9px;
 padding:28px 22px;
 transition:.3s
 }
+
 .card:hover{
 transform:translateY(-6px);
 box-shadow:0 20px 45px rgba(7,27,49,.08)
 }
+
 .service-icon{
 width:50px;
 height:50px;
@@ -277,16 +317,19 @@ align-items:center;
 justify-content:center;
 font-size:25px
 }
+
 .card h3{
 font-size:15px;
 color:#071b31;
 margin:15px 0 7px
 }
+
 .card p{
 font-size:10px;
 color:#718192;
 line-height:1.9
 }
+
 .card a{
 color:#0879bd;
 font-size:10px;
@@ -294,48 +337,57 @@ font-weight:bold
 }
 
 .why{background:#fff}
+
 .why-grid{
 display:grid;
 grid-template-columns:1fr 1fr;
 gap:55px;
 align-items:center
 }
+
 .why-text h2{
 font-size:32px;
 color:#071b31;
 margin:8px 0 18px
 }
+
 .why-text>p{
 font-size:12px;
 color:#718192;
 line-height:2
 }
+
 .why-items{
 display:grid;
 grid-template-columns:1fr 1fr;
 gap:13px;
 margin-top:25px
 }
+
 .why-item{
 padding:18px;
 border:1px solid #e1e7ec;
 border-radius:9px
 }
+
 .why-icon{
 font-size:23px;
 margin-bottom:8px
 }
+
 .why-item h3{
 font-size:12px;
 margin:5px 0;
 color:#071b31
 }
+
 .why-item p{
 font-size:9px;
 line-height:1.8;
 color:#718192;
 margin:0
 }
+
 .stats-box{
 background:#071b31;
 border-radius:14px;
@@ -343,34 +395,41 @@ padding:38px 25px;
 color:#fff;
 box-shadow:0 25px 55px rgba(7,27,49,.16)
 }
+
 .stats-title{
 font-size:13px;
 color:#bcd0df;
 margin-bottom:25px
 }
+
 .stats{
 display:grid;
 grid-template-columns:1fr 1fr;
 gap:25px 10px
 }
+
 .stat{text-align:center}
+
 .stat strong{
 display:block;
 font-family:Arial,sans-serif;
 font-size:32px;
 color:#6cccf3
 }
+
 .stat span{
 font-size:9px;
 color:#c5d3de
 }
 
 .brands{background:#fff}
+
 .brand-grid{
 display:grid;
 grid-template-columns:repeat(6,1fr);
 gap:12px
 }
+
 .brand{
 height:75px;
 border:1px solid #e1e7ec;
@@ -385,17 +444,20 @@ font-weight:bold
 }
 
 .products{background:#f5f7f9}
+
 .product-grid{
 display:grid;
 grid-template-columns:repeat(4,1fr);
 gap:16px
 }
+
 .product{
 background:#fff;
 border:1px solid #e1e7ec;
 border-radius:10px;
 overflow:hidden
 }
+
 .product-image{
 height:170px;
 background:linear-gradient(135deg,#edf5f8,#dcecf2);
@@ -404,21 +466,26 @@ align-items:center;
 justify-content:center;
 font-size:50px
 }
+
 .product-info{padding:18px}
+
 .product-info small{
 font-size:9px;
 color:#0879bd
 }
+
 .product-info h3{
 font-size:12px;
 color:#071b31;
 margin:8px 0
 }
+
 .product-info p{
 font-size:9px;
 color:#718192;
 line-height:1.8
 }
+
 .product-btn{
 display:block;
 text-align:center;
@@ -431,22 +498,26 @@ margin-top:12px
 }
 
 .about{background:#fff}
+
 .about-grid{
 display:grid;
 grid-template-columns:1fr 1fr;
 gap:55px;
 align-items:center
 }
+
 .about h2{
 color:#071b31;
 font-size:33px;
 line-height:1.5
 }
+
 .about p{
 color:#718192;
 font-size:12px;
 line-height:2
 }
+
 .about-panel{
 min-height:320px;
 background:#071b31;
@@ -454,36 +525,43 @@ border-radius:12px;
 padding:45px;
 color:#fff
 }
+
 .about-panel strong{
 font-family:Arial,sans-serif;
 font-size:60px;
 color:#6cccf3
 }
+
 .about-panel h3{font-size:20px}
 
 .reviews{background:#f5f7f9}
+
 .review-grid{
 display:grid;
 grid-template-columns:repeat(3,1fr);
 gap:16px
 }
+
 .review{
 background:#fff;
 border:1px solid #e1e7ec;
 border-radius:10px;
 padding:25px
 }
+
 .stars{
 color:#e4a928;
 letter-spacing:2px;
 font-size:12px
 }
+
 .review p{
 font-size:11px;
 color:#596d7e;
 line-height:2;
 margin:15px 0
 }
+
 .review strong{
 font-size:10px;
 color:#071b31
@@ -493,36 +571,43 @@ color:#071b31
 background:#071b31;
 color:#fff
 }
+
 .request-grid{
 display:grid;
 grid-template-columns:.8fr 1.2fr;
 gap:50px;
 align-items:center
 }
+
 .request-text h2{
 font-size:30px;
 margin:8px 0 15px
 }
+
 .request-text p{
 font-size:11px;
 color:#b9cbd8;
 line-height:2
 }
+
 .request-list div{
 font-size:10px;
 color:#d9e5ec;
 margin:12px 0
 }
+
 .request-form{
 background:#fff;
 padding:28px;
 border-radius:12px
 }
+
 .form-row{
 display:grid;
 grid-template-columns:1fr 1fr;
 gap:10px
 }
+
 .request-form input,
 .request-form select,
 .request-form textarea{
@@ -536,10 +621,12 @@ outline:none;
 color:#263e52;
 background:#fff
 }
+
 .request-form textarea{
 height:100px;
 resize:none
 }
+
 .submit-btn{
 width:100%;
 border:0;
@@ -551,10 +638,12 @@ font-weight:bold;
 font-size:10px;
 cursor:pointer
 }
+
 .submit-btn:disabled{
 opacity:.6;
 cursor:wait
 }
+
 .form-message{
 display:none;
 margin-top:12px;
@@ -563,11 +652,13 @@ border-radius:7px;
 font-size:10px;
 text-align:center
 }
+
 .form-message.success{
 display:block;
 background:#e8f8ef;
 color:#176b3b
 }
+
 .form-message.error{
 display:block;
 background:#fff0f0;
@@ -579,11 +670,13 @@ display:grid;
 grid-template-columns:repeat(3,1fr);
 gap:17px
 }
+
 .article{
 border:1px solid #e2e8ed;
 border-radius:9px;
 overflow:hidden
 }
+
 .article-img{
 height:150px;
 background:#edf4f7;
@@ -592,15 +685,19 @@ align-items:center;
 justify-content:center;
 font-size:48px
 }
+
 .article-body{padding:20px}
+
 .article-body small{
 color:#0879bd;
 font-size:9px
 }
+
 .article-body h3{
 color:#071b31;
 font-size:14px
 }
+
 .article-body p{
 color:#718192;
 font-size:10px;
@@ -616,14 +713,17 @@ display:flex;
 justify-content:space-between;
 align-items:center
 }
+
 .cta h2{
 margin:0;
 font-size:25px
 }
+
 .cta p{
 color:#bdcad5;
 font-size:11px
 }
+
 .cta a{
 background:#0879bd;
 padding:13px 25px;
@@ -637,11 +737,13 @@ background:#06182c;
 color:#fff;
 padding:60px 0 90px
 }
+
 .footer-grid{
 display:grid;
 grid-template-columns:2fr 1fr 1fr 1fr;
 gap:35px
 }
+
 .footer-logo{
 font-family:Arial,sans-serif;
 font-size:22px;
@@ -649,15 +751,20 @@ font-weight:bold;
 direction:ltr;
 unicode-bidi:isolate
 }
+
 .footer-logo span{color:#6cccf3}
+
 footer h3{font-size:13px}
+
 footer p,
 footer a{
 color:#aebdca;
 font-size:10px;
 line-height:2
 }
+
 footer a{display:block}
+
 .copyright{
 border-top:1px solid rgba(255,255,255,.1);
 margin-top:40px;
@@ -667,7 +774,9 @@ color:#8193a5;
 font-size:9px
 }
 
-/* CHAT */
+
+/* ================= CHAT ================= */
+
 .chat-button{
 position:fixed;
 left:22px;
@@ -703,6 +812,7 @@ z-index:9999;
 display:none;
 flex-direction:column
 }
+
 .chat-window.open{display:flex}
 
 .chat-head{
@@ -714,6 +824,7 @@ align-items:center;
 gap:12px;
 flex-shrink:0
 }
+
 .chat-avatar{
 width:42px;
 height:42px;
@@ -723,14 +834,17 @@ display:flex;
 align-items:center;
 justify-content:center
 }
+
 .chat-head strong{
 display:block;
 font-size:12px
 }
+
 .chat-head small{
 color:#bcd0df;
 font-size:9px
 }
+
 .chat-close{
 margin-right:auto;
 border:0;
@@ -786,6 +900,7 @@ grid-template-columns:1fr 1fr;
 gap:7px;
 margin-bottom:10px
 }
+
 .chat-option{
 border:1px solid #dfe7ec;
 background:#fff;
@@ -801,6 +916,7 @@ padding:15px;
 background:#fff;
 border-top:1px solid #e1e7ec
 }
+
 .chat-login input{
 width:100%;
 border:1px solid #dfe7ec;
@@ -810,6 +926,7 @@ font-size:10px;
 margin-bottom:8px;
 outline:none
 }
+
 .chat-start{
 width:100%;
 border:0;
@@ -830,6 +947,7 @@ display:flex;
 gap:7px;
 align-items:center
 }
+
 .chat-input{
 flex:1;
 border:1px solid #dfe7ec;
@@ -839,6 +957,7 @@ font-size:10px;
 outline:none;
 min-width:0
 }
+
 .chat-send{
 width:44px;
 height:42px;
@@ -852,15 +971,18 @@ display:flex;
 align-items:center;
 justify-content:center
 }
+
 .chat-send:disabled{
 opacity:.5;
 cursor:wait
 }
+
 .chat-status{
 font-size:8px;
 color:#718192;
 padding:0 15px 7px;
-background:#fff
+background:#fff;
+min-height:20px
 }
 
 .mobile-bar{display:none}
@@ -869,10 +991,12 @@ background:#fff
 from{opacity:0;transform:translateY(25px)}
 to{opacity:1;transform:translateY(0)}
 }
+
 @keyframes heroZoom{
 from{transform:scale(1)}
 to{transform:scale(1.05)}
 }
+
 @keyframes pulse{
 0%,100%{box-shadow:0 12px 35px rgba(0,0,0,.25)}
 50%{box-shadow:0 12px 35px rgba(8,121,189,.42)}
@@ -881,24 +1005,49 @@ to{transform:scale(1.05)}
 @media(max-width:900px){
 
 .header{height:68px}
+
 .menu-panel{top:68px}
-.menu-inner{grid-template-columns:1fr 1fr}
+
+.menu-inner{
+grid-template-columns:1fr 1fr
+}
+
 .hero{
 height:calc(100vh - 68px);
 min-height:600px
 }
+
 .hero-logo{font-size:40px}
+
 .hero-subtitle{font-size:14px}
+
 .hero-description{font-size:10px}
+
 .grid4{grid-template-columns:1fr 1fr}
+
 .brand-grid{grid-template-columns:repeat(3,1fr)}
+
 .about-grid,
 .why-grid,
-.request-grid{grid-template-columns:1fr}
-.product-grid{grid-template-columns:1fr 1fr}
-.review-grid{grid-template-columns:1fr}
-.article-grid{grid-template-columns:1fr}
-.footer-grid{grid-template-columns:1fr 1fr}
+.request-grid{
+grid-template-columns:1fr
+}
+
+.product-grid{
+grid-template-columns:1fr 1fr
+}
+
+.review-grid{
+grid-template-columns:1fr
+}
+
+.article-grid{
+grid-template-columns:1fr
+}
+
+.footer-grid{
+grid-template-columns:1fr 1fr
+}
 
 .mobile-bar{
 position:fixed;
@@ -912,6 +1061,7 @@ display:flex;
 z-index:9990;
 box-shadow:0 -10px 30px rgba(0,0,0,.1)
 }
+
 .mobile-bar a{
 flex:1;
 display:flex;
@@ -922,6 +1072,7 @@ gap:2px;
 font-size:9px;
 color:#53697b
 }
+
 .mobile-bar a span{
 display:flex;
 align-items:center;
@@ -930,9 +1081,15 @@ width:32px;
 height:32px;
 font-size:23px
 }
-.mobile-bar a.active{color:#0879bd}
 
-.chat-button{bottom:82px}
+.mobile-bar a.active{
+color:#0879bd
+}
+
+.chat-button{
+bottom:82px
+}
+
 .chat-window{
 left:8px;
 right:8px;
@@ -940,42 +1097,73 @@ bottom:150px;
 width:auto;
 height:min(560px,calc(100vh - 170px))
 }
+
 }
 
 @media(max-width:500px){
 
 .logo{font-size:17px}
+
 .logo-symbol{font-size:17px}
+
 .header-icon{
 width:38px;
 height:38px
 }
+
 .hero-logo{font-size:34px}
+
 .hero-subtitle{font-size:13px}
+
 .hero-buttons{
 display:grid;
 grid-template-columns:1fr 1fr
 }
+
 .glass-button{
 min-width:0;
 padding:12px 7px;
 font-size:9px
 }
-.grid4{grid-template-columns:1fr}
-.brand-grid{grid-template-columns:1fr 1fr}
-.product-grid{grid-template-columns:1fr 1fr}
-.why-items{grid-template-columns:1fr}
-.form-row{grid-template-columns:1fr}
+
+.grid4{
+grid-template-columns:1fr
+}
+
+.brand-grid{
+grid-template-columns:1fr 1fr
+}
+
+.product-grid{
+grid-template-columns:1fr 1fr
+}
+
+.why-items{
+grid-template-columns:1fr
+}
+
+.form-row{
+grid-template-columns:1fr
+}
+
 .cta{
 display:block;
 text-align:center
 }
+
 .cta a{
 display:inline-block;
 margin-top:15px
 }
-.footer-grid{grid-template-columns:1fr}
-.request-form{padding:20px}
+
+.footer-grid{
+grid-template-columns:1fr
+}
+
+.request-form{
+padding:20px
+}
+
 }
 </style>
 </head>
@@ -983,6 +1171,7 @@ margin-top:15px
 <body>
 
 <header class="header">
+
 <div class="header-inner">
 
 <a href="#home" class="logo" dir="ltr">
@@ -992,53 +1181,74 @@ margin-top:15px
 
 <div class="header-tools">
 
-<button class="header-icon" aria-label="جستجو"
+<button
+class="header-icon"
+aria-label="جستجو"
 onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})">
+
 <svg class="icon-svg" viewBox="0 0 24 24">
 <circle cx="11" cy="11" r="6.5"></circle>
 <path d="M16 16l5 5"></path>
 </svg>
+
 </button>
 
-<a href="shop.html" class="header-icon" aria-label="فروشگاه">
+<a
+href="shop.html"
+class="header-icon"
+aria-label="فروشگاه">
+
 <svg class="icon-svg" viewBox="0 0 24 24">
 <path d="M4 8h16l-1 11H5L4 8z"></path>
 <path d="M8 8V6a4 4 0 0 1 8 0v2"></path>
 </svg>
+
 </a>
 
-<button class="header-icon" onclick="toggleMenu()" aria-label="منو">
+<button
+class="header-icon"
+onclick="toggleMenu()"
+aria-label="منو">
+
 <svg class="icon-svg" viewBox="0 0 24 24">
 <path d="M4 7h16"></path>
 <path d="M4 12h16"></path>
 <path d="M4 17h16"></path>
 </svg>
+
 </button>
 
 </div>
 </div>
 
 <div class="menu-panel" id="menu">
+
 <div class="menu-inner">
+
 <a class="menu-item" href="#home">خانه</a>
 <a class="menu-item" href="shop.html">فروشگاه</a>
 <a class="menu-item" href="#services">خدمات</a>
 <a class="menu-item" href="#brands">برندها</a>
 <a class="menu-item" href="#contact">تماس با ما</a>
 <a class="menu-item" href="#about">درباره ما</a>
+
 </div>
 </div>
+
 </header>
+
 
 <section class="hero" id="home">
 
-<img class="hero-image"
+<img
+class="hero-image"
 src="IMG_20260823_213954.png"
 alt="دکتر برودت - خدمات سرمایشی">
 
 <div class="hero-overlay"></div>
 
 <div class="hero-content">
+
 <div class="hero-text">
 
 <div class="hero-line"></div>
@@ -1058,63 +1268,116 @@ Dr <span>Borodat</span>
 
 <div class="hero-buttons">
 
-<a href="shop.html" class="glass-button primary">
+<a
+href="shop.html"
+class="glass-button primary">
 مشاهده فروشگاه
 </a>
 
-<a href="tel:09197701790" class="glass-button">
+<a
+href="tel:09197701790"
+class="glass-button">
 ارتباط با مهندس
 </a>
 
 </div>
+
 </div>
 </div>
+
 </section>
 
+
 <section class="services" id="services">
+
 <div class="container">
 
 <div class="heading">
+
 <small>SERVICES</small>
+
 <h2>خدمات تخصصی</h2>
-<p>تمام خدمات مورد نیاز سیستم‌های سرمایشی در یک مجموعه</p>
+
+<p>
+تمام خدمات مورد نیاز سیستم‌های سرمایشی در یک مجموعه
+</p>
+
 </div>
 
 <div class="grid4">
 
 <div class="card">
+
 <div class="service-icon">❄️</div>
+
 <h3>نصب کولر گازی</h3>
-<p>نصب اصولی و راه‌اندازی انواع کولر گازی و اسپلیت.</p>
-<a href="#request">درخواست خدمت ←</a>
+
+<p>
+نصب اصولی و راه‌اندازی انواع کولر گازی و اسپلیت.
+</p>
+
+<a href="#request">
+درخواست خدمت ←
+</a>
+
 </div>
 
 <div class="card">
+
 <div class="service-icon">🛠️</div>
+
 <h3>سرویس کولر</h3>
-<p>سرویس، شست‌وشو و بررسی عملکرد دستگاه.</p>
-<a href="#request">درخواست خدمت ←</a>
+
+<p>
+سرویس، شست‌وشو و بررسی عملکرد دستگاه.
+</p>
+
+<a href="#request">
+درخواست خدمت ←
+</a>
+
 </div>
 
 <div class="card">
+
 <div class="service-icon">🔧</div>
+
 <h3>تعمیر کولر</h3>
-<p>عیب‌یابی و تعمیر تخصصی انواع دستگاه.</p>
-<a href="#request">درخواست خدمت ←</a>
+
+<p>
+عیب‌یابی و تعمیر تخصصی انواع دستگاه.
+</p>
+
+<a href="#request">
+درخواست خدمت ←
+</a>
+
 </div>
 
 <div class="card">
+
 <div class="service-icon">💧</div>
+
 <h3>شارژ گاز</h3>
-<p>بررسی و شارژ گاز کولر در صورت نیاز.</p>
-<a href="#request">درخواست خدمت ←</a>
+
+<p>
+بررسی و شارژ گاز کولر در صورت نیاز.
+</p>
+
+<a href="#request">
+درخواست خدمت ←
+</a>
+
 </div>
 
 </div>
 </div>
+
 </section>
 
+
 <section class="why">
+
 <div class="container why-grid">
 
 <div class="why-text">
@@ -1123,7 +1386,9 @@ Dr <span>Borodat</span>
 WHY DR BORODAT
 </small>
 
-<h2>چرا دکتر برودت؟</h2>
+<h2>
+چرا دکتر برودت؟
+</h2>
 
 <p>
 تلاش ما این است که مشتری از اولین تماس تا پایان کار،
@@ -1133,35 +1398,62 @@ WHY DR BORODAT
 <div class="why-items">
 
 <div class="why-item">
+
 <div class="why-icon">⚙️</div>
+
 <h3>تخصص فنی</h3>
-<p>ارائه خدمات تخصصی نصب، سرویس و تعمیر.</p>
+
+<p>
+ارائه خدمات تخصصی نصب، سرویس و تعمیر.
+</p>
+
 </div>
 
 <div class="why-item">
+
 <div class="why-icon">⚡</div>
+
 <h3>پاسخگویی سریع</h3>
-<p>پیگیری درخواست‌ها با سرعت و نظم.</p>
+
+<p>
+پیگیری درخواست‌ها با سرعت و نظم.
+</p>
+
 </div>
 
 <div class="why-item">
+
 <div class="why-icon">🛠️</div>
+
 <h3>خدمات کامل</h3>
-<p>از مشاوره و نصب تا سرویس و تعمیر.</p>
+
+<p>
+از مشاوره و نصب تا سرویس و تعمیر.
+</p>
+
 </div>
 
 <div class="why-item">
+
 <div class="why-icon">✓</div>
+
 <h3>اعتماد و کیفیت</h3>
-<p>تمرکز بر کیفیت انجام کار و رضایت مشتری.</p>
+
+<p>
+تمرکز بر کیفیت انجام کار و رضایت مشتری.
+</p>
+
 </div>
 
 </div>
 </div>
+
 
 <div class="stats-box">
 
-<div class="stats-title">آمار دکتر برودت</div>
+<div class="stats-title">
+آمار دکتر برودت
+</div>
 
 <div class="stats">
 
@@ -1189,93 +1481,174 @@ WHY DR BORODAT
 </div>
 
 </div>
+
 </section>
 
+
 <section class="brands" id="brands">
+
 <div class="container">
 
 <div class="heading">
+
 <small>BRANDS</small>
+
 <h2>برندهای تحت پوشش</h2>
-<p>ارائه خدمات برای برندهای مختلف سیستم‌های سرمایشی</p>
+
+<p>
+ارائه خدمات برای برندهای مختلف سیستم‌های سرمایشی
+</p>
+
 </div>
 
 <div class="brand-grid">
+
 <div class="brand">LG</div>
 <div class="brand">GREE</div>
 <div class="brand">SAMSUNG</div>
 <div class="brand">DAIKIN</div>
 <div class="brand">MIDEA</div>
 <div class="brand">GENERAL</div>
+
 </div>
 
 </div>
+
 </section>
 
+
 <section class="products">
+
 <div class="container">
 
 <div class="heading">
+
 <small>SHOP</small>
+
 <h2>محصولات منتخب</h2>
-<p>برخی از محصولات و تجهیزات قابل ارائه توسط دکتر برودت</p>
+
+<p>
+برخی از محصولات و تجهیزات قابل ارائه توسط دکتر برودت
+</p>
+
 </div>
 
 <div class="product-grid">
 
 <div class="product">
+
 <div class="product-image">❄️</div>
+
 <div class="product-info">
+
 <small>کولر گازی</small>
+
 <h3>اسپلیت دیواری</h3>
-<p>مناسب برای فضاهای مسکونی و اداری.</p>
-<a class="product-btn" href="shop.html">مشاهده محصول</a>
+
+<p>
+مناسب برای فضاهای مسکونی و اداری.
+</p>
+
+<a
+class="product-btn"
+href="shop.html">
+مشاهده محصول
+</a>
+
 </div>
 </div>
 
+
 <div class="product">
+
 <div class="product-image">🌬️</div>
+
 <div class="product-info">
+
 <small>تجهیزات سرمایشی</small>
+
 <h3>تجهیزات تهویه</h3>
-<p>راهکارهای مناسب برای سیستم‌های سرمایشی.</p>
-<a class="product-btn" href="shop.html">مشاهده محصول</a>
+
+<p>
+راهکارهای مناسب برای سیستم‌های سرمایشی.
+</p>
+
+<a
+class="product-btn"
+href="shop.html">
+مشاهده محصول
+</a>
+
 </div>
 </div>
 
+
 <div class="product">
+
 <div class="product-image">🔧</div>
+
 <div class="product-info">
+
 <small>قطعات</small>
+
 <h3>قطعات و لوازم</h3>
-<p>قطعات مورد نیاز سرویس و تعمیر دستگاه.</p>
-<a class="product-btn" href="shop.html">مشاهده محصول</a>
+
+<p>
+قطعات مورد نیاز سرویس و تعمیر دستگاه.
+</p>
+
+<a
+class="product-btn"
+href="shop.html">
+مشاهده محصول
+</a>
+
 </div>
 </div>
+
 
 <div class="product">
+
 <div class="product-image">⚙️</div>
+
 <div class="product-info">
+
 <small>خدمات</small>
+
 <h3>خدمات تخصصی</h3>
-<p>درخواست خدمات تخصصی دکتر برودت.</p>
-<a class="product-btn" href="#request">درخواست خدمت</a>
+
+<p>
+درخواست خدمات تخصصی دکتر برودت.
+</p>
+
+<a
+class="product-btn"
+href="#request">
+درخواست خدمت
+</a>
+
 </div>
 </div>
 
 </div>
 </div>
+
 </section>
 
+
 <section class="about" id="about">
+
 <div class="container about-grid">
 
 <div>
+
 <small style="color:#0879bd;font-weight:bold">
 ABOUT US
 </small>
 
-<h2>راهکارهای حرفه‌ای برای سرمایش</h2>
+<h2>
+راهکارهای حرفه‌ای برای سرمایش
+</h2>
 
 <p>
 دکتر برودت با تمرکز بر خدمات و تجهیزات سیستم‌های سرمایشی
@@ -1286,51 +1659,98 @@ ABOUT US
 از انتخاب تجهیزات تا نصب، سرویس و تعمیر؛ هدف ما ارائه
 خدماتی حرفه‌ای و قابل اعتماد است.
 </p>
+
 </div>
 
 <div class="about-panel">
+
 <strong>360°</strong>
-<h3>یک مجموعه برای تمام نیازهای سرمایشی</h3>
-<p>خدمات فنی، فروش تجهیزات و پشتیبانی مشتری در کنار یکدیگر.</p>
+
+<h3>
+یک مجموعه برای تمام نیازهای سرمایشی
+</h3>
+
+<p>
+خدمات فنی، فروش تجهیزات و پشتیبانی مشتری در کنار یکدیگر.
+</p>
+
 </div>
 
 </div>
+
 </section>
 
+
 <section class="reviews">
+
 <div class="container">
 
 <div class="heading">
+
 <small>REVIEWS</small>
+
 <h2>رضایت مشتریان</h2>
-<p>تجربه مشتریان از خدمات دکتر برودت</p>
+
+<p>
+تجربه مشتریان از خدمات دکتر برودت
+</p>
+
 </div>
 
 <div class="review-grid">
 
 <div class="review">
+
 <div class="stars">★★★★★</div>
-<p>«از نصب کولر کاملاً راضی بودم؛ کار تمیز و با دقت انجام شد.»</p>
-<strong>مشتری دکتر برودت</strong>
+
+<p>
+«از نصب کولر کاملاً راضی بودم؛ کار تمیز و با دقت انجام شد.»
+</p>
+
+<strong>
+مشتری دکتر برودت
+</strong>
+
 </div>
+
 
 <div class="review">
+
 <div class="stars">★★★★★</div>
-<p>«پاسخگویی خوب و برخورد حرفه‌ای. از خدمات راضی بودم.»</p>
-<strong>مشتری دکتر برودت</strong>
+
+<p>
+«پاسخگویی خوب و برخورد حرفه‌ای. از خدمات راضی بودم.»
+</p>
+
+<strong>
+مشتری دکتر برودت
+</strong>
+
 </div>
+
 
 <div class="review">
+
 <div class="stars">★★★★★</div>
-<p>«سرویس کولر سریع انجام شد و دستگاه خیلی بهتر کار می‌کند.»</p>
-<strong>مشتری دکتر برودت</strong>
+
+<p>
+«سرویس کولر سریع انجام شد و دستگاه خیلی بهتر کار می‌کند.»
+</p>
+
+<strong>
+مشتری دکتر برودت
+</strong>
+
 </div>
 
 </div>
 </div>
+
 </section>
 
+
 <section class="request" id="request">
+
 <div class="container request-grid">
 
 <div class="request-text">
@@ -1339,7 +1759,9 @@ ABOUT US
 SERVICE REQUEST
 </small>
 
-<h2>درخواست خدمات</h2>
+<h2>
+درخواست خدمات
+</h2>
 
 <p>
 برای نصب، سرویس یا تعمیر کولر گازی اطلاعات خود را
@@ -1347,144 +1769,273 @@ SERVICE REQUEST
 </p>
 
 <div class="request-list">
+
 <div>✓ نصب و راه‌اندازی</div>
 <div>✓ سرویس و شست‌وشو</div>
 <div>✓ تعمیر و عیب‌یابی</div>
 <div>✓ مشاوره و راهنمایی</div>
-</div>
 
 </div>
 
-<form class="request-form" id="serviceForm">
+</div>
+
+
+<form
+class="request-form"
+id="serviceForm">
 
 <div class="form-row">
 
-<input id="name" type="text" placeholder="نام و نام خانوادگی" required>
+<input
+id="name"
+type="text"
+placeholder="نام و نام خانوادگی"
+required>
 
-<input id="phone" type="tel" placeholder="شماره تماس" required>
+<input
+id="phone"
+type="tel"
+placeholder="شماره تماس"
+required>
 
 </div>
 
 <select id="service" required>
 
-<option value="">نوع خدمت را انتخاب کنید</option>
-<option value="🔧 نصب کولر گازی">نصب کولر گازی</option>
-<option value="🛠️ سرویس کولر">سرویس کولر</option>
-<option value="❄️ تعمیر کولر">تعمیر کولر</option>
-<option value="💧 شارژ گاز">شارژ گاز</option>
-<option value="📞 مشاوره">مشاوره</option>
+<option value="">
+نوع خدمت را انتخاب کنید
+</option>
+
+<option value="🔧 نصب کولر گازی">
+نصب کولر گازی
+</option>
+
+<option value="🛠️ سرویس کولر">
+سرویس کولر
+</option>
+
+<option value="❄️ تعمیر کولر">
+تعمیر کولر
+</option>
+
+<option value="💧 شارژ گاز">
+شارژ گاز
+</option>
+
+<option value="📞 مشاوره">
+مشاوره
+</option>
 
 </select>
 
-<textarea id="description" placeholder="توضیحات درخواست..."></textarea>
+<textarea
+id="description"
+placeholder="توضیحات درخواست..."></textarea>
 
-<button class="submit-btn" id="submitBtn" type="submit">
+<button
+class="submit-btn"
+id="submitBtn"
+type="submit">
+
 ثبت درخواست خدمات
+
 </button>
 
-<div id="formMessage" class="form-message"></div>
+<div
+id="formMessage"
+class="form-message">
+</div>
 
 </form>
+
 </div>
+
 </section>
 
+
 <section>
+
 <div class="container">
 
 <div class="heading">
+
 <small>MAGAZINE</small>
+
 <h2>مقالات و آموزش‌ها</h2>
-<p>مطالب کاربردی درباره کولر گازی و سیستم‌های سرمایشی</p>
+
+<p>
+مطالب کاربردی درباره کولر گازی و سیستم‌های سرمایشی
+</p>
+
 </div>
 
 <div class="article-grid">
 
 <article class="article">
+
 <div class="article-img">❄</div>
+
 <div class="article-body">
+
 <small>آموزش</small>
-<h3>چه زمانی کولر گازی نیاز به سرویس دارد؟</h3>
-<p>نشانه‌های مهمی که زمان سرویس دستگاه را مشخص می‌کنند.</p>
+
+<h3>
+چه زمانی کولر گازی نیاز به سرویس دارد؟
+</h3>
+
+<p>
+نشانه‌های مهمی که زمان سرویس دستگاه را مشخص می‌کنند.
+</p>
+
 </div>
+
 </article>
 
+
 <article class="article">
+
 <div class="article-img">🔧</div>
+
 <div class="article-body">
+
 <small>تعمیرات</small>
-<h3>چرا کولر باد گرم می‌زند؟</h3>
-<p>دلایل رایج گرم شدن باد کولر گازی.</p>
+
+<h3>
+چرا کولر باد گرم می‌زند؟
+</h3>
+
+<p>
+دلایل رایج گرم شدن باد کولر گازی.
+</p>
+
 </div>
+
 </article>
+
 
 <article class="article">
+
 <div class="article-img">◌</div>
+
 <div class="article-body">
+
 <small>نگهداری</small>
-<h3>چطور مصرف کولر را کاهش دهیم؟</h3>
-<p>چند نکته ساده برای استفاده بهتر از کولر.</p>
+
+<h3>
+چطور مصرف کولر را کاهش دهیم؟
+</h3>
+
+<p>
+چند نکته ساده برای استفاده بهتر از کولر.
+</p>
+
 </div>
+
 </article>
 
 </div>
 </div>
+
 </section>
 
+
 <section>
+
 <div class="container">
 
 <div class="cta">
+
 <div>
-<h2>نیاز به مشاوره دارید؟</h2>
-<p>برای ارتباط مستقیم با مهندس با ما تماس بگیرید.</p>
+
+<h2>
+نیاز به مشاوره دارید؟
+</h2>
+
+<p>
+برای ارتباط مستقیم با مهندس با ما تماس بگیرید.
+</p>
+
 </div>
 
-<a href="tel:09197701790" dir="ltr">
+<a
+href="tel:09197701790"
+dir="ltr">
 0919 770 1790
 </a>
+
 </div>
 
 </div>
+
 </section>
+
 
 <footer id="contact">
 
 <div class="container footer-grid">
 
 <div>
+
 <div class="footer-logo">
 Dr <span>Borodat</span>
 </div>
-<p>تأمین‌کننده و ارائه‌دهنده خدمات تخصصی سرمایش و تهویه.</p>
+
+<p>
+تأمین‌کننده و ارائه‌دهنده خدمات تخصصی سرمایش و تهویه.
+</p>
+
 </div>
 
+
 <div>
+
 <h3>دسترسی سریع</h3>
+
 <a href="#home">خانه</a>
 <a href="shop.html">فروشگاه</a>
 <a href="#services">خدمات</a>
+
 </div>
 
+
 <div>
+
 <h3>اطلاعات</h3>
+
 <a href="#brands">برندها</a>
 <a href="#about">درباره ما</a>
 <a href="#request">درخواست خدمات</a>
+
 </div>
+
 
 <div>
+
 <h3>تماس با ما</h3>
-<a href="tel:09197701790" dir="ltr">0919 770 1790</a>
-<a href="tel:09120704028" dir="ltr">0912 070 4028</a>
+
+<a
+href="tel:09197701790"
+dir="ltr">
+0919 770 1790
+</a>
+
+<a
+href="tel:09120704028"
+dir="ltr">
+0912 070 4028
+</a>
+
 </div>
 
 </div>
+
 
 <div class="container copyright">
 © 2026 Dr Borodat — تمامی حقوق محفوظ است.
 </div>
 
 </footer>
+
 
 <div class="mobile-bar">
 
@@ -1508,72 +2059,137 @@ Dr <span>Borodat</span>
 تماس
 </a>
 
-<a href="javascript:void(0)" onclick="toggleChat()">
+<a
+href="javascript:void(0)"
+onclick="toggleChat()">
 <span>💬</span>
 پشتیبانی
 </a>
 
 </div>
 
-<button class="chat-button"
+
+<button
+class="chat-button"
 onclick="toggleChat()"
 aria-label="پشتیبانی آنلاین">
 💬
 </button>
 
-<div class="chat-window" id="chatWindow">
+
+<div
+class="chat-window"
+id="chatWindow">
+
 
 <div class="chat-head">
 
-<div class="chat-avatar">🎧</div>
+<div class="chat-avatar">
+🎧
+</div>
 
 <div>
-<strong>پشتیبانی آنلاین</strong>
-<small>Dr Borodat</small>
+
+<strong>
+پشتیبانی آنلاین
+</strong>
+
+<small>
+Dr Borodat
+</small>
+
 </div>
 
-<button class="chat-close" onclick="toggleChat()">×</button>
+<button
+class="chat-close"
+onclick="toggleChat()">
+×
+</button>
 
 </div>
 
-<div class="chat-body" id="chatBody">
+
+<div
+class="chat-body"
+id="chatBody">
 
 <div class="chat-message">
+
 سلام 👋<br>
 برای شروع پشتیبانی، نام و شماره تماس خود را وارد کنید.
+
 </div>
 
 <div class="chat-options">
-<button class="chat-option" onclick="chatChoice('تعمیر کولر')">تعمیر کولر</button>
-<button class="chat-option" onclick="chatChoice('سرویس کولر')">سرویس کولر</button>
-<button class="chat-option" onclick="chatChoice('نصب کولر')">نصب کولر</button>
-<button class="chat-option" onclick="chatChoice('راهنمای خرید')">راهنمای خرید</button>
-</div>
+
+<button
+class="chat-option"
+onclick="chatChoice('تعمیر کولر')">
+تعمیر کولر
+</button>
+
+<button
+class="chat-option"
+onclick="chatChoice('سرویس کولر')">
+سرویس کولر
+</button>
+
+<button
+class="chat-option"
+onclick="chatChoice('نصب کولر')">
+نصب کولر
+</button>
+
+<button
+class="chat-option"
+onclick="chatChoice('راهنمای خرید')">
+راهنمای خرید
+</button>
 
 </div>
 
-<div class="chat-login" id="chatLogin">
+</div>
 
-<input id="chatName" type="text" placeholder="نام و نام خانوادگی">
 
-<input id="chatPhone" type="tel" placeholder="شماره تماس">
+<div
+class="chat-login"
+id="chatLogin">
 
-<button class="chat-start" onclick="startChat()">
+<input
+id="chatName"
+type="text"
+placeholder="نام و نام خانوادگی">
+
+<input
+id="chatPhone"
+type="tel"
+placeholder="شماره تماس">
+
+<button
+class="chat-start"
+onclick="startChat()">
 شروع گفتگو
 </button>
 
 </div>
 
-<div class="chat-status" id="chatStatus"></div>
 
-<div class="chat-compose" id="chatCompose" style="display:none">
+<div
+class="chat-status"
+id="chatStatus">
+</div>
+
+
+<div
+class="chat-compose"
+id="chatCompose"
+style="display:none">
 
 <input
 class="chat-input"
 id="chatInput"
 placeholder="پیامتان را بنویسید..."
-onkeydown="if(event.key==='Enter')sendChat()"
->
+onkeydown="if(event.key==='Enter')sendChat()">
 
 <button
 class="chat-send"
@@ -1587,13 +2203,68 @@ aria-label="ارسال پیام">
 
 </div>
 
+
 <script>
 
 /* =====================================================
    API
    ===================================================== */
 
+/*
+   چون index.html و server.py روی یک سرویس هستند،
+   درخواست‌ها به همان دامنه فعلی ارسال می‌شوند.
+*/
+
 const API_BASE = window.location.origin;
+
+
+/* =====================================================
+   GENERIC JSON RESPONSE
+   ===================================================== */
+
+async function readJSONResponse(response){
+
+const raw = await response.text();
+
+if(!raw){
+
+throw new Error(
+"سرور پاسخ خالی برگرداند."
+);
+
+}
+
+let result;
+
+try{
+
+result = JSON.parse(raw);
+
+}catch(error){
+
+console.error(
+"SERVER RAW RESPONSE:",
+raw
+);
+
+throw new Error(
+"سرور پاسخ JSON معتبر برنگرداند."
+);
+
+}
+
+if(!response.ok){
+
+throw new Error(
+result?.message ||
+`خطای سرور (${response.status})`
+);
+
+}
+
+return result;
+
+}
 
 
 /* =====================================================
@@ -1602,7 +2273,10 @@ const API_BASE = window.location.origin;
 
 function toggleMenu(){
 
-document.getElementById("menu").classList.toggle("open");
+document
+.getElementById("menu")
+.classList
+.toggle("open");
 
 }
 
@@ -1611,8 +2285,16 @@ document.getElementById("menu").classList.toggle("open");
    CHAT STATE
    ===================================================== */
 
-let chatName = localStorage.getItem("drBorodatChatName") || "";
-let chatPhone = localStorage.getItem("drBorodatChatPhone") || "";
+let chatName =
+localStorage.getItem(
+"drBorodatChatName"
+) || "";
+
+let chatPhone =
+localStorage.getItem(
+"drBorodatChatPhone"
+) || "";
+
 let chatStarted = false;
 
 
@@ -1622,13 +2304,20 @@ let chatStarted = false;
 
 function toggleChat(){
 
-const windowBox = document.getElementById("chatWindow");
+const windowBox =
+document.getElementById("chatWindow");
 
 windowBox.classList.toggle("open");
 
 if(windowBox.classList.contains("open")){
 
 if(chatName && chatPhone){
+
+document.getElementById("chatName").value =
+chatName;
+
+document.getElementById("chatPhone").value =
+chatPhone;
 
 activateChat();
 
@@ -1645,22 +2334,26 @@ activateChat();
 
 function chatChoice(text){
 
-const input = document.getElementById("chatInput");
-
 if(!chatStarted){
-
-document.getElementById("chatName").focus();
 
 localStorage.setItem(
 "drBorodatPendingMessage",
 text
 );
 
+document
+.getElementById("chatName")
+.focus();
+
 return;
 
 }
 
+const input =
+document.getElementById("chatInput");
+
 input.value = text;
+
 input.focus();
 
 }
@@ -1673,12 +2366,14 @@ input.focus();
 async function startChat(){
 
 const name =
-document.getElementById("chatName")
+document
+.getElementById("chatName")
 .value
 .trim();
 
 const phone =
-document.getElementById("chatPhone")
+document
+.getElementById("chatPhone")
 .value
 .trim();
 
@@ -1719,8 +2414,9 @@ localStorage.removeItem(
 "drBorodatPendingMessage"
 );
 
-document.getElementById("chatInput").value =
-pending;
+document
+.getElementById("chatInput")
+.value = pending;
 
 await sendChat();
 
@@ -1737,11 +2433,13 @@ function activateChat(){
 
 chatStarted = true;
 
-document.getElementById("chatLogin")
-.style.display="none";
+document
+.getElementById("chatLogin")
+.style.display = "none";
 
-document.getElementById("chatCompose")
-.style.display="flex";
+document
+.getElementById("chatCompose")
+.style.display = "flex";
 
 loadChat();
 
@@ -1752,7 +2450,10 @@ loadChat();
    STATUS
    ===================================================== */
 
-function setChatStatus(text,error=false){
+function setChatStatus(
+text,
+error=false
+){
 
 const status =
 document.getElementById("chatStatus");
@@ -1760,7 +2461,9 @@ document.getElementById("chatStatus");
 status.textContent = text;
 
 status.style.color =
-error ? "#a22626" : "#718192";
+error
+? "#a22626"
+: "#718192";
 
 }
 
@@ -1771,44 +2474,47 @@ error ? "#a22626" : "#718192";
 
 async function loadChat(){
 
-if(!chatPhone) return;
+if(!chatPhone){
+
+return;
+
+}
 
 try{
 
-const response = await fetch(
+setChatStatus(
+"در حال دریافت گفتگو..."
+);
+
+const url =
 API_BASE +
 "/chat?phone=" +
-encodeURIComponent(chatPhone),
+encodeURIComponent(chatPhone);
+
+console.log(
+"CHAT GET:",
+url
+);
+
+const response =
+await fetch(
+url,
 {
 method:"GET",
 headers:{
 "Accept":"application/json"
-}
+},
+cache:"no-store"
 }
 );
 
-const raw = await response.text();
+const result =
+await readJSONResponse(response);
 
-let result;
-
-try{
-result = raw ? JSON.parse(raw) : null;
-}catch{
-throw new Error(
-"پاسخ سرور قابل خواندن نیست."
-);
-}
-
-if(!response.ok){
-
-throw new Error(
-result?.message ||
-"خطا در دریافت گفتگو."
-);
-
-}
-
-if(!result || result.success !== true){
+if(
+!result ||
+result.success !== true
+){
 
 throw new Error(
 result?.message ||
@@ -1818,12 +2524,19 @@ result?.message ||
 }
 
 renderMessages(
-result.messages || []
+Array.isArray(result.messages)
+? result.messages
+: []
 );
 
 setChatStatus("");
 
 }catch(error){
+
+console.error(
+"LOAD CHAT ERROR:",
+error
+);
 
 setChatStatus(
 error.message ||
@@ -1847,6 +2560,9 @@ document.getElementById("chatBody");
 
 body.innerHTML = "";
 
+
+/* گزینه‌های اولیه فقط وقتی چت خالی است */
+
 if(!messages.length){
 
 const welcome =
@@ -1856,13 +2572,52 @@ welcome.className =
 "chat-message";
 
 welcome.innerHTML =
-"سلام 👋<br>پیامتان را بنویسید تا برای پشتیبانی ارسال شود.";
+"سلام 👋<br>" +
+"پیامتان را بنویسید تا برای پشتیبانی ارسال شود.";
 
 body.appendChild(welcome);
+
+const options =
+document.createElement("div");
+
+options.className =
+"chat-options";
+
+const choices = [
+"تعمیر کولر",
+"سرویس کولر",
+"نصب کولر",
+"راهنمای خرید"
+];
+
+choices.forEach(choice=>{
+
+const button =
+document.createElement("button");
+
+button.className =
+"chat-option";
+
+button.textContent =
+choice;
+
+button.onclick =
+function(){
+
+chatChoice(choice);
+
+};
+
+options.appendChild(button);
+
+});
+
+body.appendChild(options);
 
 return;
 
 }
+
 
 messages.forEach(item=>{
 
@@ -1877,6 +2632,7 @@ item.sender === "admin"
 : "customer"
 );
 
+
 const text =
 document.createElement("div");
 
@@ -1885,12 +2641,14 @@ item.message || "";
 
 box.appendChild(text);
 
+
 if(item.created_at){
 
 const time =
 document.createElement("span");
 
-time.className="chat-time";
+time.className =
+"chat-time";
 
 time.textContent =
 item.created_at;
@@ -1902,6 +2660,7 @@ box.appendChild(time);
 body.appendChild(box);
 
 });
+
 
 body.scrollTop =
 body.scrollHeight;
@@ -1935,16 +2694,32 @@ document.getElementById("chatSend");
 const message =
 input.value.trim();
 
-if(!message) return;
+if(!message){
 
-button.disabled=true;
+return;
 
-setChatStatus("در حال ارسال...");
+}
+
+button.disabled = true;
+
+setChatStatus(
+"در حال ارسال..."
+);
 
 try{
 
-const response = await fetch(
-API_BASE + "/chat/send",
+const url =
+API_BASE +
+"/chat/send";
+
+console.log(
+"CHAT POST:",
+url
+);
+
+const response =
+await fetch(
+url,
 {
 method:"POST",
 headers:{
@@ -1954,41 +2729,22 @@ headers:{
 body:JSON.stringify({
 
 name:chatName,
+
 phone:chatPhone,
+
 message:message
 
 })
 }
 );
 
-const raw =
-await response.text();
+const result =
+await readJSONResponse(response);
 
-let result;
-
-try{
-
-result =
-raw ? JSON.parse(raw) : null;
-
-}catch{
-
-throw new Error(
-"پاسخ سرور نامعتبر است."
-);
-
-}
-
-if(!response.ok){
-
-throw new Error(
-result?.message ||
-"ارسال پیام انجام نشد."
-);
-
-}
-
-if(!result || result.success !== true){
+if(
+!result ||
+result.success !== true
+){
 
 throw new Error(
 result?.message ||
@@ -1997,13 +2753,20 @@ result?.message ||
 
 }
 
-input.value="";
+input.value = "";
 
-setChatStatus("پیام ارسال شد.");
+setChatStatus(
+"پیام ارسال شد."
+);
 
 await loadChat();
 
 }catch(error){
+
+console.error(
+"SEND CHAT ERROR:",
+error
+);
 
 setChatStatus(
 error.message ||
@@ -2013,7 +2776,7 @@ true
 
 }finally{
 
-button.disabled=false;
+button.disabled = false;
 
 }
 
@@ -2038,37 +2801,51 @@ document.getElementById("submitBtn");
 const message =
 document.getElementById("formMessage");
 
-const data={
+const data = {
 
 name:
-document.getElementById("name")
-.value.trim(),
+document
+.getElementById("name")
+.value
+.trim(),
 
 phone:
-document.getElementById("phone")
-.value.trim(),
+document
+.getElementById("phone")
+.value
+.trim(),
 
 service:
-document.getElementById("service")
+document
+.getElementById("service")
 .value,
 
 description:
-document.getElementById("description")
-.value.trim()
+document
+.getElementById("description")
+.value
+.trim()
 
 };
 
-message.className="form-message";
-message.textContent="";
 
-button.disabled=true;
-button.textContent="در حال ارسال...";
+message.className =
+"form-message";
+
+message.textContent = "";
+
+button.disabled = true;
+
+button.textContent =
+"در حال ارسال...";
+
 
 try{
 
 const response =
 await fetch(
-API_BASE + "/api/request",
+API_BASE +
+"/api/request",
 {
 method:"POST",
 headers:{
@@ -2079,34 +2856,13 @@ body:JSON.stringify(data)
 }
 );
 
-const raw =
-await response.text();
+const result =
+await readJSONResponse(response);
 
-let result;
-
-try{
-
-result =
-raw ? JSON.parse(raw) : null;
-
-}catch{
-
-throw new Error(
-"پاسخ سرور نامعتبر است."
-);
-
-}
-
-if(!response.ok){
-
-throw new Error(
-result?.message ||
-"ارسال درخواست انجام نشد."
-);
-
-}
-
-if(!result || result.success !== true){
+if(
+!result ||
+result.success !== true
+){
 
 throw new Error(
 result?.message ||
@@ -2114,6 +2870,7 @@ result?.message ||
 );
 
 }
+
 
 message.className =
 "form-message success";
@@ -2125,11 +2882,18 @@ result.message ||
 "درخواست شما با موفقیت ثبت شد."
 );
 
+
 document
 .getElementById("serviceForm")
 .reset();
 
+
 }catch(error){
+
+console.error(
+"SERVICE REQUEST ERROR:",
+error
+);
 
 message.className =
 "form-message error";
@@ -2143,8 +2907,10 @@ error.message ||
 
 }finally{
 
-button.disabled=false;
-button.textContent="ثبت درخواست خدمات";
+button.disabled = false;
+
+button.textContent =
+"ثبت درخواست خدمات";
 
 }
 
@@ -2185,15 +2951,33 @@ function(){
 
 if(chatName && chatPhone){
 
-document.getElementById("chatName")
-.value=chatName;
+document
+.getElementById("chatName")
+.value =
+chatName;
 
-document.getElementById("chatPhone")
-.value=chatPhone;
+document
+.getElementById("chatPhone")
+.value =
+chatPhone;
 
 }
 
 });
+
+
+/* =====================================================
+   DEBUG
+   ===================================================== */
+
+console.log(
+"Dr Borodat index loaded."
+);
+
+console.log(
+"API_BASE:",
+API_BASE
+);
 
 </script>
 
