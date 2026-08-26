@@ -43,26 +43,41 @@ align-items:center
 
 /* LOGO */
 
+  /* LOGO */
+
 .logo{
 display:flex;
 align-items:center;
+gap:9px;
 font-family:Arial,sans-serif;
 font-size:20px;
 font-weight:800;
 color:#071b31;
-direction:ltr;
+direction:ltr !important;
 unicode-bidi:isolate;
 white-space:nowrap;
-flex-direction:row;
-text-decoration:none
+flex-direction:row !important;
+text-decoration:none;
 }
 
 .logo-text{
-display:inline-block;
-direction:ltr;
+display:flex;
+align-items:center;
+justify-content:center;
+width:40px;
+height:40px;
+border-radius:10px;
+background:#071b31;
+color:#fff;
+font-family:Arial,sans-serif;
+font-size:14px;
+font-weight:900;
+direction:ltr !important;
 unicode-bidi:isolate;
-white-space:nowrap
+white-space:nowrap;
+flex-shrink:0;
 }
+
 
 .header-tools{
 margin-right:auto;
