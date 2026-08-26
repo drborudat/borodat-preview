@@ -3,11 +3,11 @@ import json
 import uuid
 from datetime import datetime
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 import requests
 
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder=".")
 
 
 # =========================================================
@@ -93,12 +93,52 @@ def send_bale_message(text):
 
 
 # =========================================================
-# HOME
+# FRONTEND FILES
 # =========================================================
 
 @app.route("/")
-def home():
-    return "Dr Borodat Preview Server is running."
+def index():
+    return send_from_directory(".", "index.html")
+
+
+@app.route("/index.html")
+def index_html():
+    return send_from_directory(".", "index.html")
+
+
+@app.route("/shop.html")
+def shop_html():
+    return send_from_directory(".", "shop.html")
+
+
+@app.route("/admin.html")
+def admin_html():
+    return send_from_directory(".", "admin.html")
+
+
+@app.route("/<path:filename>")
+def frontend_files(filename):
+
+    allowed_extensions = (
+        ".html",
+        ".css",
+        ".js",
+        ".png",
+        ".jpg",
+        ".jpeg",
+        ".webp",
+        ".svg",
+        ".gif",
+        ".ico"
+    )
+
+    if filename.lower().endswith(allowed_extensions):
+        return send_from_directory(".", filename)
+
+    return jsonify({
+        "success": False,
+        "message": "File not found."
+    }), 404
 
 
 # =========================================================
@@ -134,9 +174,7 @@ def service_request():
     }
 
     database = load_data()
-
     database["requests"].append(item)
-
     save_data(database)
 
     text = (
@@ -158,7 +196,7 @@ def service_request():
 
 
 # =========================================================
-# CHAT
+# CHAT — GET
 # =========================================================
 
 @app.route("/chat", methods=["GET"])
@@ -391,9 +429,7 @@ def add_product():
     }
 
     database = load_data()
-
     database["products"].append(product)
-
     save_data(database)
 
     return jsonify({
@@ -422,7 +458,10 @@ def get_products():
 # ADMIN — UPDATE PRODUCT
 # =========================================================
 
-@app.route("/api/admin/products/<product_id>", methods=["PATCH"])
+@app.route(
+    "/api/admin/products/<product_id>",
+    methods=["PATCH"]
+)
 def update_product(product_id):
 
     data = request.get_json(silent=True) or {}
@@ -480,9 +519,7 @@ def delete_product(product_id):
 
     database = load_data()
 
-    old_count = len(
-        database["products"]
-    )
+    old_count = len(database["products"])
 
     database["products"] = [
         product
@@ -561,7 +598,6 @@ def create_order():
     }
 
     database["orders"].append(order)
-
     save_data(database)
 
     text = (
