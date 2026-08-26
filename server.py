@@ -9,7 +9,7 @@ import requests
 
 
 # =====================================================
-# APP
+# CONFIG
 # =====================================================
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -37,52 +37,28 @@ def empty_database():
 
 
 def load_data():
-
     if not os.path.exists(DATA_FILE):
         return empty_database()
 
     try:
-
-        with open(
-            DATA_FILE,
-            "r",
-            encoding="utf-8"
-        ) as f:
-
+        with open(DATA_FILE, "r", encoding="utf-8") as f:
             data = json.load(f)
 
         if not isinstance(data, dict):
             return empty_database()
 
-        for key in [
-            "requests",
-            "chats",
-            "products",
-            "orders"
-        ]:
-
-            if not isinstance(
-                data.get(key),
-                list
-            ):
-
+        for key in ["requests", "chats", "products", "orders"]:
+            if not isinstance(data.get(key), list):
                 data[key] = []
 
         return data
 
     except Exception:
-
         return empty_database()
 
 
 def save_data(data):
-
-    with open(
-        DATA_FILE,
-        "w",
-        encoding="utf-8"
-    ) as f:
-
+    with open(DATA_FILE, "w", encoding="utf-8") as f:
         json.dump(
             data,
             f,
@@ -92,10 +68,7 @@ def save_data(data):
 
 
 def now():
-
-    return datetime.now().strftime(
-        "%Y-%m-%d %H:%M"
-    )
+    return datetime.now().strftime("%Y-%m-%d %H:%M")
 
 
 # =====================================================
@@ -125,60 +98,20 @@ def send_bale_message(text):
 
         return response.ok
 
-    except Exception as error:
-
-        print(
-            "BALE ERROR:",
-            error
-        )
-
+    except Exception:
         return False
-
-
-# =====================================================
-# WEBSITE PAGES
-# =====================================================
-
-# سایت اصلی
-@app.route("/")
-def home():
-
-    return send_from_directory(
-        BASE_DIR,
-        "index.html"
-    )
-
-
-# سایت اصلی با index.html
-@app.route("/index.html")
-def index_html():
-
-    return send_from_directory(
-        BASE_DIR,
-        "index.html"
-    )
-
-
-# فروشگاه
-@app.route("/shop.html")
-def shop_html():
-
-    return send_from_directory(
-        BASE_DIR,
-        "shop.html"
-    )
 
 
 # =====================================================
 # ADMIN PANEL
 # =====================================================
 
-# پنل مدیریت
-# فایل واقعی:
-# admin.html
+# مهم:
+# ریشه سایت پنل باید admin.html باشد.
+# اینجا عمداً index.html نمایش داده نمی‌شود.
 
-@app.route("/admin")
-def admin():
+@app.route("/")
+def admin_home():
 
     return send_from_directory(
         BASE_DIR,
@@ -186,13 +119,45 @@ def admin():
     )
 
 
-# برای حالتی که مستقیم admin.html زده شود
+@app.route("/admin")
+def admin_page():
+
+    return send_from_directory(
+        BASE_DIR,
+        "admin.html"
+    )
+
+
 @app.route("/admin.html")
 def admin_html():
 
     return send_from_directory(
         BASE_DIR,
         "admin.html"
+    )
+
+
+# =====================================================
+# OPTIONAL STATIC FILES
+# =====================================================
+
+@app.route("/index.html")
+def index_html():
+
+    # اگر کسی داخل پنل به index.html دسترسی مستقیم خواست،
+    # فایل موجود را نمایش می‌دهیم.
+    return send_from_directory(
+        BASE_DIR,
+        "index.html"
+    )
+
+
+@app.route("/shop.html")
+def shop_html():
+
+    return send_from_directory(
+        BASE_DIR,
+        "shop.html"
     )
 
 
@@ -205,7 +170,8 @@ def health():
 
     return jsonify({
         "success": True,
-        "status": "online"
+        "status": "online",
+        "panel": True
     })
 
 
@@ -239,7 +205,6 @@ def service_request():
         data.get("description", "")
     ).strip()
 
-
     if not name or not phone or not service:
 
         return jsonify({
@@ -247,7 +212,6 @@ def service_request():
             "message":
                 "لطفاً نام، شماره تماس و نوع خدمت را وارد کنید."
         }), 400
-
 
     item = {
 
@@ -268,15 +232,13 @@ def service_request():
         "status": "new"
     }
 
-
     database = load_data()
 
-    database[
-        "requests"
-    ].append(item)
+    database["requests"].append(
+        item
+    )
 
     save_data(database)
-
 
     bale_sent = send_bale_message(
 
@@ -293,7 +255,6 @@ def service_request():
 
     )
 
-
     return jsonify({
 
         "success": True,
@@ -301,12 +262,9 @@ def service_request():
         "message":
             "درخواست شما با موفقیت ثبت شد ❤️",
 
-        "bale_sent":
-            bale_sent,
+        "bale_sent": bale_sent,
 
-        "request":
-            item
-
+        "request": item
     })
 
 
@@ -327,7 +285,6 @@ def get_chat():
 
     database = load_data()
 
-
     if not phone:
 
         return jsonify({
@@ -335,27 +292,18 @@ def get_chat():
             "success": True,
 
             "messages": []
-
         })
-
 
     chat = next(
 
         (
             item
-
-            for item
-            in database["chats"]
-
-            if item.get(
-                "phone"
-            ) == phone
-
+            for item in database["chats"]
+            if item.get("phone") == phone
         ),
 
         None
     )
-
 
     if not chat:
 
@@ -364,9 +312,7 @@ def get_chat():
             "success": True,
 
             "messages": []
-
         })
-
 
     return jsonify({
 
@@ -376,23 +322,13 @@ def get_chat():
             chat.get("id"),
 
         "name":
-            chat.get(
-                "name",
-                ""
-            ),
+            chat.get("name", ""),
 
         "phone":
-            chat.get(
-                "phone",
-                ""
-            ),
+            chat.get("phone", ""),
 
         "messages":
-            chat.get(
-                "messages",
-                []
-            )
-
+            chat.get("messages", [])
     })
 
 
@@ -410,30 +346,17 @@ def send_chat():
         silent=True
     ) or {}
 
-
     name = str(
-        data.get(
-            "name",
-            ""
-        )
+        data.get("name", "")
     ).strip()
-
 
     phone = str(
-        data.get(
-            "phone",
-            ""
-        )
+        data.get("phone", "")
     ).strip()
-
 
     message = str(
-        data.get(
-            "message",
-            ""
-        )
+        data.get("message", "")
     ).strip()
-
 
     if not name or not phone or not message:
 
@@ -443,32 +366,20 @@ def send_chat():
 
             "message":
                 "نام، شماره تماس و پیام الزامی است."
-
         }), 400
 
-
     database = load_data()
-
 
     chat = next(
 
         (
-
             item
-
-            for item
-            in database["chats"]
-
-            if item.get(
-                "phone"
-            ) == phone
-
+            for item in database["chats"]
+            if item.get("phone") == phone
         ),
 
         None
-
     )
-
 
     if not chat:
 
@@ -491,22 +402,17 @@ def send_chat():
 
             "messages":
                 []
-
         }
 
-        database[
-            "chats"
-        ].append(chat)
-
+        database["chats"].append(
+            chat
+        )
 
     else:
 
         chat["name"] = name
 
-        chat[
-            "updated_at"
-        ] = now()
-
+        chat["updated_at"] = now()
 
     customer_message = {
 
@@ -521,9 +427,7 @@ def send_chat():
 
         "created_at":
             now()
-
     }
-
 
     chat.setdefault(
         "messages",
@@ -532,14 +436,9 @@ def send_chat():
         customer_message
     )
 
-
-    chat[
-        "updated_at"
-    ] = now()
-
+    chat["updated_at"] = now()
 
     save_data(database)
-
 
     bale_sent = send_bale_message(
 
@@ -550,9 +449,7 @@ def send_chat():
         f"📱 {phone}\n\n"
 
         f"💬 {message}"
-
     )
-
 
     return jsonify({
 
@@ -566,12 +463,11 @@ def send_chat():
 
         "bale_sent":
             bale_sent
-
     })
 
 
 # =====================================================
-# ADMIN DASHBOARD API
+# ADMIN DASHBOARD
 # =====================================================
 
 @app.route(
@@ -581,7 +477,6 @@ def send_chat():
 def admin_dashboard():
 
     database = load_data()
-
 
     return jsonify({
 
@@ -598,7 +493,6 @@ def admin_dashboard():
 
         "orders":
             database["orders"]
-
     })
 
 
@@ -616,22 +510,13 @@ def admin_chat_reply():
         silent=True
     ) or {}
 
-
     chat_id = str(
-        data.get(
-            "chat_id",
-            ""
-        )
+        data.get("chat_id", "")
     ).strip()
-
 
     message = str(
-        data.get(
-            "message",
-            ""
-        )
+        data.get("message", "")
     ).strip()
-
 
     if not chat_id or not message:
 
@@ -641,32 +526,20 @@ def admin_chat_reply():
 
             "message":
                 "گفتگو و متن پاسخ الزامی است."
-
         }), 400
 
-
     database = load_data()
-
 
     chat = next(
 
         (
-
             item
-
-            for item
-            in database["chats"]
-
-            if item.get(
-                "id"
-            ) == chat_id
-
+            for item in database["chats"]
+            if item.get("id") == chat_id
         ),
 
         None
-
     )
-
 
     if not chat:
 
@@ -676,9 +549,7 @@ def admin_chat_reply():
 
             "message":
                 "گفتگو پیدا نشد."
-
         }), 404
-
 
     admin_message = {
 
@@ -693,9 +564,7 @@ def admin_chat_reply():
 
         "created_at":
             now()
-
     }
-
 
     chat.setdefault(
         "messages",
@@ -704,14 +573,9 @@ def admin_chat_reply():
         admin_message
     )
 
-
-    chat[
-        "updated_at"
-    ] = now()
-
+    chat["updated_at"] = now()
 
     save_data(database)
-
 
     return jsonify({
 
@@ -725,7 +589,6 @@ def admin_chat_reply():
 
         "reply":
             admin_message
-
     })
 
 
@@ -743,54 +606,29 @@ def add_product():
         silent=True
     ) or {}
 
-
     name = str(
-        data.get(
-            "name",
-            ""
-        )
+        data.get("name", "")
     ).strip()
-
 
     price = str(
-        data.get(
-            "price",
-            ""
-        )
+        data.get("price", "")
     ).strip()
-
 
     stock = str(
-        data.get(
-            "stock",
-            "0"
-        )
+        data.get("stock", "0")
     ).strip()
-
 
     category = str(
-        data.get(
-            "category",
-            ""
-        )
+        data.get("category", "")
     ).strip()
-
 
     description = str(
-        data.get(
-            "description",
-            ""
-        )
+        data.get("description", "")
     ).strip()
-
 
     image = str(
-        data.get(
-            "image",
-            ""
-        )
+        data.get("image", "")
     ).strip()
-
 
     if not name or not price or not category:
 
@@ -800,9 +638,7 @@ def add_product():
 
             "message":
                 "نام، قیمت و دسته‌بندی محصول الزامی است."
-
         }), 400
-
 
     product = {
 
@@ -829,18 +665,15 @@ def add_product():
 
         "created_at":
             now()
-
     }
-
 
     database = load_data()
 
-    database[
-        "products"
-    ].append(product)
+    database["products"].append(
+        product
+    )
 
     save_data(database)
-
 
     return jsonify({
 
@@ -851,7 +684,6 @@ def add_product():
 
         "product":
             product
-
     })
 
 
@@ -867,14 +699,12 @@ def get_products():
 
     database = load_data()
 
-
     return jsonify({
 
         "success": True,
 
         "products":
             database["products"]
-
     })
 
 
@@ -892,29 +722,18 @@ def update_product(product_id):
         silent=True
     ) or {}
 
-
     database = load_data()
-
 
     product = next(
 
         (
-
             item
-
-            for item
-            in database["products"]
-
-            if item.get(
-                "id"
-            ) == product_id
-
+            for item in database["products"]
+            if item.get("id") == product_id
         ),
 
         None
-
     )
-
 
     if not product:
 
@@ -924,9 +743,7 @@ def update_product(product_id):
 
             "message":
                 "محصول پیدا نشد."
-
         }), 404
-
 
     allowed_fields = [
 
@@ -941,9 +758,7 @@ def update_product(product_id):
         "description",
 
         "image"
-
     ]
-
 
     for field in allowed_fields:
 
@@ -953,9 +768,7 @@ def update_product(product_id):
                 data[field]
             ).strip()
 
-
     save_data(database)
-
 
     return jsonify({
 
@@ -966,7 +779,6 @@ def update_product(product_id):
 
         "product":
             product
-
     })
 
 
@@ -982,11 +794,9 @@ def delete_product(product_id):
 
     database = load_data()
 
-
     old_count = len(
         database["products"]
     )
-
 
     database["products"] = [
 
@@ -995,12 +805,9 @@ def delete_product(product_id):
         for product
         in database["products"]
 
-        if product.get(
-            "id"
-        ) != product_id
-
+        if product.get("id")
+        != product_id
     ]
-
 
     if len(
         database["products"]
@@ -1012,12 +819,9 @@ def delete_product(product_id):
 
             "message":
                 "محصول پیدا نشد."
-
         }), 404
 
-
     save_data(database)
-
 
     return jsonify({
 
@@ -1025,7 +829,6 @@ def delete_product(product_id):
 
         "message":
             "محصول حذف شد."
-
     })
 
 
@@ -1043,46 +846,25 @@ def create_order():
         silent=True
     ) or {}
 
-
     name = str(
-        data.get(
-            "name",
-            ""
-        )
+        data.get("name", "")
     ).strip()
-
 
     phone = str(
-        data.get(
-            "phone",
-            ""
-        )
+        data.get("phone", "")
     ).strip()
-
 
     product_id = str(
-        data.get(
-            "product_id",
-            ""
-        )
+        data.get("product_id", "")
     ).strip()
-
 
     product_name = str(
-        data.get(
-            "product_name",
-            ""
-        )
+        data.get("product_name", "")
     ).strip()
-
 
     quantity = str(
-        data.get(
-            "quantity",
-            "1"
-        )
+        data.get("quantity", "1")
     ).strip()
-
 
     if not name or not phone or not product_name:
 
@@ -1092,37 +874,25 @@ def create_order():
 
             "message":
                 "نام، شماره تماس و محصول الزامی است."
-
         }), 400
-
 
     database = load_data()
 
-
     product = None
-
 
     if product_id:
 
         product = next(
 
             (
-
                 item
-
-                for item
-                in database["products"]
-
-                if item.get(
-                    "id"
-                ) == product_id
-
+                for item in database["products"]
+                if item.get("id")
+                == product_id
             ),
 
             None
-
         )
-
 
     order = {
 
@@ -1149,16 +919,13 @@ def create_order():
 
         "status":
             "new"
-
     }
 
-
-    database[
-        "orders"
-    ].append(order)
+    database["orders"].append(
+        order
+    )
 
     save_data(database)
-
 
     bale_sent = send_bale_message(
 
@@ -1171,9 +938,7 @@ def create_order():
         f"📦 محصول: {product_name}\n"
 
         f"🔢 تعداد: {quantity}"
-
     )
-
 
     return jsonify({
 
@@ -1190,7 +955,6 @@ def create_order():
 
         "product_found":
             product is not None
-
     })
 
 
@@ -1208,14 +972,9 @@ def update_order(order_id):
         silent=True
     ) or {}
 
-
     status = str(
-        data.get(
-            "status",
-            ""
-        )
+        data.get("status", "")
     ).strip()
-
 
     if not status:
 
@@ -1225,32 +984,21 @@ def update_order(order_id):
 
             "message":
                 "وضعیت سفارش مشخص نشده است."
-
         }), 400
 
-
     database = load_data()
-
 
     order = next(
 
         (
-
             item
-
-            for item
-            in database["orders"]
-
-            if item.get(
-                "id"
-            ) == order_id
-
+            for item in database["orders"]
+            if item.get("id")
+            == order_id
         ),
 
         None
-
     )
-
 
     if not order:
 
@@ -1260,17 +1008,11 @@ def update_order(order_id):
 
             "message":
                 "سفارش پیدا نشد."
-
         }), 404
 
-
-    order[
-        "status"
-    ] = status
-
+    order["status"] = status
 
     save_data(database)
-
 
     return jsonify({
 
@@ -1281,7 +1023,6 @@ def update_order(order_id):
 
         "order":
             order
-
     })
 
 
@@ -1297,19 +1038,17 @@ def admin_requests():
 
     database = load_data()
 
-
     return jsonify({
 
         "success": True,
 
         "requests":
             database["requests"]
-
     })
 
 
 # =====================================================
-# ADMIN REQUEST - UPDATE
+# ADMIN REQUESTS - UPDATE
 # =====================================================
 
 @app.route(
@@ -1322,14 +1061,9 @@ def update_service_request(request_id):
         silent=True
     ) or {}
 
-
     status = str(
-        data.get(
-            "status",
-            ""
-        )
+        data.get("status", "")
     ).strip()
-
 
     if not status:
 
@@ -1339,32 +1073,21 @@ def update_service_request(request_id):
 
             "message":
                 "وضعیت درخواست مشخص نشده است."
-
         }), 400
 
-
     database = load_data()
-
 
     item = next(
 
         (
-
             x
-
-            for x
-            in database["requests"]
-
-            if x.get(
-                "id"
-            ) == request_id
-
+            for x in database["requests"]
+            if x.get("id")
+            == request_id
         ),
 
         None
-
     )
-
 
     if not item:
 
@@ -1374,17 +1097,11 @@ def update_service_request(request_id):
 
             "message":
                 "درخواست پیدا نشد."
-
         }), 404
 
-
-    item[
-        "status"
-    ] = status
-
+    item["status"] = status
 
     save_data(database)
-
 
     return jsonify({
 
@@ -1395,12 +1112,11 @@ def update_service_request(request_id):
 
         "request":
             item
-
     })
 
 
 # =====================================================
-# ERRORS
+# ERROR HANDLERS
 # =====================================================
 
 @app.errorhandler(404)
@@ -1412,7 +1128,6 @@ def not_found(error):
 
         "message":
             "مسیر موردنظر پیدا نشد."
-
     }), 404
 
 
@@ -1425,7 +1140,6 @@ def method_not_allowed(error):
 
         "message":
             "متد درخواست مجاز نیست."
-
     }), 405
 
 
@@ -1438,7 +1152,6 @@ def internal_error(error):
 
         "message":
             "خطای داخلی سرور."
-
     }), 500
 
 
@@ -1455,11 +1168,9 @@ if __name__ == "__main__":
         )
     )
 
-
     app.run(
 
         host="0.0.0.0",
 
         port=port
-
     )
