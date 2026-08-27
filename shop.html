@@ -1109,7 +1109,6 @@ footer{padding-bottom:100px}
 </svg>
 </button>
 
-<!-- اصلاح شد: showCart() -->
 <button class="header-icon" aria-label="سبد خرید" onclick="showCart()">
 
 <svg class="icon-svg" viewBox="0 0 24 24">
@@ -1793,14 +1792,10 @@ product.createdAt ??
 
 
 /* =====================================================
-EXTRACT PRODUCTS FROM API
+EXTRACT PRODUCTS
 ===================================================== */
 
 function extractProducts(data){
-
-/*
-پاسخ‌های مختلف API را پشتیبانی می‌کنیم.
-*/
 
 if(Array.isArray(data)){
 return data;
@@ -1814,16 +1809,16 @@ if(Array.isArray(data.products)){
 return data.products;
 }
 
-if(Array.isArray(data.data)){
-return data.data;
-}
-
 if(
 data.data &&
 typeof data.data==="object" &&
 Array.isArray(data.data.products)
 ){
 return data.data.products;
+}
+
+if(Array.isArray(data.data)){
+return data.data;
 }
 
 if(Array.isArray(data.items)){
@@ -1873,8 +1868,22 @@ special.innerHTML=`
 
 try{
 
+/*
+مهم:
+محصولات در پنل مدیریت از API داشبورد موجود هستند.
+JSON فعلی پنل نیز به همین شکل است:
+
+{
+  success:true,
+  products:[...]
+}
+*/
+
+const apiUrl=
+"https://borodat-panel.onrender.com/api/admin/dashboard?ts="+Date.now();
+
 const response=await fetch(
-"https://borodat-panel.onrender.com/api/products?ts="+Date.now(),
+apiUrl,
 {
 method:"GET",
 cache:"no-store",
@@ -1895,11 +1904,26 @@ throw new Error(
 const data=await response.json();
 
 console.log(
-"PRODUCT API RESPONSE:",
+"ADMIN DASHBOARD RESPONSE:",
 data
 );
 
+
+/*
+محصولات واقعی پنل
+*/
+
 const rawProducts=extractProducts(data);
+
+console.log(
+"RAW PRODUCTS:",
+rawProducts
+);
+
+
+/*
+تبدیل محصولات به ساختار قابل نمایش
+*/
 
 products=rawProducts
 .map(normalizeProduct)
@@ -1911,17 +1935,14 @@ item.name;
 
 });
 
+
 console.log(
 "PRODUCTS LOADED:",
 products
 );
 
-if(!products.length){
 
-console.warn(
-"API پاسخ داده ولی محصول قابل نمایش پیدا نشد.",
-data
-);
+if(!products.length){
 
 grid.innerHTML=`
 <div class="empty-products">
@@ -1939,8 +1960,14 @@ return;
 
 }
 
+
+/*
+نمایش محصولات
+*/
+
 renderProducts();
 renderSpecialProducts();
+
 
 }catch(error){
 
@@ -2002,7 +2029,7 @@ onclick="loadProducts()">
 PRODUCT IMAGE
 ===================================================== */
 
-function productImageHtml(product,className){
+function productImageHtml(product){
 
 if(!product.image){
 
@@ -2029,7 +2056,7 @@ PRODUCT CARD
 function createProductCard(product){
 
 const imageHtml=
-productImageHtml(product,"product-image");
+productImageHtml(product);
 
 return `
 <div class="product">
@@ -2144,10 +2171,7 @@ const special=products.slice(0,4);
 
 box.innerHTML=special.map(function(product){
 
-const imageHtml=productImageHtml(
-product,
-"deal-image"
-);
+const imageHtml=productImageHtml(product);
 
 return `
 <div class="deal-card">
