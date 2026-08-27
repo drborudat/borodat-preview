@@ -1511,7 +1511,7 @@ Dr <span>Borodat</span>
 
 <h3>🛒 سبد خرید</h3>
 
-<button class="modal-close" onclick="closeCart">
+<button class="modal-close" onclick="closeCart()">
 ×
 </button>
 
@@ -1546,7 +1546,7 @@ dir="ltr"
 
 <button
 class="order-submit"
-onclick="submitOrder()">
+onclick="submitOrder">
 ثبت سفارش
 </button>
 
@@ -1578,7 +1578,6 @@ let products = [];
 let cart = [];
 
 try{
-
 cart = JSON.parse(
 localStorage.getItem("drBorodatCart") || "[]"
 );
@@ -1590,28 +1589,6 @@ cart=[];
 }catch(error){
 cart=[];
 }
-
-
-/* =====================================================
-API
-===================================================== */
-
-/*
- * محصولات داخل Borodat_panel ثبت می‌شوند.
- * بنابراین فروشگاه Borodat-preview باید محصولات
- * را مستقیماً از API پنل دریافت کند.
- */
-
-const API_BASE =
-"https://borodat-panel.onrender.com";
-
-
-const PRODUCTS_API =
-API_BASE + "/api/products";
-
-
-const ORDER_API =
-API_BASE + "/api/order";
 
 
 /* =====================================================
@@ -1778,7 +1755,7 @@ try{
 
 const response=
 await fetch(
-PRODUCTS_API,
+"https://borodat-panel.onrender.com/api/products",
 {
 method:"GET",
 cache:"no-store",
@@ -1798,16 +1775,6 @@ throw new Error(
 
 const data=
 await response.json();
-
-console.log(
-"PRODUCT API:",
-PRODUCTS_API
-);
-
-console.log(
-"PRODUCT DATA:",
-data
-);
 
 products=
 Array.isArray(data.products)
@@ -2385,7 +2352,7 @@ const requests=
 cart.map(function(item){
 
 return fetch(
-ORDER_API,
+"https://borodat-panel.onrender.com/api/order",
 {
 method:"POST",
 headers:{
@@ -2456,11 +2423,6 @@ document
 .value="";
 
 }catch(error){
-
-console.error(
-"ORDER ERROR:",
-error
-);
 
 showOrderMessage(
 "error",
