@@ -222,6 +222,39 @@ color:#8a99a7;
 font-size:11px
 }
 
+/* ORDER DETAILS */
+
+.order-address{
+max-width:300px;
+white-space:normal;
+line-height:1.9;
+word-break:break-word
+}
+
+.order-postal{
+font-family:Arial,Tahoma,sans-serif;
+direction:ltr;
+display:inline-block;
+white-space:nowrap
+}
+
+.order-info{
+display:flex;
+flex-direction:column;
+gap:4px
+}
+
+.order-info-label{
+font-size:8px;
+color:#81909d
+}
+
+.order-info-value{
+font-size:10px;
+color:#102238;
+line-height:1.8
+}
+
 /* CHAT */
 
 .chat-list{
@@ -403,6 +436,11 @@ table{
 display:block;
 overflow-x:auto;
 white-space:nowrap
+}
+
+.order-address{
+white-space:normal;
+min-width:220px
 }
 
 }
@@ -609,6 +647,14 @@ onclick="loadProductsOnly()"
 <div class="panel-title">
 
 <h2>🛍️ سفارش‌ها</h2>
+
+<button
+class="refresh"
+type="button"
+onclick="loadDashboard()"
+>
+↻ بروزرسانی سفارش‌ها
+</button>
 
 </div>
 
@@ -1264,6 +1310,8 @@ box.innerHTML = `
 <th>شماره</th>
 <th>محصول</th>
 <th>تعداد</th>
+<th>آدرس</th>
+<th>کد پستی</th>
 <th>زمان</th>
 <th>وضعیت</th>
 <th>عملیات</th>
@@ -1273,7 +1321,24 @@ box.innerHTML = `
 
 <tbody>
 
-${dashboardData.orders.map(order => `
+${dashboardData.orders.map(order => {
+
+const address =
+order.address ||
+order.shipping_address ||
+order.delivery_address ||
+order.customer_address ||
+"-";
+
+const postalCode =
+order.postal_code ||
+order.postcode ||
+order.zip_code ||
+order.zip ||
+order.postalCode ||
+"-";
+
+return `
 
 <tr>
 
@@ -1291,6 +1356,30 @@ ${escapeHtml(order.product_name)}
 
 <td>
 ${escapeHtml(order.quantity)}
+</td>
+
+<td class="order-address">
+
+<div class="order-info">
+
+<span class="order-info-label">
+📍 آدرس تحویل
+</span>
+
+<span class="order-info-value">
+${escapeHtml(address)}
+</span>
+
+</div>
+
+</td>
+
+<td>
+
+<span class="order-postal">
+${escapeHtml(postalCode)}
+</span>
+
 </td>
 
 <td dir="ltr">
@@ -1329,7 +1418,9 @@ onclick="updateOrder('${escapeJs(order.id)}','done')"
 
 </tr>
 
-`).join("")}
+`;
+
+}).join("")}
 
 </tbody>
 
