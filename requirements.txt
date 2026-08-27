@@ -3,3 +3,4 @@ python-bale-bot==2.5.0
 gunicorn
 requests
 Flask-Cors
+psycopg[binary]
