@@ -188,6 +188,11 @@ font-size:10px;
 cursor:pointer
 }
 
+.add-btn:disabled{
+opacity:.6;
+cursor:not-allowed
+}
+
 .message{
 display:none;
 padding:10px;
@@ -440,7 +445,6 @@ Dr <span>Borodat</span>
 
 </header>
 
-
 <main class="container">
 
 <div class="cards">
@@ -476,7 +480,11 @@ Dr <span>Borodat</span>
 
 <h2>📥 درخواست‌های خدمات</h2>
 
-<button class="refresh" onclick="loadDashboard()">
+<button
+class="refresh"
+type="button"
+onclick="loadDashboard()"
+>
 ↻ بروزرسانی
 </button>
 
@@ -487,12 +495,14 @@ Dr <span>Borodat</span>
 </section>
 
 
-<!-- PRODUCTS -->
+<!-- PRODUCTS ADD -->
 
 <section class="panel">
 
 <div class="panel-title">
+
 <h2>🛒 مدیریت محصولات</h2>
+
 </div>
 
 <form id="productForm">
@@ -539,6 +549,7 @@ placeholder="توضیحات محصول"
 
 <button
 class="add-btn"
+id="addProductButton"
 type="submit"
 >
 ➕ افزودن محصول
@@ -563,10 +574,26 @@ class="message">
 <section class="panel">
 
 <div class="panel-title">
+
 <h2>📦 محصولات</h2>
+
+<button
+class="refresh"
+type="button"
+onclick="loadProductsOnly()"
+>
+↻ بروزرسانی محصولات
+</button>
+
 </div>
 
-<div id="products"></div>
+<div id="products">
+
+<div class="empty">
+در حال دریافت محصولات...
+</div>
+
+</div>
 
 </section>
 
@@ -576,7 +603,9 @@ class="message">
 <section class="panel">
 
 <div class="panel-title">
+
 <h2>🛍️ سفارش‌ها</h2>
+
 </div>
 
 <div id="orders"></div>
@@ -594,6 +623,7 @@ class="message">
 
 <button
 class="refresh"
+type="button"
 onclick="loadDashboard()"
 >
 ↻ بروزرسانی
@@ -668,10 +698,6 @@ onclick="sendReply()"
    API
 ===================================================== */
 
-/*
-   داده‌های سایت از طریق Web Service پنل مدیریت دریافت می‌شوند.
-*/
-
 const API_BASE =
 "https://borodat-panel.onrender.com";
 
@@ -681,14 +707,17 @@ const API_BASE =
 ===================================================== */
 
 let dashboardData = {
+
 requests:[],
 chats:[],
 products:[],
 orders:[]
+
 };
 
 let selectedChat = null;
 let sendingReply = false;
+let loadingDashboard = false;
 
 
 /* =====================================================
@@ -723,8 +752,7 @@ let data;
 
 try{
 
-data =
-JSON.parse(text);
+data = JSON.parse(text);
 
 }catch(error){
 
@@ -758,6 +786,14 @@ return data;
 ===================================================== */
 
 async function loadDashboard(){
+
+if(loadingDashboard){
+
+return;
+
+}
+
+loadingDashboard = true;
 
 const status =
 document.getElementById("status");
@@ -823,7 +859,6 @@ status.textContent =
 status.style.color =
 "#78e08f";
 
-
 if(selectedChat){
 
 const exists =
@@ -838,6 +873,20 @@ selectChat(
 selectedChat,
 false
 );
+
+}else{
+
+selectedChat = null;
+
+document.getElementById(
+"chatHeader"
+).textContent =
+"یک گفتگو را انتخاب کنید";
+
+document.getElementById(
+"messages"
+).innerHTML =
+'<div class="no-chat">برای مشاهده پیام‌ها یک گفتگو را انتخاب کنید.</div>';
 
 }
 
@@ -855,6 +904,89 @@ status.textContent =
 
 status.style.color =
 "#ff8b8b";
+
+const productsBox =
+document.getElementById("products");
+
+if(productsBox){
+
+productsBox.innerHTML =
+'<div class="empty">دریافت محصولات انجام نشد.</div>';
+
+}
+
+}catchFinallyPlaceholder(){
+
+}
+
+finally{
+
+loadingDashboard = false;
+
+}
+
+}
+
+
+/* =====================================================
+   LOAD PRODUCTS ONLY
+===================================================== */
+
+async function loadProductsOnly(){
+
+const box =
+document.getElementById("products");
+
+box.innerHTML =
+'<div class="empty">در حال دریافت محصولات...</div>';
+
+try{
+
+const response =
+await fetch(
+api("/api/products"),
+{
+method:"GET",
+cache:"no-store",
+headers:{
+"Accept":"application/json"
+}
+}
+);
+
+const data =
+await readJson(response);
+
+if(data.success !== true){
+
+throw new Error(
+data.message ||
+"دریافت محصولات ناموفق بود."
+);
+
+}
+
+dashboardData.products =
+Array.isArray(data.products)
+? data.products
+:[];
+
+document.getElementById(
+"productCount"
+).textContent =
+dashboardData.products.length;
+
+renderProducts();
+
+}catch(error){
+
+console.error(
+"PRODUCT LOAD ERROR:",
+error
+);
+
+box.innerHTML =
+'<div class="empty">دریافت محصولات انجام نشد.</div>';
 
 }
 
@@ -977,12 +1109,14 @@ ${escapeHtml(item.status || "new")}
 <div class="actions">
 
 <button
+type="button"
 onclick="updateRequest('${item.id}','done')"
 >
 انجام شد
 </button>
 
 <button
+type="button"
 onclick="updateRequest('${item.id}','processing')"
 >
 در حال انجام
@@ -1015,6 +1149,12 @@ const box =
 document.getElementById(
 "products"
 );
+
+if(!box){
+
+return;
+
+}
 
 if(!dashboardData.products.length){
 
@@ -1070,12 +1210,14 @@ ${escapeHtml(product.stock)}
 <div class="actions">
 
 <button
+type="button"
 onclick="editProduct('${product.id}')"
 >
 ویرایش
 </button>
 
 <button
+type="button"
 onclick="deleteProduct('${product.id}')"
 >
 حذف
@@ -1177,12 +1319,14 @@ ${escapeHtml(order.status || "new")}
 <div class="actions">
 
 <button
+type="button"
 onclick="updateOrder('${order.id}','processing')"
 >
 در حال انجام
 </button>
 
 <button
+type="button"
 onclick="updateOrder('${order.id}','done')"
 >
 تکمیل شد
@@ -1531,6 +1675,11 @@ document.getElementById(
 "productMessage"
 );
 
+const addButton =
+document.getElementById(
+"addProductButton"
+);
+
 const payload = {
 
 name:
@@ -1565,6 +1714,16 @@ document.getElementById(
 
 };
 
+addButton.disabled = true;
+
+addButton.textContent =
+"در حال ثبت...";
+
+messageBox.className =
+"message";
+
+messageBox.textContent = "";
+
 try{
 
 const response =
@@ -1598,6 +1757,19 @@ data.message ||
 
 }
 
+
+/* -----------------------------------------
+   محصول جدید را همان لحظه به لیست اضافه کن
+----------------------------------------- */
+
+if(data.product){
+
+dashboardData.products.unshift(
+data.product
+);
+
+}
+
 messageBox.className =
 "message success";
 
@@ -1606,9 +1778,42 @@ messageBox.textContent =
 
 this.reset();
 
-await loadDashboard();
+document.getElementById(
+"productStock"
+).value = "0";
+
+
+/* -----------------------------------------
+   بلافاصله جدول محصولات را نمایش بده
+----------------------------------------- */
+
+document.getElementById(
+"productCount"
+).textContent =
+dashboardData.products.length;
+
+renderProducts();
+
+
+/* -----------------------------------------
+   بعداً اطلاعات کامل داشبورد را آرام بگیر
+----------------------------------------- */
+
+setTimeout(
+() => {
+
+loadDashboard();
+
+},
+300
+);
 
 }catch(error){
+
+console.error(
+"ADD PRODUCT ERROR:",
+error
+);
 
 messageBox.className =
 "message error";
@@ -1616,6 +1821,13 @@ messageBox.className =
 messageBox.textContent =
 error.message ||
 "ثبت محصول ناموفق بود.";
+
+}finally{
+
+addButton.disabled = false;
+
+addButton.textContent =
+"➕ افزودن محصول";
 
 }
 
@@ -1668,9 +1880,25 @@ data.message ||
 
 }
 
-await loadDashboard();
+dashboardData.products =
+dashboardData.products.filter(
+product =>
+product.id !== id
+);
+
+document.getElementById(
+"productCount"
+).textContent =
+dashboardData.products.length;
+
+renderProducts();
 
 }catch(error){
+
+console.error(
+"DELETE PRODUCT ERROR:",
+error
+);
 
 alert(
 error.message ||
@@ -1766,10 +1994,13 @@ headers:{
 },
 body:JSON.stringify({
 
-name:name,
-price:price,
-stock:stock,
-category:category
+name:name.trim(),
+
+price:price.trim(),
+
+stock:stock.trim(),
+
+category:category.trim()
 
 })
 }
@@ -1789,9 +2020,38 @@ data.message ||
 
 }
 
-await loadDashboard();
+const index =
+dashboardData.products.findIndex(
+item =>
+item.id === id
+);
+
+if(index !== -1){
+
+dashboardData.products[index] = {
+
+...dashboardData.products[index],
+
+name:name.trim(),
+
+price:price.trim(),
+
+stock:stock.trim(),
+
+category:category.trim()
+
+};
+
+}
+
+renderProducts();
 
 }catch(error){
+
+console.error(
+"EDIT PRODUCT ERROR:",
+error
+);
 
 alert(
 error.message ||
@@ -1848,7 +2108,19 @@ data.message ||
 
 }
 
-await loadDashboard();
+const order =
+dashboardData.orders.find(
+item =>
+item.id === id
+);
+
+if(order){
+
+order.status = status;
+
+}
+
+renderOrders();
 
 }catch(error){
 
@@ -1907,7 +2179,19 @@ data.message ||
 
 }
 
-await loadDashboard();
+const item =
+dashboardData.requests.find(
+request =>
+request.id === id
+);
+
+if(item){
+
+item.status = status;
+
+}
+
+renderRequests();
 
 }catch(error){
 
