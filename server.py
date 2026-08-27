@@ -134,9 +134,6 @@ def init_database():
 
             # -----------------------------------------
             # ORDERS
-            #
-            # The original order fields are preserved.
-            # New fields are added below.
             # -----------------------------------------
 
             cur.execute("""
@@ -154,9 +151,6 @@ def init_database():
 
             # -----------------------------------------
             # ORDER MIGRATION
-            #
-            # Existing databases keep their old orders.
-            # New columns are added without deleting data.
             # -----------------------------------------
 
             cur.execute("""
@@ -172,6 +166,21 @@ def init_database():
             cur.execute("""
                 ALTER TABLE orders
                 ADD COLUMN IF NOT EXISTS items TEXT DEFAULT '[]'
+            """)
+
+            # -----------------------------------------
+            # REVIEWS
+            # -----------------------------------------
+
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS reviews (
+                    id TEXT PRIMARY KEY,
+                    name TEXT NOT NULL,
+                    rating INTEGER NOT NULL,
+                    comment TEXT NOT NULL,
+                    created_at TEXT NOT NULL,
+                    status TEXT DEFAULT 'approved'
+                )
             """)
 
         connection.commit()
@@ -812,6 +821,530 @@ def send_chat():
 
 
 # =====================================================
+# REVIEWS - CREATE
+# =====================================================
+
+@app.route(
+    "/api/reviews",
+    methods=["POST"]
+)
+def create_review():
+
+    data = request.get_json(
+        silent=True
+    ) or {}
+
+    name = str(
+        data.get("name", "")
+    ).strip()
+
+    comment = str(
+        data.get(
+            "comment",
+            data.get(
+                "text",
+                ""
+            )
+        )
+    ).strip()
+
+    try:
+
+        rating = int(
+            data.get(
+                "rating",
+                5
+            )
+        )
+
+    except Exception:
+
+        rating = 5
+
+    # -----------------------------------------
+    # VALIDATION
+    # -----------------------------------------
+
+    if not name:
+
+        return jsonify({
+
+            "success": False,
+
+            "message":
+            "لطفاً نام خود را وارد کنید."
+
+        }), 400
+
+    if not comment:
+
+        return jsonify({
+
+            "success": False,
+
+            "message":
+            "لطفاً متن نظر را وارد کنید."
+
+        }), 400
+
+    if rating < 1 or rating > 5:
+
+        return jsonify({
+
+            "success": False,
+
+            "message":
+            "امتیاز باید بین ۱ تا ۵ باشد."
+
+        }), 400
+
+    review = {
+
+        "id":
+        str(uuid.uuid4()),
+
+        "name":
+        name,
+
+        "rating":
+        rating,
+
+        "comment":
+        comment,
+
+        "created_at":
+        now(),
+
+        "status":
+        "approved"
+
+    }
+
+    connection = get_connection()
+
+    try:
+
+        with connection.cursor() as cur:
+
+            cur.execute("""
+
+                INSERT INTO reviews
+                (
+                    id,
+                    name,
+                    rating,
+                    comment,
+                    created_at,
+                    status
+                )
+
+                VALUES
+                (%s,%s,%s,%s,%s,%s)
+
+            """, (
+
+                review["id"],
+
+                review["name"],
+
+                review["rating"],
+
+                review["comment"],
+
+                review["created_at"],
+
+                review["status"]
+
+            ))
+
+        connection.commit()
+
+    except Exception as e:
+
+        connection.rollback()
+
+        print(
+            "REVIEW SAVE ERROR:",
+            e
+        )
+
+        return jsonify({
+
+            "success": False,
+
+            "message":
+            "ثبت نظر انجام نشد."
+
+        }), 500
+
+    finally:
+
+        connection.close()
+
+    # -----------------------------------------
+    # BALE NOTIFICATION
+    # -----------------------------------------
+
+    bale_sent = send_bale_message(
+
+        "⭐ نظر جدید در سایت دکتر برودت\n\n"
+
+        f"👤 نام: {name}\n"
+
+        f"⭐ امتیاز: {rating}/5\n\n"
+
+        f"💬 {comment}"
+
+    )
+
+    return jsonify({
+
+        "success": True,
+
+        "message":
+        "نظر شما با موفقیت ثبت شد ❤️",
+
+        "review":
+        review,
+
+        "bale_sent":
+        bale_sent
+
+    })
+
+
+# =====================================================
+# REVIEWS - GET
+# =====================================================
+
+@app.route(
+    "/api/reviews",
+    methods=["GET"]
+)
+def get_reviews():
+
+    connection = get_connection()
+
+    try:
+
+        with connection.cursor() as cur:
+
+            cur.execute("""
+
+                SELECT
+                    id,
+                    name,
+                    rating,
+                    comment,
+                    created_at,
+                    status
+
+                FROM reviews
+
+                WHERE status = 'approved'
+
+                ORDER BY created_at DESC
+
+            """)
+
+            rows = cur.fetchall()
+
+            reviews = [
+
+                {
+
+                    "id": row[0],
+
+                    "name": row[1],
+
+                    "rating": row[2],
+
+                    "comment": row[3],
+
+                    "text": row[3],
+
+                    "created_at": row[4],
+
+                    "status": row[5]
+
+                }
+
+                for row in rows
+
+            ]
+
+            return jsonify({
+
+                "success": True,
+
+                "reviews":
+                reviews,
+
+                "count":
+                len(reviews)
+
+            })
+
+    finally:
+
+        connection.close()
+
+
+# =====================================================
+# ADMIN REVIEWS - GET
+# =====================================================
+
+@app.route(
+    "/api/admin/reviews",
+    methods=["GET"]
+)
+def admin_reviews():
+
+    connection = get_connection()
+
+    try:
+
+        with connection.cursor() as cur:
+
+            cur.execute("""
+
+                SELECT
+                    id,
+                    name,
+                    rating,
+                    comment,
+                    created_at,
+                    status
+
+                FROM reviews
+
+                ORDER BY created_at DESC
+
+            """)
+
+            rows = cur.fetchall()
+
+            reviews = [
+
+                {
+
+                    "id": row[0],
+
+                    "name": row[1],
+
+                    "rating": row[2],
+
+                    "comment": row[3],
+
+                    "text": row[3],
+
+                    "created_at": row[4],
+
+                    "status": row[5]
+
+                }
+
+                for row in rows
+
+            ]
+
+            return jsonify({
+
+                "success": True,
+
+                "reviews":
+                reviews
+
+            })
+
+    finally:
+
+        connection.close()
+
+
+# =====================================================
+# ADMIN REVIEWS - UPDATE
+# =====================================================
+
+@app.route(
+    "/api/admin/reviews/<review_id>",
+    methods=["PATCH"]
+)
+def update_review(review_id):
+
+    data = request.get_json(
+        silent=True
+    ) or {}
+
+    status = str(
+        data.get(
+            "status",
+            ""
+        )
+    ).strip()
+
+    if status not in [
+        "approved",
+        "pending",
+        "rejected"
+    ]:
+
+        return jsonify({
+
+            "success": False,
+
+            "message":
+            "وضعیت نظر نامعتبر است."
+
+        }), 400
+
+    connection = get_connection()
+
+    try:
+
+        with connection.cursor() as cur:
+
+            cur.execute("""
+
+                UPDATE reviews
+
+                SET status = %s
+
+                WHERE id = %s
+
+            """, (
+
+                status,
+
+                review_id
+
+            ))
+
+            updated = cur.rowcount
+
+        connection.commit()
+
+    except Exception as e:
+
+        connection.rollback()
+
+        print(
+            "REVIEW UPDATE ERROR:",
+            e
+        )
+
+        return jsonify({
+
+            "success": False,
+
+            "message":
+            "تغییر وضعیت نظر انجام نشد."
+
+        }), 500
+
+    finally:
+
+        connection.close()
+
+    if updated == 0:
+
+        return jsonify({
+
+            "success": False,
+
+            "message":
+            "نظر پیدا نشد."
+
+        }), 404
+
+    return jsonify({
+
+        "success": True,
+
+        "message":
+        "وضعیت نظر تغییر کرد.",
+
+        "review_id":
+        review_id,
+
+        "status":
+        status
+
+    })
+
+
+# =====================================================
+# ADMIN REVIEWS - DELETE
+# =====================================================
+
+@app.route(
+    "/api/admin/reviews/<review_id>",
+    methods=["DELETE"]
+)
+def delete_review(review_id):
+
+    connection = get_connection()
+
+    try:
+
+        with connection.cursor() as cur:
+
+            cur.execute("""
+
+                DELETE FROM reviews
+
+                WHERE id = %s
+
+            """, (review_id,))
+
+            deleted = cur.rowcount
+
+        connection.commit()
+
+    except Exception as e:
+
+        connection.rollback()
+
+        print(
+            "REVIEW DELETE ERROR:",
+            e
+        )
+
+        return jsonify({
+
+            "success": False,
+
+            "message":
+            "حذف نظر انجام نشد."
+
+        }), 500
+
+    finally:
+
+        connection.close()
+
+    if deleted == 0:
+
+        return jsonify({
+
+            "success": False,
+
+            "message":
+            "نظر پیدا نشد."
+
+        }), 404
+
+    return jsonify({
+
+        "success": True,
+
+        "message":
+        "نظر حذف شد."
+
+    })
+
+
+# =====================================================
 # ADMIN DASHBOARD
 # =====================================================
 
@@ -1068,6 +1601,52 @@ def admin_dashboard():
 
                 })
 
+            # -----------------------------------------
+            # REVIEWS
+            # -----------------------------------------
+
+            cur.execute("""
+
+                SELECT
+                    id,
+                    name,
+                    rating,
+                    comment,
+                    created_at,
+                    status
+
+                FROM reviews
+
+                ORDER BY created_at DESC
+
+            """)
+
+            review_rows = cur.fetchall()
+
+            reviews_data = [
+
+                {
+
+                    "id": row[0],
+
+                    "name": row[1],
+
+                    "rating": row[2],
+
+                    "comment": row[3],
+
+                    "text": row[3],
+
+                    "created_at": row[4],
+
+                    "status": row[5]
+
+                }
+
+                for row in review_rows
+
+            ]
+
             return jsonify({
 
                 "success": True,
@@ -1082,7 +1661,10 @@ def admin_dashboard():
                 products_data,
 
                 "orders":
-                orders_data
+                orders_data,
+
+                "reviews":
+                reviews_data
 
             })
 
@@ -1701,10 +2283,6 @@ def create_order():
         silent=True
     ) or {}
 
-    # -----------------------------------------
-    # CUSTOMER INFORMATION
-    # -----------------------------------------
-
     name = str(
         data.get("name", "")
     ).strip()
@@ -1721,10 +2299,6 @@ def create_order():
         data.get("postal_code", "")
     ).strip()
 
-    # -----------------------------------------
-    # OLD SINGLE PRODUCT SUPPORT
-    # -----------------------------------------
-
     product_id = str(
         data.get("product_id", "")
     ).strip()
@@ -1736,21 +2310,6 @@ def create_order():
     quantity = str(
         data.get("quantity", "1")
     ).strip()
-
-    # -----------------------------------------
-    # NEW CART ITEMS
-    #
-    # Expected:
-    #
-    # items: [
-    #   {
-    #       "id": "...",
-    #       "name": "...",
-    #       "price": "...",
-    #       "quantity": 2
-    #   }
-    # ]
-    # -----------------------------------------
 
     raw_items = data.get(
         "items",
@@ -1825,13 +2384,6 @@ def create_order():
 
         })
 
-    # -----------------------------------------
-    # BACKWARD COMPATIBILITY
-    #
-    # If old shop sends only one product,
-    # convert it into the new items format.
-    # -----------------------------------------
-
     if not items and product_name:
 
         items.append({
@@ -1845,10 +2397,6 @@ def create_order():
             "quantity": quantity
 
         })
-
-    # -----------------------------------------
-    # VALIDATION
-    # -----------------------------------------
 
     if not name:
 
@@ -1905,10 +2453,6 @@ def create_order():
 
         }), 400
 
-    # -----------------------------------------
-    # ORDER SUMMARY
-    # -----------------------------------------
-
     first_item = items[0]
 
     first_product_id = str(
@@ -1922,13 +2466,6 @@ def create_order():
         first_item.get(
             "name",
             ""
-        )
-    ).strip()
-
-    first_quantity = str(
-        first_item.get(
-            "quantity",
-            "1"
         )
     ).strip()
 
@@ -1961,10 +2498,6 @@ def create_order():
             for item in items
         )
     )
-
-    # -----------------------------------------
-    # CREATE ORDER
-    # -----------------------------------------
 
     order = {
 
@@ -2009,12 +2542,6 @@ def create_order():
 
         with connection.cursor() as cur:
 
-            # -------------------------------------
-            # Verify product IDs when available.
-            # This does NOT reject an order if the
-            # frontend has no product ID.
-            # -------------------------------------
-
             verified_product_ids = []
 
             for item in items:
@@ -2050,10 +2577,6 @@ def create_order():
                         item_id
                     )
 
-            # -------------------------------------
-            # SAVE ORDER
-            # -------------------------------------
-
             cur.execute("""
 
                 INSERT INTO orders
@@ -2073,41 +2596,21 @@ def create_order():
 
                 VALUES
                 (
-                    %s,
-                    %s,
-                    %s,
-                    %s,
-                    %s,
-                    %s,
-                    %s,
-                    %s,
-                    %s,
-                    %s,
-                    %s
+                    %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s
                 )
 
             """, (
 
                 order["id"],
-
                 order["name"],
-
                 order["phone"],
-
                 order["product_id"],
-
                 order["product_name"],
-
                 order["quantity"],
-
                 order["created_at"],
-
                 order["status"],
-
                 order["address"],
-
                 order["postal_code"],
-
                 json.dumps(
                     order["items"],
                     ensure_ascii=False
@@ -2138,10 +2641,6 @@ def create_order():
     finally:
 
         connection.close()
-
-    # -----------------------------------------
-    # BALE MESSAGE
-    # -----------------------------------------
 
     bale_text = (
         "🛒 سفارش جدید دکتر برودت\n\n"
@@ -2192,10 +2691,6 @@ def create_order():
     bale_sent = send_bale_message(
         bale_text
     )
-
-    # -----------------------------------------
-    # RESPONSE
-    # -----------------------------------------
 
     return jsonify({
 
