@@ -534,7 +534,13 @@ color:#6cccf3
 
 .about-panel h3{font-size:20px}
 
-.reviews{background:#f5f7f9}
+/* ===============================
+   REVIEWS
+================================ */
+
+.reviews{
+background:#f5f7f9
+}
 
 .review-grid{
 display:grid;
@@ -546,7 +552,13 @@ gap:16px
 background:#fff;
 border:1px solid #e1e7ec;
 border-radius:10px;
-padding:25px
+padding:25px;
+transition:.25s
+}
+
+.review:hover{
+transform:translateY(-4px);
+box-shadow:0 15px 35px rgba(7,27,49,.07)
 }
 
 .stars{
@@ -565,6 +577,128 @@ margin:15px 0
 .review strong{
 font-size:10px;
 color:#071b31
+}
+
+.review-actions{
+display:flex;
+justify-content:center;
+margin-top:28px
+}
+
+.add-review-btn{
+border:0;
+background:#0879bd;
+color:#fff;
+padding:13px 25px;
+border-radius:8px;
+font-size:10px;
+font-weight:bold;
+cursor:pointer;
+transition:.25s
+}
+
+.add-review-btn:hover{
+background:#071b31;
+transform:translateY(-2px)
+}
+
+.review-form-box{
+display:none;
+max-width:650px;
+margin:25px auto 0;
+background:#fff;
+border:1px solid #e1e7ec;
+border-radius:12px;
+padding:25px;
+box-shadow:0 15px 40px rgba(7,27,49,.07)
+}
+
+.review-form-box.open{
+display:block;
+animation:fadeUp .35s ease both
+}
+
+.review-form-title{
+font-size:14px;
+font-weight:bold;
+color:#071b31;
+margin-bottom:18px;
+text-align:right
+}
+
+.review-form input,
+.review-form textarea,
+.review-form select{
+width:100%;
+border:1px solid #dce5eb;
+border-radius:7px;
+padding:12px;
+margin-bottom:10px;
+font-size:10px;
+outline:none;
+background:#fff;
+color:#263e52
+}
+
+.review-form textarea{
+height:100px;
+resize:none
+}
+
+.review-form-row{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px
+}
+
+.review-submit{
+width:100%;
+border:0;
+border-radius:7px;
+padding:13px;
+background:#0879bd;
+color:#fff;
+font-size:10px;
+font-weight:bold;
+cursor:pointer
+}
+
+.review-submit:disabled{
+opacity:.6;
+cursor:wait
+}
+
+.review-cancel{
+width:100%;
+border:1px solid #dce5eb;
+border-radius:7px;
+padding:11px;
+background:#fff;
+color:#40576b;
+font-size:10px;
+cursor:pointer;
+margin-top:8px
+}
+
+.review-message{
+display:none;
+margin-top:12px;
+padding:11px;
+border-radius:7px;
+font-size:10px;
+text-align:center
+}
+
+.review-message.success{
+display:block;
+background:#e8f8ef;
+color:#176b3b
+}
+
+.review-message.error{
+display:block;
+background:#fff0f0;
+color:#a22626
 }
 
 .request{
@@ -914,7 +1048,8 @@ grid-template-columns:1fr 1fr
 grid-template-columns:1fr
 }
 
-.form-row{
+.form-row,
+.review-form-row{
 grid-template-columns:1fr
 }
 
@@ -1224,28 +1359,28 @@ WHY DR BORODAT
 <div class="stats-box">
 
 <div class="stats-title">
-آمار دکتر برودت
+آمار واقعی دکتر برودت
 </div>
 
 <div class="stats">
 
 <div class="stat">
-<strong>+</strong>
+<strong>+۱۰۰۰</strong>
 <span>خدمات انجام‌شده</span>
 </div>
 
 <div class="stat">
-<strong>+</strong>
+<strong>۸</strong>
 <span>سال تجربه</span>
 </div>
 
 <div class="stat">
-<strong>24/7</strong>
+<strong>۲۴/۷</strong>
 <span>پشتیبانی</span>
 </div>
 
 <div class="stat">
-<strong>★</strong>
+<strong>۹۸٪</strong>
 <span>رضایت مشتری</span>
 </div>
 
@@ -1453,7 +1588,11 @@ ABOUT US
 </section>
 
 
-<section class="reviews">
+<!-- ===============================
+     REVIEWS
+================================ -->
+
+<section class="reviews" id="reviews">
 
 <div class="container">
 
@@ -1469,7 +1608,9 @@ ABOUT US
 
 </div>
 
-<div class="review-grid">
+<div
+class="review-grid"
+id="reviewGrid">
 
 <div class="review">
 
@@ -1516,6 +1657,104 @@ ABOUT US
 </div>
 
 </div>
+
+
+<div class="review-actions">
+
+<button
+type="button"
+class="add-review-btn"
+onclick="toggleReviewForm()">
+
+✍️ افزودن نظر
+
+</button>
+
+</div>
+
+
+<div
+class="review-form-box"
+id="reviewFormBox">
+
+<div class="review-form-title">
+نظر خود را درباره خدمات دکتر برودت بنویسید
+</div>
+
+<form
+class="review-form"
+id="reviewForm">
+
+<div class="review-form-row">
+
+<input
+id="reviewName"
+type="text"
+placeholder="نام شما"
+maxlength="60"
+required>
+
+<select
+id="reviewRating"
+required>
+
+<option value="5">
+★★★★★ — عالی
+</option>
+
+<option value="4">
+★★★★☆ — خوب
+</option>
+
+<option value="3">
+★★★☆☆ — متوسط
+</option>
+
+<option value="2">
+★★☆☆☆ — ضعیف
+</option>
+
+<option value="1">
+★☆☆☆☆ — خیلی ضعیف
+</option>
+
+</select>
+
+</div>
+
+<textarea
+id="reviewText"
+placeholder="نظر شما درباره خدمات دکتر برودت..."
+maxlength="500"
+required></textarea>
+
+<button
+class="review-submit"
+id="reviewSubmit"
+type="submit">
+
+ثبت نظر
+
+</button>
+
+<button
+class="review-cancel"
+type="button"
+onclick="toggleReviewForm(false)">
+
+انصراف
+
+</button>
+
+<div
+id="reviewMessage"
+class="review-message">
+</div>
+
+</form>
+
+</div>
+
 </div>
 
 </section>
@@ -1776,6 +2015,7 @@ Dr <span>Borodat</span>
 
 <a href="#brands">برندها</a>
 <a href="#about">درباره ما</a>
+<a href="#reviews">نظرات مشتریان</a>
 <a href="#request">درخواست خدمات</a>
 
 </div>
@@ -1840,18 +2080,8 @@ dir="ltr">
    API
 ================================ */
 
-/*
-   سایت:
-   borodat-preview
-
-   سرور پنل:
-   borodat-panel
-
-   درخواست‌های خدمات از سایت
-   مستقیماً به API پنل ارسال می‌شوند.
-*/
-
-const API_BASE = "https://borodat-panel.onrender.com";
+const API_BASE =
+"https://borodat-panel.onrender.com";
 
 
 /* ===============================
@@ -1860,7 +2090,8 @@ const API_BASE = "https://borodat-panel.onrender.com";
 
 async function readJSONResponse(response){
 
-    const raw = await response.text();
+    const raw =
+        await response.text();
 
     console.log(
         "SERVER STATUS:",
@@ -1872,25 +2103,24 @@ async function readJSONResponse(response){
         raw
     );
 
-
     if(response.ok && !raw.trim()){
 
         return {
             success:true,
-            message:"درخواست شما با موفقیت ثبت شد."
+            message:
+                "درخواست شما با موفقیت ثبت شد."
         };
 
     }
 
-
     let result;
-
 
     if(raw.trim()){
 
         try{
 
-            result = JSON.parse(raw);
+            result =
+                JSON.parse(raw);
 
         }catch(error){
 
@@ -1899,16 +2129,15 @@ async function readJSONResponse(response){
                 raw
             );
 
-
             if(response.ok){
 
                 return {
                     success:true,
-                    message:"درخواست شما با موفقیت ثبت شد."
+                    message:
+                        "درخواست شما با موفقیت ثبت شد."
                 };
 
             }
-
 
             throw new Error(
                 "پاسخ سرور معتبر نیست."
@@ -1918,7 +2147,6 @@ async function readJSONResponse(response){
 
     }
 
-
     if(!response.ok){
 
         throw new Error(
@@ -1927,7 +2155,6 @@ async function readJSONResponse(response){
         );
 
     }
-
 
     return result || {
 
@@ -1964,7 +2191,9 @@ function toggleMenu(){
 ================================ */
 
 const serviceForm =
-    document.getElementById("serviceForm");
+    document.getElementById(
+        "serviceForm"
+    );
 
 
 if(serviceForm){
@@ -1975,13 +2204,15 @@ if(serviceForm){
 
             e.preventDefault();
 
-
             const button =
-                document.getElementById("submitBtn");
+                document.getElementById(
+                    "submitBtn"
+                );
 
             const message =
-                document.getElementById("formMessage");
-
+                document.getElementById(
+                    "formMessage"
+                );
 
             const name =
                 document
@@ -1989,19 +2220,16 @@ if(serviceForm){
                 .value
                 .trim();
 
-
             const phone =
                 document
                 .getElementById("phone")
                 .value
                 .trim();
 
-
             const service =
                 document
                 .getElementById("service")
                 .value;
-
 
             const description =
                 document
@@ -2178,6 +2406,445 @@ if(serviceForm){
 
 
 /* ===============================
+   REVIEWS
+================================ */
+
+const REVIEW_STORAGE_KEY =
+    "dr_borodat_reviews";
+
+
+function getSavedReviews(){
+
+    try{
+
+        const saved =
+            localStorage.getItem(
+                REVIEW_STORAGE_KEY
+            );
+
+        if(!saved){
+
+            return [];
+
+        }
+
+        const reviews =
+            JSON.parse(saved);
+
+        return Array.isArray(reviews)
+            ? reviews
+            : [];
+
+    }catch(error){
+
+        console.error(
+            "REVIEWS LOAD ERROR:",
+            error
+        );
+
+        return [];
+
+    }
+
+}
+
+
+function saveReviews(reviews){
+
+    try{
+
+        localStorage.setItem(
+            REVIEW_STORAGE_KEY,
+            JSON.stringify(reviews)
+        );
+
+        return true;
+
+    }catch(error){
+
+        console.error(
+            "REVIEWS SAVE ERROR:",
+            error
+        );
+
+        return false;
+
+    }
+
+}
+
+
+function toggleReviewForm(force){
+
+    const box =
+        document.getElementById(
+            "reviewFormBox"
+        );
+
+    if(!box){
+
+        return;
+
+    }
+
+    if(force === false){
+
+        box.classList.remove("open");
+
+        return;
+
+    }
+
+    box.classList.toggle("open");
+
+    if(box.classList.contains("open")){
+
+        setTimeout(
+            function(){
+
+                const name =
+                    document.getElementById(
+                        "reviewName"
+                    );
+
+                if(name){
+
+                    name.focus();
+
+                }
+
+            },
+            100
+        );
+
+    }
+
+}
+
+
+function createStars(rating){
+
+    const value =
+        Math.max(
+            1,
+            Math.min(
+                5,
+                Number(rating) || 5
+            )
+        );
+
+    return "★★★★★".slice(
+        0,
+        value
+    ) +
+    "☆☆☆☆☆".slice(
+        0,
+        5 - value
+    );
+
+}
+
+
+function renderSavedReviews(){
+
+    const grid =
+        document.getElementById(
+            "reviewGrid"
+        );
+
+    if(!grid){
+
+        return;
+
+    }
+
+    const reviews =
+        getSavedReviews();
+
+    if(!reviews.length){
+
+        return;
+
+    }
+
+    reviews.forEach(
+        function(review){
+
+            const article =
+                document.createElement(
+                    "div"
+                );
+
+            article.className =
+                "review";
+
+            article.innerHTML = `
+
+                <div class="stars">
+                    ${createStars(review.rating)}
+                </div>
+
+                <p>
+                    «${escapeHtml(review.text)}»
+                </p>
+
+                <strong>
+                    ${escapeHtml(review.name)}
+                </strong>
+
+            `;
+
+            grid.appendChild(article);
+
+        }
+    );
+
+}
+
+
+function escapeHtml(value){
+
+    return String(value ?? "")
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+const reviewForm =
+    document.getElementById(
+        "reviewForm"
+    );
+
+
+if(reviewForm){
+
+    reviewForm.addEventListener(
+        "submit",
+        function(e){
+
+            e.preventDefault();
+
+
+            const nameInput =
+                document.getElementById(
+                    "reviewName"
+                );
+
+            const ratingInput =
+                document.getElementById(
+                    "reviewRating"
+                );
+
+            const textInput =
+                document.getElementById(
+                    "reviewText"
+                );
+
+            const button =
+                document.getElementById(
+                    "reviewSubmit"
+                );
+
+            const message =
+                document.getElementById(
+                    "reviewMessage"
+                );
+
+
+            const name =
+                nameInput.value.trim();
+
+            const rating =
+                Number(
+                    ratingInput.value
+                );
+
+            const text =
+                textInput.value.trim();
+
+
+            if(!name){
+
+                message.className =
+                    "review-message error";
+
+                message.textContent =
+                    "❌ لطفاً نام خود را وارد کنید.";
+
+                return;
+
+            }
+
+
+            if(!text){
+
+                message.className =
+                    "review-message error";
+
+                message.textContent =
+                    "❌ لطفاً متن نظر را وارد کنید.";
+
+                return;
+
+            }
+
+
+            if(text.length < 5){
+
+                message.className =
+                    "review-message error";
+
+                message.textContent =
+                    "❌ متن نظر خیلی کوتاه است.";
+
+                return;
+
+            }
+
+
+            button.disabled = true;
+
+            button.textContent =
+                "در حال ثبت...";
+
+
+            const review = {
+
+                id:
+                    Date.now(),
+
+                name:name,
+
+                rating:rating,
+
+                text:text,
+
+                created_at:
+                    new Date()
+                    .toISOString()
+
+            };
+
+
+            const reviews =
+                getSavedReviews();
+
+            reviews.push(review);
+
+
+            if(
+                saveReviews(reviews)
+            ){
+
+                const grid =
+                    document.getElementById(
+                        "reviewGrid"
+                    );
+
+
+                const article =
+                    document.createElement(
+                        "div"
+                    );
+
+                article.className =
+                    "review";
+
+                article.innerHTML = `
+
+                    <div class="stars">
+                        ${createStars(rating)}
+                    </div>
+
+                    <p>
+                        «${escapeHtml(text)}»
+                    </p>
+
+                    <strong>
+                        ${escapeHtml(name)}
+                    </strong>
+
+                `;
+
+
+                grid.appendChild(
+                    article
+                );
+
+
+                message.className =
+                    "review-message success";
+
+                message.textContent =
+                    "✅ نظر شما با موفقیت ثبت شد.";
+
+
+                reviewForm.reset();
+
+                ratingInput.value =
+                    "5";
+
+
+                setTimeout(
+                    function(){
+
+                        toggleReviewForm(
+                            false
+                        );
+
+                        message.className =
+                            "review-message";
+
+                        message.textContent =
+                            "";
+
+                    },
+                    1500
+                );
+
+
+            }else{
+
+                message.className =
+                    "review-message error";
+
+                message.textContent =
+                    "❌ ثبت نظر انجام نشد.";
+
+            }
+
+
+            button.disabled = false;
+
+            button.textContent =
+                "ثبت نظر";
+
+        }
+    );
+
+}
+
+
+/* ===============================
    CLOSE MENU
 ================================ */
 
@@ -2186,7 +2853,9 @@ document.addEventListener(
     function(e){
 
         const menu =
-            document.getElementById("menu");
+            document.getElementById(
+                "menu"
+            );
 
 
         if(!menu){
@@ -2198,11 +2867,17 @@ document.addEventListener(
 
         if(
             menu.classList.contains("open") &&
-            !e.target.closest(".menu-panel") &&
-            !e.target.closest(".header-icon")
+            !e.target.closest(
+                ".menu-panel"
+            ) &&
+            !e.target.closest(
+                ".header-icon"
+            )
         ){
 
-            menu.classList.remove("open");
+            menu.classList.remove(
+                "open"
+            );
 
         }
 
@@ -2216,40 +2891,53 @@ document.addEventListener(
 
 document
 .querySelectorAll(".menu-item")
-.forEach(function(item){
+.forEach(
+    function(item){
 
-    item.addEventListener(
-        "click",
-        function(){
+        item.addEventListener(
+            "click",
+            function(){
 
-            const menu =
-                document.getElementById("menu");
+                const menu =
+                    document.getElementById(
+                        "menu"
+                    );
 
-            if(menu){
+                if(menu){
 
-                menu.classList.remove(
-                    "open"
-                );
+                    menu.classList.remove(
+                        "open"
+                    );
+
+                }
 
             }
+        );
 
-        }
-    );
-
-});
+    }
+);
 
 
 /* ===============================
-   DEBUG
+   START
 ================================ */
 
-console.log(
-    "Dr Borodat index loaded."
-);
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
 
-console.log(
-    "API_BASE:",
-    API_BASE
+        renderSavedReviews();
+
+        console.log(
+            "Dr Borodat index loaded."
+        );
+
+        console.log(
+            "API_BASE:",
+            API_BASE
+        );
+
+    }
 );
 
 </script>
