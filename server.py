@@ -1,5 +1,6 @@
 import os
 import uuid
+import json
 from datetime import datetime
 
 import requests
@@ -28,6 +29,7 @@ DATABASE_URL = os.environ.get("DATABASE_URL")
 # =====================================================
 
 def get_database_url():
+
     url = os.environ.get("DATABASE_URL")
 
     if not url:
@@ -35,9 +37,8 @@ def get_database_url():
             "DATABASE_URL is not configured."
         )
 
-    # Render/PostgreSQL sometimes provides postgres://
-    # psycopg accepts postgresql:// reliably.
     if url.startswith("postgres://"):
+
         url = url.replace(
             "postgres://",
             "postgresql://",
@@ -48,6 +49,7 @@ def get_database_url():
 
 
 def get_connection():
+
     return psycopg.connect(
         get_database_url(),
         connect_timeout=15
@@ -132,6 +134,9 @@ def init_database():
 
             # -----------------------------------------
             # ORDERS
+            #
+            # The original order fields are preserved.
+            # New fields are added below.
             # -----------------------------------------
 
             cur.execute("""
@@ -145,6 +150,28 @@ def init_database():
                     created_at TEXT NOT NULL,
                     status TEXT DEFAULT 'new'
                 )
+            """)
+
+            # -----------------------------------------
+            # ORDER MIGRATION
+            #
+            # Existing databases keep their old orders.
+            # New columns are added without deleting data.
+            # -----------------------------------------
+
+            cur.execute("""
+                ALTER TABLE orders
+                ADD COLUMN IF NOT EXISTS address TEXT DEFAULT ''
+            """)
+
+            cur.execute("""
+                ALTER TABLE orders
+                ADD COLUMN IF NOT EXISTS postal_code TEXT DEFAULT ''
+            """)
+
+            cur.execute("""
+                ALTER TABLE orders
+                ADD COLUMN IF NOT EXISTS items TEXT DEFAULT '[]'
             """)
 
         connection.commit()
@@ -161,10 +188,15 @@ def init_database():
 try:
 
     if DATABASE_URL:
+
         init_database()
-        print("DATABASE: PostgreSQL connected successfully.")
+
+        print(
+            "DATABASE: PostgreSQL connected successfully."
+        )
 
     else:
+
         print(
             "DATABASE ERROR: DATABASE_URL is not configured."
         )
@@ -979,7 +1011,10 @@ def admin_dashboard():
                     product_name,
                     quantity,
                     created_at,
-                    status
+                    status,
+                    address,
+                    postal_code,
+                    items
 
                 FROM orders
 
@@ -989,9 +1024,25 @@ def admin_dashboard():
 
             order_rows = cur.fetchall()
 
-            orders_data = [
+            orders_data = []
 
-                {
+            for row in order_rows:
+
+                items = []
+
+                try:
+
+                    if row[10]:
+
+                        items = json.loads(
+                            row[10]
+                        )
+
+                except Exception:
+
+                    items = []
+
+                orders_data.append({
 
                     "id": row[0],
 
@@ -1007,13 +1058,15 @@ def admin_dashboard():
 
                     "created_at": row[6],
 
-                    "status": row[7]
+                    "status": row[7],
 
-                }
+                    "address": row[8] or "",
 
-                for row in order_rows
+                    "postal_code": row[9] or "",
 
-            ]
+                    "items": items
+
+                })
 
             return jsonify({
 
@@ -1246,11 +1299,6 @@ def add_product():
             "نام، قیمت و دسته‌بندی محصول الزامی است."
 
         }), 400
-
-    # IMPORTANT:
-    # Every product receives a completely new UUID.
-    # Therefore two products with the same name
-    # are still stored as separate products.
 
     product = {
 
@@ -1653,6 +1701,10 @@ def create_order():
         silent=True
     ) or {}
 
+    # -----------------------------------------
+    # CUSTOMER INFORMATION
+    # -----------------------------------------
+
     name = str(
         data.get("name", "")
     ).strip()
@@ -1660,6 +1712,18 @@ def create_order():
     phone = str(
         data.get("phone", "")
     ).strip()
+
+    address = str(
+        data.get("address", "")
+    ).strip()
+
+    postal_code = str(
+        data.get("postal_code", "")
+    ).strip()
+
+    # -----------------------------------------
+    # OLD SINGLE PRODUCT SUPPORT
+    # -----------------------------------------
 
     product_id = str(
         data.get("product_id", "")
@@ -1673,16 +1737,271 @@ def create_order():
         data.get("quantity", "1")
     ).strip()
 
-    if not name or not phone or not product_name:
+    # -----------------------------------------
+    # NEW CART ITEMS
+    #
+    # Expected:
+    #
+    # items: [
+    #   {
+    #       "id": "...",
+    #       "name": "...",
+    #       "price": "...",
+    #       "quantity": 2
+    #   }
+    # ]
+    # -----------------------------------------
+
+    raw_items = data.get(
+        "items",
+        []
+    )
+
+    if not isinstance(
+        raw_items,
+        list
+    ):
+
+        raw_items = []
+
+    items = []
+
+    for item in raw_items:
+
+        if not isinstance(
+            item,
+            dict
+        ):
+
+            continue
+
+        item_id = str(
+            item.get(
+                "id",
+                item.get(
+                    "product_id",
+                    ""
+                )
+            )
+        ).strip()
+
+        item_name = str(
+            item.get(
+                "name",
+                item.get(
+                    "product_name",
+                    ""
+                )
+            )
+        ).strip()
+
+        item_price = str(
+            item.get(
+                "price",
+                ""
+            )
+        ).strip()
+
+        item_quantity = str(
+            item.get(
+                "quantity",
+                "1"
+            )
+        ).strip()
+
+        if not item_name:
+
+            continue
+
+        items.append({
+
+            "id": item_id,
+
+            "name": item_name,
+
+            "price": item_price,
+
+            "quantity": item_quantity
+
+        })
+
+    # -----------------------------------------
+    # BACKWARD COMPATIBILITY
+    #
+    # If old shop sends only one product,
+    # convert it into the new items format.
+    # -----------------------------------------
+
+    if not items and product_name:
+
+        items.append({
+
+            "id": product_id,
+
+            "name": product_name,
+
+            "price": "",
+
+            "quantity": quantity
+
+        })
+
+    # -----------------------------------------
+    # VALIDATION
+    # -----------------------------------------
+
+    if not name:
 
         return jsonify({
 
             "success": False,
 
             "message":
-            "نام، شماره تماس و محصول الزامی است."
+            "نام و نام خانوادگی الزامی است."
 
         }), 400
+
+    if not phone:
+
+        return jsonify({
+
+            "success": False,
+
+            "message":
+            "شماره تلفن الزامی است."
+
+        }), 400
+
+    if not address:
+
+        return jsonify({
+
+            "success": False,
+
+            "message":
+            "آدرس کامل الزامی است."
+
+        }), 400
+
+    if not postal_code:
+
+        return jsonify({
+
+            "success": False,
+
+            "message":
+            "کد پستی الزامی است."
+
+        }), 400
+
+    if not items:
+
+        return jsonify({
+
+            "success": False,
+
+            "message":
+            "سبد خرید خالی است."
+
+        }), 400
+
+    # -----------------------------------------
+    # ORDER SUMMARY
+    # -----------------------------------------
+
+    first_item = items[0]
+
+    first_product_id = str(
+        first_item.get(
+            "id",
+            ""
+        )
+    ).strip()
+
+    first_product_name = str(
+        first_item.get(
+            "name",
+            ""
+        )
+    ).strip()
+
+    first_quantity = str(
+        first_item.get(
+            "quantity",
+            "1"
+        )
+    ).strip()
+
+    if len(items) == 1:
+
+        order_product_name = first_product_name
+
+    else:
+
+        order_product_name = (
+            f"{first_product_name} "
+            f"+ {len(items) - 1} محصول دیگر"
+        )
+
+    order_quantity = str(
+        sum(
+            int(
+                item.get(
+                    "quantity",
+                    1
+                )
+            )
+            if str(
+                item.get(
+                    "quantity",
+                    1
+                )
+            ).isdigit()
+            else 1
+            for item in items
+        )
+    )
+
+    # -----------------------------------------
+    # CREATE ORDER
+    # -----------------------------------------
+
+    order = {
+
+        "id":
+        str(uuid.uuid4()),
+
+        "name":
+        name,
+
+        "phone":
+        phone,
+
+        "product_id":
+        first_product_id,
+
+        "product_name":
+        order_product_name,
+
+        "quantity":
+        order_quantity,
+
+        "address":
+        address,
+
+        "postal_code":
+        postal_code,
+
+        "items":
+        items,
+
+        "created_at":
+        now(),
+
+        "status":
+        "new"
+
+    }
 
     connection = get_connection()
 
@@ -1690,9 +2009,26 @@ def create_order():
 
         with connection.cursor() as cur:
 
-            product = None
+            # -------------------------------------
+            # Verify product IDs when available.
+            # This does NOT reject an order if the
+            # frontend has no product ID.
+            # -------------------------------------
 
-            if product_id:
+            verified_product_ids = []
+
+            for item in items:
+
+                item_id = str(
+                    item.get(
+                        "id",
+                        ""
+                    )
+                ).strip()
+
+                if not item_id:
+
+                    continue
 
                 cur.execute("""
 
@@ -1704,37 +2040,19 @@ def create_order():
 
                     LIMIT 1
 
-                """, (product_id,))
+                """, (item_id,))
 
-                product = cur.fetchone()
+                found = cur.fetchone()
 
-            order = {
+                if found:
 
-                "id":
-                str(uuid.uuid4()),
+                    verified_product_ids.append(
+                        item_id
+                    )
 
-                "name":
-                name,
-
-                "phone":
-                phone,
-
-                "product_id":
-                product_id,
-
-                "product_name":
-                product_name,
-
-                "quantity":
-                quantity,
-
-                "created_at":
-                now(),
-
-                "status":
-                "new"
-
-            }
+            # -------------------------------------
+            # SAVE ORDER
+            # -------------------------------------
 
             cur.execute("""
 
@@ -1747,11 +2065,26 @@ def create_order():
                     product_name,
                     quantity,
                     created_at,
-                    status
+                    status,
+                    address,
+                    postal_code,
+                    items
                 )
 
                 VALUES
-                (%s,%s,%s,%s,%s,%s,%s,%s)
+                (
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s
+                )
 
             """, (
 
@@ -1769,7 +2102,16 @@ def create_order():
 
                 order["created_at"],
 
-                order["status"]
+                order["status"],
+
+                order["address"],
+
+                order["postal_code"],
+
+                json.dumps(
+                    order["items"],
+                    ensure_ascii=False
+                )
 
             ))
 
@@ -1797,26 +2139,70 @@ def create_order():
 
         connection.close()
 
-    bale_sent = send_bale_message(
+    # -----------------------------------------
+    # BALE MESSAGE
+    # -----------------------------------------
 
+    bale_text = (
         "🛒 سفارش جدید دکتر برودت\n\n"
-
         f"👤 نام: {name}\n"
-
         f"📱 شماره: {phone}\n"
-
-        f"📦 محصول: {product_name}\n"
-
-        f"🔢 تعداد: {quantity}"
-
+        f"🏠 آدرس: {address}\n"
+        f"📮 کد پستی: {postal_code}\n\n"
+        "📦 محصولات:\n"
     )
+
+    for index, item in enumerate(
+        items,
+        start=1
+    ):
+
+        item_name = item.get(
+            "name",
+            "محصول"
+        )
+
+        item_quantity = item.get(
+            "quantity",
+            "1"
+        )
+
+        item_price = item.get(
+            "price",
+            ""
+        )
+
+        bale_text += (
+            f"{index}. {item_name}"
+            f" × {item_quantity}"
+        )
+
+        if item_price:
+
+            bale_text += (
+                f" — {item_price}"
+            )
+
+        bale_text += "\n"
+
+    bale_text += (
+        f"\n🧾 شماره سفارش: {order['id']}"
+    )
+
+    bale_sent = send_bale_message(
+        bale_text
+    )
+
+    # -----------------------------------------
+    # RESPONSE
+    # -----------------------------------------
 
     return jsonify({
 
         "success": True,
 
         "message":
-        "سفارش شما با موفقیت ثبت شد.",
+        "سفارش شما با موفقیت ثبت شد. ❤️",
 
         "order":
         order,
@@ -1825,7 +2211,7 @@ def create_order():
         bale_sent,
 
         "product_found":
-        product is not None
+        len(verified_product_ids) > 0
 
     })
 
