@@ -1,6 +1,7 @@
 import os
 import json
 import uuid
+import base64
 from datetime import datetime
 
 import requests
@@ -15,23 +16,32 @@ from flask_cors import CORS
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 app = Flask(__name__)
-
-CORS(
-    app,
-    resources={
-        r"/api/*": {"origins": "*"},
-        r"/chat": {"origins": "*"}
-    }
-)
+CORS(app)
 
 BALE_TOKEN = os.environ.get("BALE_TOKEN")
 ADMIN_ID = 746740194
 
 DATA_FILE = os.path.join(BASE_DIR, "data.json")
 
+# =====================================================
+# GITHUB PERSISTENT STORAGE
+# =====================================================
+
+GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
+GITHUB_REPO = os.environ.get(
+    "GITHUB_REPO",
+    "drborudat/borodat-preview"
+)
+GITHUB_BRANCH = os.environ.get(
+    "GITHUB_BRANCH",
+    "main"
+)
+
+GITHUB_DATA_PATH = "data.json"
+
 
 # =====================================================
-# DATABASE
+# DATABASE DEFAULT
 # =====================================================
 
 def empty_database():
@@ -43,13 +53,220 @@ def empty_database():
     }
 
 
-def load_data():
+# =====================================================
+# GITHUB HELPERS
+# =====================================================
+
+def github_headers():
+
+    if not GITHUB_TOKEN:
+        return None
+
+    return {
+        "Authorization": f"Bearer {GITHUB_TOKEN}",
+        "Accept": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28"
+    }
+
+
+def load_data_from_github():
+
+    headers = github_headers()
+
+    if not headers:
+        print("GITHUB_TOKEN is not configured.")
+        return None
+
+    url = (
+        f"https://api.github.com/repos/"
+        f"{GITHUB_REPO}/contents/{GITHUB_DATA_PATH}"
+    )
+
+    try:
+
+        response = requests.get(
+            url,
+            headers=headers,
+            params={
+                "ref": GITHUB_BRANCH
+            },
+            timeout=15
+        )
+
+        print(
+            "GITHUB LOAD:",
+            response.status_code
+        )
+
+        if response.status_code == 404:
+            print("GitHub data.json does not exist yet.")
+            return None
+
+        if not response.ok:
+            print(
+                "GITHUB LOAD ERROR:",
+                response.text
+            )
+            return None
+
+        result = response.json()
+
+        encoded_content = result.get(
+            "content",
+            ""
+        )
+
+        encoded_content = (
+            encoded_content
+            .replace("\n", "")
+            .replace("\r", "")
+        )
+
+        if not encoded_content:
+            return None
+
+        decoded = base64.b64decode(
+            encoded_content
+        ).decode("utf-8")
+
+        data = json.loads(decoded)
+
+        if not isinstance(data, dict):
+            return None
+
+        for key in [
+            "requests",
+            "chats",
+            "products",
+            "orders"
+        ]:
+
+            if not isinstance(
+                data.get(key),
+                list
+            ):
+                data[key] = []
+
+        return data
+
+    except Exception as e:
+
+        print(
+            "GITHUB LOAD EXCEPTION:",
+            e
+        )
+
+        return None
+
+
+def save_data_to_github(data):
+
+    headers = github_headers()
+
+    if not headers:
+        print(
+            "GITHUB_TOKEN is not configured. "
+            "Using local storage."
+        )
+        return False
+
+    url = (
+        f"https://api.github.com/repos/"
+        f"{GITHUB_REPO}/contents/{GITHUB_DATA_PATH}"
+    )
+
+    try:
+
+        content = json.dumps(
+            data,
+            ensure_ascii=False,
+            indent=2
+        )
+
+        encoded = base64.b64encode(
+            content.encode("utf-8")
+        ).decode("ascii")
+
+        # -------------------------------------------------
+        # Get current file SHA
+        # -------------------------------------------------
+
+        current = requests.get(
+            url,
+            headers=headers,
+            params={
+                "ref": GITHUB_BRANCH
+            },
+            timeout=15
+        )
+
+        sha = None
+
+        if current.status_code == 200:
+
+            sha = current.json().get(
+                "sha"
+            )
+
+        elif current.status_code != 404:
+
+            print(
+                "GITHUB SHA ERROR:",
+                current.status_code,
+                current.text
+            )
+
+            return False
+
+        # -------------------------------------------------
+        # Create / Update file
+        # -------------------------------------------------
+
+        payload = {
+            "message": "Update persistent site data",
+            "content": encoded,
+            "branch": GITHUB_BRANCH
+        }
+
+        if sha:
+            payload["sha"] = sha
+
+        response = requests.put(
+            url,
+            headers=headers,
+            json=payload,
+            timeout=20
+        )
+
+        print(
+            "GITHUB SAVE:",
+            response.status_code,
+            response.text[:500]
+        )
+
+        return response.ok
+
+    except Exception as e:
+
+        print(
+            "GITHUB SAVE EXCEPTION:",
+            e
+        )
+
+        return False
+
+
+# =====================================================
+# LOCAL STORAGE
+# =====================================================
+
+def load_local_data():
 
     if not os.path.exists(DATA_FILE):
 
         data = empty_database()
 
-        save_data(data)
+        save_local_data(data)
 
         return data
 
@@ -86,21 +303,19 @@ def load_data():
     except Exception as e:
 
         print(
-            "DATA LOAD ERROR:",
+            "LOCAL LOAD ERROR:",
             e
         )
 
         return empty_database()
 
 
-def save_data(data):
+def save_local_data(data):
 
     try:
 
-        temp_file = DATA_FILE + ".tmp"
-
         with open(
-            temp_file,
+            DATA_FILE,
             "w",
             encoding="utf-8"
         ) as f:
@@ -112,22 +327,81 @@ def save_data(data):
                 indent=2
             )
 
-        os.replace(
-            temp_file,
-            DATA_FILE
-        )
-
         return True
 
     except Exception as e:
 
         print(
-            "DATA SAVE ERROR:",
+            "LOCAL SAVE ERROR:",
             e
         )
 
         return False
 
+
+# =====================================================
+# MAIN DATABASE FUNCTIONS
+# =====================================================
+
+def load_data():
+
+    # -------------------------------------------------
+    # If GitHub is configured, GitHub is the main DB
+    # -------------------------------------------------
+
+    if GITHUB_TOKEN:
+
+        github_data = load_data_from_github()
+
+        if github_data is not None:
+
+            # Keep local copy too
+            save_local_data(
+                github_data
+            )
+
+            return github_data
+
+    # -------------------------------------------------
+    # Fallback to local data
+    # -------------------------------------------------
+
+    return load_local_data()
+
+
+def save_data(data):
+
+    # -------------------------------------------------
+    # Always keep local copy
+    # -------------------------------------------------
+
+    local_saved = save_local_data(
+        data
+    )
+
+    # -------------------------------------------------
+    # Persistent GitHub storage
+    # -------------------------------------------------
+
+    if GITHUB_TOKEN:
+
+        github_saved = save_data_to_github(
+            data
+        )
+
+        if github_saved:
+            return True
+
+        print(
+            "GitHub save failed."
+        )
+
+    return local_saved
+
+
+# =====================================================
+# TIME
+# =====================================================
 
 def now():
 
@@ -153,7 +427,7 @@ def send_bale_message(text):
     try:
 
         url = (
-            "https://tapi.bale.ai/"
+            f"https://tapi.bale.ai/"
             f"bot{BALE_TOKEN}/sendMessage"
         )
 
@@ -185,7 +459,7 @@ def send_bale_message(text):
 
 
 # =====================================================
-# HOME / PAGES
+# HOME / ADMIN
 # =====================================================
 
 @app.route("/")
@@ -243,7 +517,9 @@ def health():
     return jsonify({
         "success": True,
         "status": "online",
-        "panel": True
+        "panel": True,
+        "persistent_storage":
+            bool(GITHUB_TOKEN)
     })
 
 
@@ -251,10 +527,7 @@ def health():
 # SERVICE REQUEST
 # =====================================================
 
-@app.route(
-    "/api/request",
-    methods=["POST"]
-)
+@app.route("/api/request", methods=["POST"])
 def service_request():
 
     data = request.get_json(
@@ -306,9 +579,9 @@ def service_request():
 
     database = load_data()
 
-    database["requests"].append(
-        item
-    )
+    database[
+        "requests"
+    ].append(item)
 
     if not save_data(database):
 
@@ -342,6 +615,7 @@ def service_request():
         "bale_sent": bale_sent,
 
         "request": item
+
     })
 
 
@@ -349,10 +623,7 @@ def service_request():
 # CHAT GET
 # =====================================================
 
-@app.route(
-    "/chat",
-    methods=["GET"]
-)
+@app.route("/chat", methods=["GET"])
 def get_chat():
 
     phone = request.args.get(
@@ -370,15 +641,15 @@ def get_chat():
         })
 
     chat = next(
-
         (
             item
-
-            for item in database["chats"]
-
-            if item.get("phone") == phone
+            for item in database[
+                "chats"
+            ]
+            if item.get(
+                "phone"
+            ) == phone
         ),
-
         None
     )
 
@@ -404,6 +675,7 @@ def get_chat():
 
         "messages":
             chat.get("messages", [])
+
     })
 
 
@@ -411,10 +683,7 @@ def get_chat():
 # CHAT SEND
 # =====================================================
 
-@app.route(
-    "/chat/send",
-    methods=["POST"]
-)
+@app.route("/chat/send", methods=["POST"])
 def send_chat():
 
     data = request.get_json(
@@ -444,15 +713,15 @@ def send_chat():
     database = load_data()
 
     chat = next(
-
         (
             item
-
-            for item in database["chats"]
-
-            if item.get("phone") == phone
+            for item in database[
+                "chats"
+            ]
+            if item.get(
+                "phone"
+            ) == phone
         ),
-
         None
     )
 
@@ -473,11 +742,12 @@ def send_chat():
             "updated_at": now(),
 
             "messages": []
+
         }
 
-        database["chats"].append(
-            chat
-        )
+        database[
+            "chats"
+        ].append(chat)
 
     else:
 
@@ -496,6 +766,7 @@ def send_chat():
         "message": message,
 
         "created_at": now()
+
     }
 
     chat.setdefault(
@@ -538,6 +809,7 @@ def send_chat():
 
         "bale_sent":
             bale_sent
+
     })
 
 
@@ -568,6 +840,7 @@ def admin_dashboard():
 
         "orders":
             database["orders"]
+
     })
 
 
@@ -604,15 +877,15 @@ def admin_chat_reply():
     database = load_data()
 
     chat = next(
-
         (
             item
-
-            for item in database["chats"]
-
-            if item.get("id") == chat_id
+            for item in database[
+                "chats"
+            ]
+            if item.get(
+                "id"
+            ) == chat_id
         ),
-
         None
     )
 
@@ -635,6 +908,7 @@ def admin_chat_reply():
         "message": message,
 
         "created_at": now()
+
     }
 
     chat.setdefault(
@@ -666,6 +940,7 @@ def admin_chat_reply():
 
         "reply":
             admin_message
+
     })
 
 
@@ -710,18 +985,14 @@ def add_product():
     if not name or not price or not category:
 
         return jsonify({
-
             "success": False,
-
             "message":
                 "نام، قیمت و دسته‌بندی محصول الزامی است."
         }), 400
 
-    # =================================================
-    # IMPORTANT:
-    # هر بار ثبت محصول یک ID کاملاً جدید دارد.
-    # حتی اگر نام محصول دقیقاً تکراری باشد.
-    # =================================================
+    # -------------------------------------------------
+    # هر ثبت محصول یک ID کاملاً جدید می‌گیرد
+    # -------------------------------------------------
 
     product = {
 
@@ -742,28 +1013,22 @@ def add_product():
         "image": image,
 
         "created_at": now()
+
     }
 
     database = load_data()
 
-    database["products"].append(
-        product
-    )
+    database[
+        "products"
+    ].append(product)
 
     if not save_data(database):
 
         return jsonify({
-
             "success": False,
-
             "message":
                 "ذخیره محصول انجام نشد."
         }), 500
-
-    print(
-        "PRODUCT ADDED:",
-        product
-    )
 
     return jsonify({
 
@@ -773,10 +1038,8 @@ def add_product():
             "محصول با موفقیت ثبت شد.",
 
         "product":
-            product,
+            product
 
-        "products_count":
-            len(database["products"])
     })
 
 
@@ -792,20 +1055,13 @@ def get_products():
 
     database = load_data()
 
-    products = database.get(
-        "products",
-        []
-    )
-
     return jsonify({
 
         "success": True,
 
         "products":
-            products,
+            database["products"]
 
-        "count":
-            len(products)
     })
 
 
@@ -826,24 +1082,22 @@ def update_product(product_id):
     database = load_data()
 
     product = next(
-
         (
             item
-
-            for item in database["products"]
-
-            if item.get("id") == product_id
+            for item in database[
+                "products"
+            ]
+            if item.get(
+                "id"
+            ) == product_id
         ),
-
         None
     )
 
     if not product:
 
         return jsonify({
-
             "success": False,
-
             "message":
                 "محصول پیدا نشد."
         }), 404
@@ -861,6 +1115,7 @@ def update_product(product_id):
         "description",
 
         "image"
+
     ]
 
     for field in allowed_fields:
@@ -874,9 +1129,7 @@ def update_product(product_id):
     if not save_data(database):
 
         return jsonify({
-
             "success": False,
-
             "message":
                 "ذخیره تغییرات محصول انجام نشد."
         }), 500
@@ -890,6 +1143,7 @@ def update_product(product_id):
 
         "product":
             product
+
     })
 
 
@@ -913,9 +1167,14 @@ def delete_product(product_id):
 
         product
 
-        for product in database["products"]
+        for product in database[
+            "products"
+        ]
 
-        if product.get("id") != product_id
+        if product.get(
+            "id"
+        ) != product_id
+
     ]
 
     if len(
@@ -923,9 +1182,7 @@ def delete_product(product_id):
     ) == old_count:
 
         return jsonify({
-
             "success": False,
-
             "message":
                 "محصول پیدا نشد."
         }), 404
@@ -933,9 +1190,7 @@ def delete_product(product_id):
     if not save_data(database):
 
         return jsonify({
-
             "success": False,
-
             "message":
                 "حذف محصول ذخیره نشد."
         }), 500
@@ -946,6 +1201,7 @@ def delete_product(product_id):
 
         "message":
             "محصول حذف شد."
+
     })
 
 
@@ -986,9 +1242,7 @@ def create_order():
     if not name or not phone or not product_name:
 
         return jsonify({
-
             "success": False,
-
             "message":
                 "نام، شماره تماس و محصول الزامی است."
         }), 400
@@ -1000,15 +1254,15 @@ def create_order():
     if product_id:
 
         product = next(
-
             (
                 item
-
-                for item in database["products"]
-
-                if item.get("id") == product_id
+                for item in database[
+                    "products"
+                ]
+                if item.get(
+                    "id"
+                ) == product_id
             ),
-
             None
         )
 
@@ -1036,18 +1290,17 @@ def create_order():
 
         "status":
             "new"
+
     }
 
-    database["orders"].append(
-        order
-    )
+    database[
+        "orders"
+    ].append(order)
 
     if not save_data(database):
 
         return jsonify({
-
             "success": False,
-
             "message":
                 "ذخیره سفارش انجام نشد."
         }), 500
@@ -1063,6 +1316,7 @@ def create_order():
         f"📦 محصول: {product_name}\n"
 
         f"🔢 تعداد: {quantity}"
+
     )
 
     return jsonify({
@@ -1080,6 +1334,7 @@ def create_order():
 
         "product_found":
             product is not None
+
     })
 
 
@@ -1104,9 +1359,7 @@ def update_order(order_id):
     if not status:
 
         return jsonify({
-
             "success": False,
-
             "message":
                 "وضعیت سفارش مشخص نشده است."
         }), 400
@@ -1114,24 +1367,22 @@ def update_order(order_id):
     database = load_data()
 
     order = next(
-
         (
             item
-
-            for item in database["orders"]
-
-            if item.get("id") == order_id
+            for item in database[
+                "orders"
+            ]
+            if item.get(
+                "id"
+            ) == order_id
         ),
-
         None
     )
 
     if not order:
 
         return jsonify({
-
             "success": False,
-
             "message":
                 "سفارش پیدا نشد."
         }), 404
@@ -1141,9 +1392,7 @@ def update_order(order_id):
     if not save_data(database):
 
         return jsonify({
-
             "success": False,
-
             "message":
                 "ذخیره وضعیت سفارش انجام نشد."
         }), 500
@@ -1157,6 +1406,7 @@ def update_order(order_id):
 
         "order":
             order
+
     })
 
 
@@ -1178,6 +1428,7 @@ def admin_requests():
 
         "requests":
             database["requests"]
+
     })
 
 
@@ -1189,9 +1440,7 @@ def admin_requests():
     "/api/admin/requests/<request_id>",
     methods=["PATCH"]
 )
-def update_service_request(
-    request_id
-):
+def update_service_request(request_id):
 
     data = request.get_json(
         silent=True
@@ -1204,9 +1453,7 @@ def update_service_request(
     if not status:
 
         return jsonify({
-
             "success": False,
-
             "message":
                 "وضعیت درخواست مشخص نشده است."
         }), 400
@@ -1214,24 +1461,22 @@ def update_service_request(
     database = load_data()
 
     item = next(
-
         (
             x
-
-            for x in database["requests"]
-
-            if x.get("id") == request_id
+            for x in database[
+                "requests"
+            ]
+            if x.get(
+                "id"
+            ) == request_id
         ),
-
         None
     )
 
     if not item:
 
         return jsonify({
-
             "success": False,
-
             "message":
                 "درخواست پیدا نشد."
         }), 404
@@ -1241,9 +1486,7 @@ def update_service_request(
     if not save_data(database):
 
         return jsonify({
-
             "success": False,
-
             "message":
                 "ذخیره وضعیت درخواست انجام نشد."
         }), 500
@@ -1257,6 +1500,7 @@ def update_service_request(
 
         "request":
             item
+
     })
 
 
@@ -1273,6 +1517,7 @@ def not_found(error):
 
         "message":
             "مسیر موردنظر پیدا نشد."
+
     }), 404
 
 
@@ -1285,6 +1530,7 @@ def method_not_allowed(error):
 
         "message":
             "متد درخواست مجاز نیست."
+
     }), 405
 
 
@@ -1297,6 +1543,7 @@ def internal_error(error):
 
         "message":
             "خطای داخلی سرور."
+
     }), 500
 
 
