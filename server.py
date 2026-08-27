@@ -1,10 +1,9 @@
 import os
-import json
 import uuid
-import base64
 from datetime import datetime
 
 import requests
+import psycopg
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 
@@ -21,382 +20,161 @@ CORS(app)
 BALE_TOKEN = os.environ.get("BALE_TOKEN")
 ADMIN_ID = 746740194
 
-DATA_FILE = os.path.join(BASE_DIR, "data.json")
-
-# =====================================================
-# GITHUB PERSISTENT STORAGE
-# =====================================================
-
-GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
-GITHUB_REPO = os.environ.get(
-    "GITHUB_REPO",
-    "drborudat/borodat-preview"
-)
-GITHUB_BRANCH = os.environ.get(
-    "GITHUB_BRANCH",
-    "main"
-)
-
-GITHUB_DATA_PATH = "data.json"
+DATABASE_URL = os.environ.get("DATABASE_URL")
 
 
 # =====================================================
-# DATABASE DEFAULT
+# DATABASE CONNECTION
 # =====================================================
 
-def empty_database():
-    return {
-        "requests": [],
-        "chats": [],
-        "products": [],
-        "orders": []
-    }
+def get_database_url():
+    url = os.environ.get("DATABASE_URL")
+
+    if not url:
+        raise RuntimeError(
+            "DATABASE_URL is not configured."
+        )
+
+    # Render/PostgreSQL sometimes provides postgres://
+    # psycopg accepts postgresql:// reliably.
+    if url.startswith("postgres://"):
+        url = url.replace(
+            "postgres://",
+            "postgresql://",
+            1
+        )
+
+    return url
 
 
-# =====================================================
-# GITHUB HELPERS
-# =====================================================
-
-def github_headers():
-
-    if not GITHUB_TOKEN:
-        return None
-
-    return {
-        "Authorization": f"Bearer {GITHUB_TOKEN}",
-        "Accept": "application/vnd.github+json",
-        "X-GitHub-Api-Version": "2022-11-28"
-    }
-
-
-def load_data_from_github():
-
-    headers = github_headers()
-
-    if not headers:
-        print("GITHUB_TOKEN is not configured.")
-        return None
-
-    url = (
-        f"https://api.github.com/repos/"
-        f"{GITHUB_REPO}/contents/{GITHUB_DATA_PATH}"
+def get_connection():
+    return psycopg.connect(
+        get_database_url(),
+        connect_timeout=15
     )
 
+
+# =====================================================
+# DATABASE INITIALIZATION
+# =====================================================
+
+def init_database():
+
+    connection = get_connection()
+
     try:
 
-        response = requests.get(
-            url,
-            headers=headers,
-            params={
-                "ref": GITHUB_BRANCH
-            },
-            timeout=15
-        )
+        with connection.cursor() as cur:
 
+            # -----------------------------------------
+            # REQUESTS
+            # -----------------------------------------
+
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS requests (
+                    id TEXT PRIMARY KEY,
+                    name TEXT NOT NULL,
+                    phone TEXT NOT NULL,
+                    service TEXT NOT NULL,
+                    description TEXT DEFAULT '',
+                    created_at TEXT NOT NULL,
+                    status TEXT DEFAULT 'new'
+                )
+            """)
+
+            # -----------------------------------------
+            # CHATS
+            # -----------------------------------------
+
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS chats (
+                    id TEXT PRIMARY KEY,
+                    name TEXT NOT NULL,
+                    phone TEXT NOT NULL UNIQUE,
+                    created_at TEXT NOT NULL,
+                    updated_at TEXT NOT NULL
+                )
+            """)
+
+            # -----------------------------------------
+            # CHAT MESSAGES
+            # -----------------------------------------
+
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS chat_messages (
+                    id TEXT PRIMARY KEY,
+                    chat_id TEXT NOT NULL,
+                    sender TEXT NOT NULL,
+                    message TEXT NOT NULL,
+                    created_at TEXT NOT NULL,
+                    FOREIGN KEY(chat_id)
+                        REFERENCES chats(id)
+                        ON DELETE CASCADE
+                )
+            """)
+
+            # -----------------------------------------
+            # PRODUCTS
+            # -----------------------------------------
+
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS products (
+                    id TEXT PRIMARY KEY,
+                    name TEXT NOT NULL,
+                    price TEXT NOT NULL,
+                    stock TEXT DEFAULT '0',
+                    category TEXT NOT NULL,
+                    description TEXT DEFAULT '',
+                    image TEXT DEFAULT '',
+                    created_at TEXT NOT NULL
+                )
+            """)
+
+            # -----------------------------------------
+            # ORDERS
+            # -----------------------------------------
+
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS orders (
+                    id TEXT PRIMARY KEY,
+                    name TEXT NOT NULL,
+                    phone TEXT NOT NULL,
+                    product_id TEXT DEFAULT '',
+                    product_name TEXT NOT NULL,
+                    quantity TEXT DEFAULT '1',
+                    created_at TEXT NOT NULL,
+                    status TEXT DEFAULT 'new'
+                )
+            """)
+
+        connection.commit()
+
+    finally:
+
+        connection.close()
+
+
+# =====================================================
+# STARTUP DATABASE
+# =====================================================
+
+try:
+
+    if DATABASE_URL:
+        init_database()
+        print("DATABASE: PostgreSQL connected successfully.")
+
+    else:
         print(
-            "GITHUB LOAD:",
-            response.status_code
+            "DATABASE ERROR: DATABASE_URL is not configured."
         )
 
-        if response.status_code == 404:
-            print("GitHub data.json does not exist yet.")
-            return None
+except Exception as e:
 
-        if not response.ok:
-            print(
-                "GITHUB LOAD ERROR:",
-                response.text
-            )
-            return None
-
-        result = response.json()
-
-        encoded_content = result.get(
-            "content",
-            ""
-        )
-
-        encoded_content = (
-            encoded_content
-            .replace("\n", "")
-            .replace("\r", "")
-        )
-
-        if not encoded_content:
-            return None
-
-        decoded = base64.b64decode(
-            encoded_content
-        ).decode("utf-8")
-
-        data = json.loads(decoded)
-
-        if not isinstance(data, dict):
-            return None
-
-        for key in [
-            "requests",
-            "chats",
-            "products",
-            "orders"
-        ]:
-
-            if not isinstance(
-                data.get(key),
-                list
-            ):
-                data[key] = []
-
-        return data
-
-    except Exception as e:
-
-        print(
-            "GITHUB LOAD EXCEPTION:",
-            e
-        )
-
-        return None
-
-
-def save_data_to_github(data):
-
-    headers = github_headers()
-
-    if not headers:
-        print(
-            "GITHUB_TOKEN is not configured. "
-            "Using local storage."
-        )
-        return False
-
-    url = (
-        f"https://api.github.com/repos/"
-        f"{GITHUB_REPO}/contents/{GITHUB_DATA_PATH}"
+    print(
+        "DATABASE INITIALIZATION ERROR:",
+        e
     )
-
-    try:
-
-        content = json.dumps(
-            data,
-            ensure_ascii=False,
-            indent=2
-        )
-
-        encoded = base64.b64encode(
-            content.encode("utf-8")
-        ).decode("ascii")
-
-        # -------------------------------------------------
-        # Get current file SHA
-        # -------------------------------------------------
-
-        current = requests.get(
-            url,
-            headers=headers,
-            params={
-                "ref": GITHUB_BRANCH
-            },
-            timeout=15
-        )
-
-        sha = None
-
-        if current.status_code == 200:
-
-            sha = current.json().get(
-                "sha"
-            )
-
-        elif current.status_code != 404:
-
-            print(
-                "GITHUB SHA ERROR:",
-                current.status_code,
-                current.text
-            )
-
-            return False
-
-        # -------------------------------------------------
-        # Create / Update file
-        # -------------------------------------------------
-
-        payload = {
-            "message": "Update persistent site data",
-            "content": encoded,
-            "branch": GITHUB_BRANCH
-        }
-
-        if sha:
-            payload["sha"] = sha
-
-        response = requests.put(
-            url,
-            headers=headers,
-            json=payload,
-            timeout=20
-        )
-
-        print(
-            "GITHUB SAVE:",
-            response.status_code,
-            response.text[:500]
-        )
-
-        return response.ok
-
-    except Exception as e:
-
-        print(
-            "GITHUB SAVE EXCEPTION:",
-            e
-        )
-
-        return False
-
-
-# =====================================================
-# LOCAL STORAGE
-# =====================================================
-
-def load_local_data():
-
-    if not os.path.exists(DATA_FILE):
-
-        data = empty_database()
-
-        save_local_data(data)
-
-        return data
-
-    try:
-
-        with open(
-            DATA_FILE,
-            "r",
-            encoding="utf-8"
-        ) as f:
-
-            data = json.load(f)
-
-        if not isinstance(data, dict):
-
-            data = empty_database()
-
-        for key in [
-            "requests",
-            "chats",
-            "products",
-            "orders"
-        ]:
-
-            if not isinstance(
-                data.get(key),
-                list
-            ):
-
-                data[key] = []
-
-        return data
-
-    except Exception as e:
-
-        print(
-            "LOCAL LOAD ERROR:",
-            e
-        )
-
-        return empty_database()
-
-
-def save_local_data(data):
-
-    try:
-
-        with open(
-            DATA_FILE,
-            "w",
-            encoding="utf-8"
-        ) as f:
-
-            json.dump(
-                data,
-                f,
-                ensure_ascii=False,
-                indent=2
-            )
-
-        return True
-
-    except Exception as e:
-
-        print(
-            "LOCAL SAVE ERROR:",
-            e
-        )
-
-        return False
-
-
-# =====================================================
-# MAIN DATABASE FUNCTIONS
-# =====================================================
-
-def load_data():
-
-    # -------------------------------------------------
-    # If GitHub is configured, GitHub is the main DB
-    # -------------------------------------------------
-
-    if GITHUB_TOKEN:
-
-        github_data = load_data_from_github()
-
-        if github_data is not None:
-
-            # Keep local copy too
-            save_local_data(
-                github_data
-            )
-
-            return github_data
-
-    # -------------------------------------------------
-    # Fallback to local data
-    # -------------------------------------------------
-
-    return load_local_data()
-
-
-def save_data(data):
-
-    # -------------------------------------------------
-    # Always keep local copy
-    # -------------------------------------------------
-
-    local_saved = save_local_data(
-        data
-    )
-
-    # -------------------------------------------------
-    # Persistent GitHub storage
-    # -------------------------------------------------
-
-    if GITHUB_TOKEN:
-
-        github_saved = save_data_to_github(
-            data
-        )
-
-        if github_saved:
-            return True
-
-        print(
-            "GitHub save failed."
-        )
-
-    return local_saved
 
 
 # =====================================================
@@ -432,11 +210,14 @@ def send_bale_message(text):
         )
 
         response = requests.post(
+
             url,
+
             json={
                 "chat_id": ADMIN_ID,
                 "text": text
             },
+
             timeout=15
         )
 
@@ -511,15 +292,39 @@ def index_html():
 # HEALTH
 # =====================================================
 
-@app.route("/health", methods=["GET"])
+@app.route(
+    "/health",
+    methods=["GET"]
+)
 def health():
 
+    database_ok = False
+
+    try:
+
+        connection = get_connection()
+
+        connection.close()
+
+        database_ok = True
+
+    except Exception as e:
+
+        print(
+            "HEALTH DATABASE ERROR:",
+            e
+        )
+
     return jsonify({
+
         "success": True,
+
         "status": "online",
+
         "panel": True,
-        "persistent_storage":
-            bool(GITHUB_TOKEN)
+
+        "database": database_ok
+
     })
 
 
@@ -527,7 +332,10 @@ def health():
 # SERVICE REQUEST
 # =====================================================
 
-@app.route("/api/request", methods=["POST"])
+@app.route(
+    "/api/request",
+    methods=["POST"]
+)
 def service_request():
 
     data = request.get_json(
@@ -553,16 +361,17 @@ def service_request():
     if not name or not phone or not service:
 
         return jsonify({
+
             "success": False,
+
             "message":
-                "لطفاً نام، شماره تماس و نوع خدمت را وارد کنید."
+            "لطفاً نام، شماره تماس و نوع خدمت را وارد کنید."
+
         }), 400
 
     item = {
 
-        "id": str(
-            uuid.uuid4()
-        ),
+        "id": str(uuid.uuid4()),
 
         "name": name,
 
@@ -575,21 +384,66 @@ def service_request():
         "created_at": now(),
 
         "status": "new"
+
     }
 
-    database = load_data()
+    connection = get_connection()
 
-    database[
-        "requests"
-    ].append(item)
+    try:
 
-    if not save_data(database):
+        with connection.cursor() as cur:
+
+            cur.execute("""
+
+                INSERT INTO requests
+                (
+                    id,
+                    name,
+                    phone,
+                    service,
+                    description,
+                    created_at,
+                    status
+                )
+
+                VALUES
+                (%s,%s,%s,%s,%s,%s,%s)
+
+            """, (
+
+                item["id"],
+                item["name"],
+                item["phone"],
+                item["service"],
+                item["description"],
+                item["created_at"],
+                item["status"]
+
+            ))
+
+        connection.commit()
+
+    except Exception as e:
+
+        connection.rollback()
+
+        print(
+            "REQUEST SAVE ERROR:",
+            e
+        )
 
         return jsonify({
+
             "success": False,
+
             "message":
-                "ذخیره درخواست انجام نشد."
+            "ذخیره درخواست انجام نشد."
+
         }), 500
+
+    finally:
+
+        connection.close()
 
     bale_sent = send_bale_message(
 
@@ -603,6 +457,7 @@ def service_request():
 
         f"📝 توضیحات: "
         f"{description or 'ثبت نشده'}"
+
     )
 
     return jsonify({
@@ -610,7 +465,7 @@ def service_request():
         "success": True,
 
         "message":
-            "درخواست شما با موفقیت ثبت شد ❤️",
+        "درخواست شما با موفقیت ثبت شد ❤️",
 
         "bale_sent": bale_sent,
 
@@ -623,7 +478,10 @@ def service_request():
 # CHAT GET
 # =====================================================
 
-@app.route("/chat", methods=["GET"])
+@app.route(
+    "/chat",
+    methods=["GET"]
+)
 def get_chat():
 
     phone = request.args.get(
@@ -631,59 +489,116 @@ def get_chat():
         ""
     ).strip()
 
-    database = load_data()
-
     if not phone:
 
         return jsonify({
+
             "success": True,
+
             "messages": []
+
         })
 
-    chat = next(
-        (
-            item
-            for item in database[
-                "chats"
+    connection = get_connection()
+
+    try:
+
+        with connection.cursor() as cur:
+
+            cur.execute("""
+
+                SELECT
+                    id,
+                    name,
+                    phone,
+                    created_at,
+                    updated_at
+
+                FROM chats
+
+                WHERE phone = %s
+
+                LIMIT 1
+
+            """, (phone,))
+
+            chat_row = cur.fetchone()
+
+            if not chat_row:
+
+                return jsonify({
+
+                    "success": True,
+
+                    "messages": []
+
+                })
+
+            chat_id = chat_row[0]
+
+            cur.execute("""
+
+                SELECT
+                    id,
+                    sender,
+                    message,
+                    created_at
+
+                FROM chat_messages
+
+                WHERE chat_id = %s
+
+                ORDER BY created_at ASC
+
+            """, (chat_id,))
+
+            rows = cur.fetchall()
+
+            messages = [
+
+                {
+
+                    "id": row[0],
+
+                    "sender": row[1],
+
+                    "message": row[2],
+
+                    "created_at": row[3]
+
+                }
+
+                for row in rows
+
             ]
-            if item.get(
-                "phone"
-            ) == phone
-        ),
-        None
-    )
 
-    if not chat:
+            return jsonify({
 
-        return jsonify({
-            "success": True,
-            "messages": []
-        })
+                "success": True,
 
-    return jsonify({
+                "chat_id": chat_id,
 
-        "success": True,
+                "name": chat_row[1],
 
-        "chat_id":
-            chat.get("id"),
+                "phone": chat_row[2],
 
-        "name":
-            chat.get("name", ""),
+                "messages": messages
 
-        "phone":
-            chat.get("phone", ""),
+            })
 
-        "messages":
-            chat.get("messages", [])
+    finally:
 
-    })
+        connection.close()
 
 
 # =====================================================
 # CHAT SEND
 # =====================================================
 
-@app.route("/chat/send", methods=["POST"])
+@app.route(
+    "/chat/send",
+    methods=["POST"]
+)
 def send_chat():
 
     data = request.get_json(
@@ -705,86 +620,138 @@ def send_chat():
     if not name or not phone or not message:
 
         return jsonify({
+
             "success": False,
+
             "message":
-                "نام، شماره تماس و پیام الزامی است."
+            "نام، شماره تماس و پیام الزامی است."
+
         }), 400
 
-    database = load_data()
+    connection = get_connection()
 
-    chat = next(
-        (
-            item
-            for item in database[
-                "chats"
-            ]
-            if item.get(
-                "phone"
-            ) == phone
-        ),
-        None
-    )
+    try:
 
-    if not chat:
+        with connection.cursor() as cur:
 
-        chat = {
+            cur.execute("""
 
-            "id": str(
+                SELECT
+                    id
+
+                FROM chats
+
+                WHERE phone = %s
+
+                LIMIT 1
+
+            """, (phone,))
+
+            row = cur.fetchone()
+
+            if row:
+
+                chat_id = row[0]
+
+                cur.execute("""
+
+                    UPDATE chats
+
+                    SET
+                        name = %s,
+                        updated_at = %s
+
+                    WHERE id = %s
+
+                """, (
+
+                    name,
+                    now(),
+                    chat_id
+
+                ))
+
+            else:
+
+                chat_id = str(
+                    uuid.uuid4()
+                )
+
+                cur.execute("""
+
+                    INSERT INTO chats
+                    (
+                        id,
+                        name,
+                        phone,
+                        created_at,
+                        updated_at
+                    )
+
+                    VALUES
+                    (%s,%s,%s,%s,%s)
+
+                """, (
+
+                    chat_id,
+                    name,
+                    phone,
+                    now(),
+                    now()
+
+                ))
+
+            message_id = str(
                 uuid.uuid4()
-            ),
+            )
 
-            "name": name,
+            cur.execute("""
 
-            "phone": phone,
+                INSERT INTO chat_messages
+                (
+                    id,
+                    chat_id,
+                    sender,
+                    message,
+                    created_at
+                )
 
-            "created_at": now(),
+                VALUES
+                (%s,%s,%s,%s,%s)
 
-            "updated_at": now(),
+            """, (
 
-            "messages": []
+                message_id,
+                chat_id,
+                "customer",
+                message,
+                now()
 
-        }
+            ))
 
-        database[
-            "chats"
-        ].append(chat)
+        connection.commit()
 
-    else:
+    except Exception as e:
 
-        chat["name"] = name
+        connection.rollback()
 
-        chat["updated_at"] = now()
-
-    customer_message = {
-
-        "id": str(
-            uuid.uuid4()
-        ),
-
-        "sender": "customer",
-
-        "message": message,
-
-        "created_at": now()
-
-    }
-
-    chat.setdefault(
-        "messages",
-        []
-    ).append(
-        customer_message
-    )
-
-    chat["updated_at"] = now()
-
-    if not save_data(database):
+        print(
+            "CHAT SAVE ERROR:",
+            e
+        )
 
         return jsonify({
+
             "success": False,
+
             "message":
-                "ذخیره پیام انجام نشد."
+            "ذخیره پیام انجام نشد."
+
         }), 500
+
+    finally:
+
+        connection.close()
 
     bale_sent = send_bale_message(
 
@@ -795,6 +762,7 @@ def send_chat():
         f"📱 {phone}\n\n"
 
         f"💬 {message}"
+
     )
 
     return jsonify({
@@ -802,13 +770,11 @@ def send_chat():
         "success": True,
 
         "message":
-            "پیام شما ارسال شد.",
+        "پیام شما ارسال شد.",
 
-        "chat_id":
-            chat["id"],
+        "chat_id": chat_id,
 
-        "bale_sent":
-            bale_sent
+        "bale_sent": bale_sent
 
     })
 
@@ -823,25 +789,253 @@ def send_chat():
 )
 def admin_dashboard():
 
-    database = load_data()
+    connection = get_connection()
 
-    return jsonify({
+    try:
 
-        "success": True,
+        with connection.cursor() as cur:
 
-        "requests":
-            database["requests"],
+            # -----------------------------------------
+            # REQUESTS
+            # -----------------------------------------
 
-        "chats":
-            database["chats"],
+            cur.execute("""
 
-        "products":
-            database["products"],
+                SELECT
+                    id,
+                    name,
+                    phone,
+                    service,
+                    description,
+                    created_at,
+                    status
 
-        "orders":
-            database["orders"]
+                FROM requests
 
-    })
+                ORDER BY created_at DESC
+
+            """)
+
+            request_rows = cur.fetchall()
+
+            requests_data = [
+
+                {
+
+                    "id": row[0],
+                    "name": row[1],
+                    "phone": row[2],
+                    "service": row[3],
+                    "description": row[4],
+                    "created_at": row[5],
+                    "status": row[6]
+
+                }
+
+                for row in request_rows
+
+            ]
+
+            # -----------------------------------------
+            # CHATS
+            # -----------------------------------------
+
+            cur.execute("""
+
+                SELECT
+                    id,
+                    name,
+                    phone,
+                    created_at,
+                    updated_at
+
+                FROM chats
+
+                ORDER BY updated_at DESC
+
+            """)
+
+            chat_rows = cur.fetchall()
+
+            chats_data = []
+
+            for row in chat_rows:
+
+                chat_id = row[0]
+
+                cur.execute("""
+
+                    SELECT
+                        id,
+                        sender,
+                        message,
+                        created_at
+
+                    FROM chat_messages
+
+                    WHERE chat_id = %s
+
+                    ORDER BY created_at ASC
+
+                """, (chat_id,))
+
+                message_rows = cur.fetchall()
+
+                messages = [
+
+                    {
+
+                        "id": msg[0],
+
+                        "sender": msg[1],
+
+                        "message": msg[2],
+
+                        "created_at": msg[3]
+
+                    }
+
+                    for msg in message_rows
+
+                ]
+
+                chats_data.append({
+
+                    "id": chat_id,
+
+                    "name": row[1],
+
+                    "phone": row[2],
+
+                    "created_at": row[3],
+
+                    "updated_at": row[4],
+
+                    "messages": messages
+
+                })
+
+            # -----------------------------------------
+            # PRODUCTS
+            # -----------------------------------------
+
+            cur.execute("""
+
+                SELECT
+                    id,
+                    name,
+                    price,
+                    stock,
+                    category,
+                    description,
+                    image,
+                    created_at
+
+                FROM products
+
+                ORDER BY created_at DESC
+
+            """)
+
+            product_rows = cur.fetchall()
+
+            products_data = [
+
+                {
+
+                    "id": row[0],
+
+                    "name": row[1],
+
+                    "price": row[2],
+
+                    "stock": row[3],
+
+                    "category": row[4],
+
+                    "description": row[5],
+
+                    "image": row[6],
+
+                    "created_at": row[7]
+
+                }
+
+                for row in product_rows
+
+            ]
+
+            # -----------------------------------------
+            # ORDERS
+            # -----------------------------------------
+
+            cur.execute("""
+
+                SELECT
+                    id,
+                    name,
+                    phone,
+                    product_id,
+                    product_name,
+                    quantity,
+                    created_at,
+                    status
+
+                FROM orders
+
+                ORDER BY created_at DESC
+
+            """)
+
+            order_rows = cur.fetchall()
+
+            orders_data = [
+
+                {
+
+                    "id": row[0],
+
+                    "name": row[1],
+
+                    "phone": row[2],
+
+                    "product_id": row[3],
+
+                    "product_name": row[4],
+
+                    "quantity": row[5],
+
+                    "created_at": row[6],
+
+                    "status": row[7]
+
+                }
+
+                for row in order_rows
+
+            ]
+
+            return jsonify({
+
+                "success": True,
+
+                "requests":
+                requests_data,
+
+                "chats":
+                chats_data,
+
+                "products":
+                products_data,
+
+                "orders":
+                orders_data
+
+            })
+
+    finally:
+
+        connection.close()
 
 
 # =====================================================
@@ -869,39 +1063,17 @@ def admin_chat_reply():
     if not chat_id or not message:
 
         return jsonify({
+
             "success": False,
+
             "message":
-                "گفتگو و متن پاسخ الزامی است."
+            "گفتگو و متن پاسخ الزامی است."
+
         }), 400
-
-    database = load_data()
-
-    chat = next(
-        (
-            item
-            for item in database[
-                "chats"
-            ]
-            if item.get(
-                "id"
-            ) == chat_id
-        ),
-        None
-    )
-
-    if not chat:
-
-        return jsonify({
-            "success": False,
-            "message":
-                "گفتگو پیدا نشد."
-        }), 404
 
     admin_message = {
 
-        "id": str(
-            uuid.uuid4()
-        ),
+        "id": str(uuid.uuid4()),
 
         "sender": "admin",
 
@@ -911,35 +1083,117 @@ def admin_chat_reply():
 
     }
 
-    chat.setdefault(
-        "messages",
-        []
-    ).append(
-        admin_message
-    )
+    connection = get_connection()
 
-    chat["updated_at"] = now()
+    try:
 
-    if not save_data(database):
+        with connection.cursor() as cur:
+
+            cur.execute("""
+
+                SELECT id
+
+                FROM chats
+
+                WHERE id = %s
+
+                LIMIT 1
+
+            """, (chat_id,))
+
+            chat = cur.fetchone()
+
+            if not chat:
+
+                return jsonify({
+
+                    "success": False,
+
+                    "message":
+                    "گفتگو پیدا نشد."
+
+                }), 404
+
+            cur.execute("""
+
+                INSERT INTO chat_messages
+                (
+                    id,
+                    chat_id,
+                    sender,
+                    message,
+                    created_at
+                )
+
+                VALUES
+                (%s,%s,%s,%s,%s)
+
+            """, (
+
+                admin_message["id"],
+
+                chat_id,
+
+                "admin",
+
+                message,
+
+                admin_message["created_at"]
+
+            ))
+
+            cur.execute("""
+
+                UPDATE chats
+
+                SET updated_at = %s
+
+                WHERE id = %s
+
+            """, (
+
+                now(),
+
+                chat_id
+
+            ))
+
+        connection.commit()
+
+    except Exception as e:
+
+        connection.rollback()
+
+        print(
+            "ADMIN CHAT ERROR:",
+            e
+        )
 
         return jsonify({
+
             "success": False,
+
             "message":
-                "ذخیره پاسخ انجام نشد."
+            "ذخیره پاسخ انجام نشد."
+
         }), 500
+
+    finally:
+
+        connection.close()
 
     return jsonify({
 
         "success": True,
 
         "message":
-            "پاسخ ارسال شد.",
+        "پاسخ ارسال شد.",
 
         "chat_id":
-            chat_id,
+        chat_id,
 
         "reply":
-            admin_message
+        admin_message
 
     })
 
@@ -985,20 +1239,22 @@ def add_product():
     if not name or not price or not category:
 
         return jsonify({
+
             "success": False,
+
             "message":
-                "نام، قیمت و دسته‌بندی محصول الزامی است."
+            "نام، قیمت و دسته‌بندی محصول الزامی است."
+
         }), 400
 
-    # -------------------------------------------------
-    # هر ثبت محصول یک ID کاملاً جدید می‌گیرد
-    # -------------------------------------------------
+    # IMPORTANT:
+    # Every product receives a completely new UUID.
+    # Therefore two products with the same name
+    # are still stored as separate products.
 
     product = {
 
-        "id": str(
-            uuid.uuid4()
-        ),
+        "id": str(uuid.uuid4()),
 
         "name": name,
 
@@ -1016,29 +1272,82 @@ def add_product():
 
     }
 
-    database = load_data()
+    connection = get_connection()
 
-    database[
-        "products"
-    ].append(product)
+    try:
 
-    if not save_data(database):
+        with connection.cursor() as cur:
+
+            cur.execute("""
+
+                INSERT INTO products
+                (
+                    id,
+                    name,
+                    price,
+                    stock,
+                    category,
+                    description,
+                    image,
+                    created_at
+                )
+
+                VALUES
+                (%s,%s,%s,%s,%s,%s,%s,%s)
+
+            """, (
+
+                product["id"],
+
+                product["name"],
+
+                product["price"],
+
+                product["stock"],
+
+                product["category"],
+
+                product["description"],
+
+                product["image"],
+
+                product["created_at"]
+
+            ))
+
+        connection.commit()
+
+    except Exception as e:
+
+        connection.rollback()
+
+        print(
+            "PRODUCT SAVE ERROR:",
+            e
+        )
 
         return jsonify({
+
             "success": False,
+
             "message":
-                "ذخیره محصول انجام نشد."
+            "ذخیره محصول انجام نشد."
+
         }), 500
+
+    finally:
+
+        connection.close()
 
     return jsonify({
 
         "success": True,
 
         "message":
-            "محصول با موفقیت ثبت شد.",
+        "محصول با موفقیت ثبت شد.",
 
         "product":
-            product
+        product
 
     })
 
@@ -1053,16 +1362,71 @@ def add_product():
 )
 def get_products():
 
-    database = load_data()
+    connection = get_connection()
 
-    return jsonify({
+    try:
 
-        "success": True,
+        with connection.cursor() as cur:
 
-        "products":
-            database["products"]
+            cur.execute("""
 
-    })
+                SELECT
+                    id,
+                    name,
+                    price,
+                    stock,
+                    category,
+                    description,
+                    image,
+                    created_at
+
+                FROM products
+
+                ORDER BY created_at DESC
+
+            """)
+
+            rows = cur.fetchall()
+
+            products = [
+
+                {
+
+                    "id": row[0],
+
+                    "name": row[1],
+
+                    "price": row[2],
+
+                    "stock": row[3],
+
+                    "category": row[4],
+
+                    "description": row[5],
+
+                    "image": row[6],
+
+                    "created_at": row[7]
+
+                }
+
+                for row in rows
+
+            ]
+
+            return jsonify({
+
+                "success": True,
+
+                "products": products,
+
+                "count": len(products)
+
+            })
+
+    finally:
+
+        connection.close()
 
 
 # =====================================================
@@ -1079,70 +1443,127 @@ def update_product(product_id):
         silent=True
     ) or {}
 
-    database = load_data()
-
-    product = next(
-        (
-            item
-            for item in database[
-                "products"
-            ]
-            if item.get(
-                "id"
-            ) == product_id
-        ),
-        None
-    )
-
-    if not product:
-
-        return jsonify({
-            "success": False,
-            "message":
-                "محصول پیدا نشد."
-        }), 404
-
     allowed_fields = [
 
         "name",
-
         "price",
-
         "stock",
-
         "category",
-
         "description",
-
         "image"
 
     ]
 
-    for field in allowed_fields:
+    connection = get_connection()
 
-        if field in data:
+    try:
 
-            product[field] = str(
-                data[field]
-            ).strip()
+        with connection.cursor() as cur:
 
-    if not save_data(database):
+            cur.execute("""
+
+                SELECT id
+
+                FROM products
+
+                WHERE id = %s
+
+                LIMIT 1
+
+            """, (product_id,))
+
+            product = cur.fetchone()
+
+            if not product:
+
+                return jsonify({
+
+                    "success": False,
+
+                    "message":
+                    "محصول پیدا نشد."
+
+                }), 404
+
+            updates = []
+
+            values = []
+
+            for field in allowed_fields:
+
+                if field in data:
+
+                    updates.append(
+                        f"{field} = %s"
+                    )
+
+                    values.append(
+                        str(
+                            data[field]
+                        ).strip()
+                    )
+
+            if updates:
+
+                values.append(
+                    product_id
+                )
+
+                query = """
+
+                    UPDATE products
+
+                    SET
+                        {fields}
+
+                    WHERE id = %s
+
+                """.format(
+
+                    fields=", ".join(
+                        updates
+                    )
+
+                )
+
+                cur.execute(
+                    query,
+                    values
+                )
+
+        connection.commit()
+
+    except Exception as e:
+
+        connection.rollback()
+
+        print(
+            "PRODUCT UPDATE ERROR:",
+            e
+        )
 
         return jsonify({
+
             "success": False,
+
             "message":
-                "ذخیره تغییرات محصول انجام نشد."
+            "ذخیره تغییرات محصول انجام نشد."
+
         }), 500
+
+    finally:
+
+        connection.close()
 
     return jsonify({
 
         "success": True,
 
         "message":
-            "محصول ویرایش شد.",
+        "محصول ویرایش شد.",
 
-        "product":
-            product
+        "product_id":
+        product_id
 
     })
 
@@ -1157,50 +1578,63 @@ def update_product(product_id):
 )
 def delete_product(product_id):
 
-    database = load_data()
+    connection = get_connection()
 
-    old_count = len(
-        database["products"]
-    )
+    try:
 
-    database["products"] = [
+        with connection.cursor() as cur:
 
-        product
+            cur.execute("""
 
-        for product in database[
-            "products"
-        ]
+                DELETE FROM products
 
-        if product.get(
-            "id"
-        ) != product_id
+                WHERE id = %s
 
-    ]
+            """, (product_id,))
 
-    if len(
-        database["products"]
-    ) == old_count:
+            deleted = cur.rowcount
 
-        return jsonify({
-            "success": False,
-            "message":
-                "محصول پیدا نشد."
-        }), 404
+        connection.commit()
 
-    if not save_data(database):
+    except Exception as e:
+
+        connection.rollback()
+
+        print(
+            "PRODUCT DELETE ERROR:",
+            e
+        )
 
         return jsonify({
+
             "success": False,
+
             "message":
-                "حذف محصول ذخیره نشد."
+            "حذف محصول ذخیره نشد."
+
         }), 500
+
+    finally:
+
+        connection.close()
+
+    if deleted == 0:
+
+        return jsonify({
+
+            "success": False,
+
+            "message":
+            "محصول پیدا نشد."
+
+        }), 404
 
     return jsonify({
 
         "success": True,
 
         "message":
-            "محصول حذف شد."
+        "محصول حذف شد."
 
     })
 
@@ -1242,68 +1676,126 @@ def create_order():
     if not name or not phone or not product_name:
 
         return jsonify({
+
             "success": False,
+
             "message":
-                "نام، شماره تماس و محصول الزامی است."
+            "نام، شماره تماس و محصول الزامی است."
+
         }), 400
 
-    database = load_data()
+    connection = get_connection()
 
-    product = None
+    try:
 
-    if product_id:
+        with connection.cursor() as cur:
 
-        product = next(
-            (
-                item
-                for item in database[
-                    "products"
-                ]
-                if item.get(
-                    "id"
-                ) == product_id
-            ),
-            None
+            product = None
+
+            if product_id:
+
+                cur.execute("""
+
+                    SELECT id
+
+                    FROM products
+
+                    WHERE id = %s
+
+                    LIMIT 1
+
+                """, (product_id,))
+
+                product = cur.fetchone()
+
+            order = {
+
+                "id":
+                str(uuid.uuid4()),
+
+                "name":
+                name,
+
+                "phone":
+                phone,
+
+                "product_id":
+                product_id,
+
+                "product_name":
+                product_name,
+
+                "quantity":
+                quantity,
+
+                "created_at":
+                now(),
+
+                "status":
+                "new"
+
+            }
+
+            cur.execute("""
+
+                INSERT INTO orders
+                (
+                    id,
+                    name,
+                    phone,
+                    product_id,
+                    product_name,
+                    quantity,
+                    created_at,
+                    status
+                )
+
+                VALUES
+                (%s,%s,%s,%s,%s,%s,%s,%s)
+
+            """, (
+
+                order["id"],
+
+                order["name"],
+
+                order["phone"],
+
+                order["product_id"],
+
+                order["product_name"],
+
+                order["quantity"],
+
+                order["created_at"],
+
+                order["status"]
+
+            ))
+
+        connection.commit()
+
+    except Exception as e:
+
+        connection.rollback()
+
+        print(
+            "ORDER SAVE ERROR:",
+            e
         )
 
-    order = {
-
-        "id": str(
-            uuid.uuid4()
-        ),
-
-        "name": name,
-
-        "phone": phone,
-
-        "product_id":
-            product_id,
-
-        "product_name":
-            product_name,
-
-        "quantity":
-            quantity,
-
-        "created_at":
-            now(),
-
-        "status":
-            "new"
-
-    }
-
-    database[
-        "orders"
-    ].append(order)
-
-    if not save_data(database):
-
         return jsonify({
+
             "success": False,
+
             "message":
-                "ذخیره سفارش انجام نشد."
+            "ذخیره سفارش انجام نشد."
+
         }), 500
+
+    finally:
+
+        connection.close()
 
     bale_sent = send_bale_message(
 
@@ -1324,16 +1816,16 @@ def create_order():
         "success": True,
 
         "message":
-            "سفارش شما با موفقیت ثبت شد.",
+        "سفارش شما با موفقیت ثبت شد.",
 
         "order":
-            order,
+        order,
 
         "bale_sent":
-            bale_sent,
+        bale_sent,
 
         "product_found":
-            product is not None
+        product is not None
 
     })
 
@@ -1359,53 +1851,85 @@ def update_order(order_id):
     if not status:
 
         return jsonify({
+
             "success": False,
+
             "message":
-                "وضعیت سفارش مشخص نشده است."
+            "وضعیت سفارش مشخص نشده است."
+
         }), 400
 
-    database = load_data()
+    connection = get_connection()
 
-    order = next(
-        (
-            item
-            for item in database[
-                "orders"
-            ]
-            if item.get(
-                "id"
-            ) == order_id
-        ),
-        None
-    )
+    try:
 
-    if not order:
+        with connection.cursor() as cur:
+
+            cur.execute("""
+
+                UPDATE orders
+
+                SET status = %s
+
+                WHERE id = %s
+
+            """, (
+
+                status,
+
+                order_id
+
+            ))
+
+            updated = cur.rowcount
+
+        connection.commit()
+
+    except Exception as e:
+
+        connection.rollback()
+
+        print(
+            "ORDER UPDATE ERROR:",
+            e
+        )
 
         return jsonify({
+
             "success": False,
+
             "message":
-                "سفارش پیدا نشد."
-        }), 404
+            "ذخیره وضعیت سفارش انجام نشد."
 
-    order["status"] = status
-
-    if not save_data(database):
-
-        return jsonify({
-            "success": False,
-            "message":
-                "ذخیره وضعیت سفارش انجام نشد."
         }), 500
+
+    finally:
+
+        connection.close()
+
+    if updated == 0:
+
+        return jsonify({
+
+            "success": False,
+
+            "message":
+            "سفارش پیدا نشد."
+
+        }), 404
 
     return jsonify({
 
         "success": True,
 
         "message":
-            "وضعیت سفارش تغییر کرد.",
+        "وضعیت سفارش تغییر کرد.",
 
-        "order":
-            order
+        "order_id":
+        order_id,
+
+        "status":
+        status
 
     })
 
@@ -1420,16 +1944,67 @@ def update_order(order_id):
 )
 def admin_requests():
 
-    database = load_data()
+    connection = get_connection()
 
-    return jsonify({
+    try:
 
-        "success": True,
+        with connection.cursor() as cur:
 
-        "requests":
-            database["requests"]
+            cur.execute("""
 
-    })
+                SELECT
+                    id,
+                    name,
+                    phone,
+                    service,
+                    description,
+                    created_at,
+                    status
+
+                FROM requests
+
+                ORDER BY created_at DESC
+
+            """)
+
+            rows = cur.fetchall()
+
+            requests_data = [
+
+                {
+
+                    "id": row[0],
+
+                    "name": row[1],
+
+                    "phone": row[2],
+
+                    "service": row[3],
+
+                    "description": row[4],
+
+                    "created_at": row[5],
+
+                    "status": row[6]
+
+                }
+
+                for row in rows
+
+            ]
+
+            return jsonify({
+
+                "success": True,
+
+                "requests":
+                requests_data
+
+            })
+
+    finally:
+
+        connection.close()
 
 
 # =====================================================
@@ -1453,53 +2028,85 @@ def update_service_request(request_id):
     if not status:
 
         return jsonify({
+
             "success": False,
+
             "message":
-                "وضعیت درخواست مشخص نشده است."
+            "وضعیت درخواست مشخص نشده است."
+
         }), 400
 
-    database = load_data()
+    connection = get_connection()
 
-    item = next(
-        (
-            x
-            for x in database[
-                "requests"
-            ]
-            if x.get(
-                "id"
-            ) == request_id
-        ),
-        None
-    )
+    try:
 
-    if not item:
+        with connection.cursor() as cur:
+
+            cur.execute("""
+
+                UPDATE requests
+
+                SET status = %s
+
+                WHERE id = %s
+
+            """, (
+
+                status,
+
+                request_id
+
+            ))
+
+            updated = cur.rowcount
+
+        connection.commit()
+
+    except Exception as e:
+
+        connection.rollback()
+
+        print(
+            "REQUEST UPDATE ERROR:",
+            e
+        )
 
         return jsonify({
+
             "success": False,
+
             "message":
-                "درخواست پیدا نشد."
-        }), 404
+            "ذخیره وضعیت درخواست انجام نشد."
 
-    item["status"] = status
-
-    if not save_data(database):
-
-        return jsonify({
-            "success": False,
-            "message":
-                "ذخیره وضعیت درخواست انجام نشد."
         }), 500
+
+    finally:
+
+        connection.close()
+
+    if updated == 0:
+
+        return jsonify({
+
+            "success": False,
+
+            "message":
+            "درخواست پیدا نشد."
+
+        }), 404
 
     return jsonify({
 
         "success": True,
 
         "message":
-            "وضعیت درخواست تغییر کرد.",
+        "وضعیت درخواست تغییر کرد.",
 
-        "request":
-            item
+        "request_id":
+        request_id,
+
+        "status":
+        status
 
     })
 
@@ -1516,7 +2123,7 @@ def not_found(error):
         "success": False,
 
         "message":
-            "مسیر موردنظر پیدا نشد."
+        "مسیر موردنظر پیدا نشد."
 
     }), 404
 
@@ -1529,7 +2136,7 @@ def method_not_allowed(error):
         "success": False,
 
         "message":
-            "متد درخواست مجاز نیست."
+        "متد درخواست مجاز نیست."
 
     }), 405
 
@@ -1542,7 +2149,7 @@ def internal_error(error):
         "success": False,
 
         "message":
-            "خطای داخلی سرور."
+        "خطای داخلی سرور."
 
     }), 500
 
@@ -1554,13 +2161,18 @@ def internal_error(error):
 if __name__ == "__main__":
 
     port = int(
+
         os.environ.get(
             "PORT",
             "10000"
         )
+
     )
 
     app.run(
+
         host="0.0.0.0",
+
         port=port
+
     )
