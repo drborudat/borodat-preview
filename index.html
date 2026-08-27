@@ -42,9 +42,7 @@ select{
     margin:auto;
 }
 
-/* =========================
-   HEADER
-========================= */
+/* HEADER */
 
 header{
     position:sticky;
@@ -112,9 +110,7 @@ header{
     cursor:pointer;
 }
 
-/* =========================
-   HERO
-========================= */
+/* HERO */
 
 .hero{
     padding:85px 0 70px;
@@ -235,9 +231,7 @@ header{
     font-size:24px;
 }
 
-/* =========================
-   SECTIONS
-========================= */
+/* SECTIONS */
 
 section{
     padding:75px 0;
@@ -258,9 +252,7 @@ section{
     color:#718497;
 }
 
-/* =========================
-   SERVICES
-========================= */
+/* SERVICES */
 
 .services{
     background:white;
@@ -308,9 +300,7 @@ section{
     font-size:14px;
 }
 
-/* =========================
-   PRODUCTS
-========================= */
+/* PRODUCTS */
 
 .products{
     background:#f7fbff;
@@ -337,6 +327,7 @@ section{
     justify-content:center;
     background:#eef8ff;
     font-size:65px;
+    overflow:hidden;
 }
 
 .product-content{
@@ -351,6 +342,7 @@ section{
     color:#718497;
     font-size:13px;
     line-height:1.8;
+    min-height:45px;
 }
 
 .product-price{
@@ -359,9 +351,7 @@ section{
     margin:15px 0;
 }
 
-/* =========================
-   REQUEST
-========================= */
+/* REQUEST */
 
 .request{
     background:white;
@@ -442,13 +432,10 @@ section{
     color:#a62b2b;
 }
 
-/* =========================
-   REVIEWS
-========================= */
+/* REVIEWS */
 
 .reviews{
-    background:
-        linear-gradient(180deg,#f7fbff,#ffffff);
+    background:linear-gradient(180deg,#f7fbff,#ffffff);
 }
 
 .review-layout{
@@ -503,9 +490,7 @@ section{
     transition:.15s;
 }
 
-.star-input button.active,
-.star-input button:hover,
-.star-input button:hover ~ button{
+.star-input button.active{
     color:#f6b800;
 }
 
@@ -602,9 +587,7 @@ section{
     margin-right:7px;
 }
 
-/* =========================
-   CHAT
-========================= */
+/* CHAT */
 
 .support{
     position:fixed;
@@ -687,9 +670,7 @@ section{
     background:#edf9f0;
 }
 
-/* =========================
-   FOOTER
-========================= */
+/* FOOTER */
 
 footer{
     background:#09253b;
@@ -723,9 +704,7 @@ footer a{
     font-size:12px;
 }
 
-/* =========================
-   RESPONSIVE
-========================= */
+/* RESPONSIVE */
 
 @media(max-width:850px){
 
@@ -829,10 +808,6 @@ footer a{
 
 <body>
 
-<!-- =========================
-     HEADER
-========================= -->
-
 <header>
 
 <div class="container nav">
@@ -855,11 +830,6 @@ footer a{
 </div>
 
 </header>
-
-
-<!-- =========================
-     HERO
-========================= -->
 
 <main>
 
@@ -910,11 +880,6 @@ footer a{
 </div>
 
 </section>
-
-
-<!-- =========================
-     SERVICES
-========================= -->
 
 <section class="services" id="services">
 
@@ -974,11 +939,6 @@ footer a{
 
 </section>
 
-
-<!-- =========================
-     PRODUCTS
-========================= -->
-
 <section class="products" id="products">
 
 <div class="container">
@@ -1004,11 +964,6 @@ footer a{
 </div>
 
 </section>
-
-
-<!-- =========================
-     SERVICE REQUEST
-========================= -->
 
 <section class="request" id="request">
 
@@ -1076,7 +1031,7 @@ required
 
 <div class="field">
 
-<label>توضیحات</label>
+<label>توضیحات کوتاه</label>
 
 <input
 type="text"
@@ -1102,6 +1057,7 @@ placeholder="مشکل یا درخواست خود را بنویسید..."
 <button
 type="submit"
 class="btn btn-primary"
+id="requestSubmit"
 >
 📩 ثبت درخواست
 </button>
@@ -1120,11 +1076,6 @@ class="btn btn-primary"
 
 </section>
 
-
-<!-- =========================
-     REVIEWS
-========================= -->
-
 <section class="reviews" id="reviews">
 
 <div class="container">
@@ -1142,11 +1093,7 @@ class="btn btn-primary"
 
 </div>
 
-
 <div class="review-layout">
-
-
-<!-- REVIEW FORM -->
 
 <div class="review-form">
 
@@ -1227,9 +1174,6 @@ class="form-message"
 
 </div>
 
-
-<!-- REVIEWS LIST -->
-
 <div>
 
 <div
@@ -1252,11 +1196,6 @@ class="reviews-list"
 </section>
 
 </main>
-
-
-<!-- =========================
-     SUPPORT CHAT
-========================= -->
 
 <div class="support">
 
@@ -1311,11 +1250,6 @@ id="supportBtn"
 </button>
 
 </div>
-
-
-<!-- =========================
-     FOOTER
-========================= -->
 
 <footer>
 
@@ -1378,34 +1312,31 @@ id="supportBtn"
 
 </footer>
 
-
 <script>
+
+/* =====================================================
+   SERVER
+   این آدرس مخصوص سرور پیش‌نمایش است
+===================================================== */
+
+const API_BASE = "https://borodat-panel.onrender.com";
+
 
 /* =====================================================
    MENU
 ===================================================== */
 
-const menuBtn =
-document.getElementById("menuBtn");
-
-const navLinks =
-document.getElementById("navLinks");
+const menuBtn = document.getElementById("menuBtn");
+const navLinks = document.getElementById("navLinks");
 
 menuBtn.addEventListener("click",()=>{
-
     navLinks.classList.toggle("open");
-
 });
 
-document.querySelectorAll(".nav-links a")
-.forEach(link=>{
-
+document.querySelectorAll(".nav-links a").forEach(link=>{
     link.addEventListener("click",()=>{
-
         navLinks.classList.remove("open");
-
     });
-
 });
 
 
@@ -1413,50 +1344,43 @@ document.querySelectorAll(".nav-links a")
    API HELPER
 ===================================================== */
 
-async function apiFetch(
-    url,
-    options={}
-){
+async function apiFetch(url, options={}){
 
-    const response =
-        await fetch(url,{
+    const fullUrl =
+        url.startsWith("http")
+        ? url
+        : API_BASE + url;
 
-            ...options,
+    const response = await fetch(fullUrl,{
+        ...options,
+        headers:{
+            "Accept":"application/json",
+            ...(options.body ? {
+                "Content-Type":"application/json"
+            } : {}),
+            ...(options.headers || {})
+        }
+    });
 
-            headers:{
-                "Content-Type":
-                    "application/json",
-
-                ...(options.headers || {})
-
-            }
-
-        });
-
-    let data;
+    let data={};
 
     try{
-
-        data =
-            await response.json();
-
-    }catch(e){
-
-        data = {};
-
+        data=await response.json();
+    }catch(error){
+        data={};
     }
 
     if(!response.ok){
 
         throw new Error(
             data.message ||
+            data.error ||
             "خطایی در ارتباط با سرور رخ داد."
         );
 
     }
 
     return data;
-
 }
 
 
@@ -1467,37 +1391,38 @@ async function apiFetch(
 async function loadProducts(){
 
     const grid =
-        document.getElementById(
-            "productGrid"
-        );
+        document.getElementById("productGrid");
+
+    grid.innerHTML=`
+        <div class="review-loading" style="grid-column:1/-1">
+            در حال دریافت محصولات...
+        </div>
+    `;
 
     try{
 
         const data =
-            await apiFetch(
-                "/api/products"
-            );
+            await apiFetch("/api/products");
 
         const products =
             Array.isArray(data.products)
             ? data.products
+            : Array.isArray(data)
+            ? data
             : [];
 
         if(!products.length){
 
-            grid.innerHTML = `
-
+            grid.innerHTML=`
                 <div
                     class="review-empty"
                     style="grid-column:1/-1"
                 >
                     هنوز محصولی ثبت نشده است.
                 </div>
-
             `;
 
             return;
-
         }
 
         grid.innerHTML =
@@ -1505,197 +1430,173 @@ async function loadProducts(){
 
                 const image =
                     product.image &&
-                    product.image.trim()
-                    ? `<img
-                        src="${escapeHtml(product.image)}"
-                        alt="${escapeHtml(product.name)}"
-                        style="width:100%;height:100%;object-fit:cover"
-                       >`
+                    String(product.image).trim()
+                    ? `
+                        <img
+                            src="${escapeHtml(product.image)}"
+                            alt="${escapeHtml(product.name || "محصول")}"
+                            style="
+                                width:100%;
+                                height:100%;
+                                object-fit:cover;
+                                display:block;
+                            "
+                        >
+                      `
                     : "❄️";
 
                 return `
+                    <div class="product-card">
 
-                <div class="product-card">
+                        <div class="product-image">
+                            ${image}
+                        </div>
 
-                    <div class="product-image">
-                        ${image}
-                    </div>
+                        <div class="product-content">
 
-                    <div class="product-content">
+                            <h3>
+                                ${escapeHtml(product.name || "محصول")}
+                            </h3>
 
-                        <h3>
-                            ${escapeHtml(product.name)}
-                        </h3>
+                            <p>
+                                ${escapeHtml(
+                                    product.description || ""
+                                )}
+                            </p>
 
-                        <p>
-                            ${escapeHtml(
-                                product.description || ""
-                            )}
-                        </p>
+                            <div class="product-price">
+                                ${escapeHtml(
+                                    product.price || ""
+                                )}
+                            </div>
 
-                        <div class="product-price">
-                            ${escapeHtml(product.price)}
                         </div>
 
                     </div>
-
-                </div>
-
                 `;
 
             }).join("");
 
     }catch(error){
 
-        console.error(
-            "PRODUCT ERROR:",
-            error
-        );
+        console.error("PRODUCT ERROR:",error);
 
-        grid.innerHTML = `
-
+        grid.innerHTML=`
             <div
                 class="review-empty"
                 style="grid-column:1/-1"
             >
-                دریافت محصولات با خطا مواجه شد.
+                <div style="font-size:35px;margin-bottom:10px">
+                    ⚠️
+                </div>
+
+                دریافت محصولات از سرور انجام نشد.
+
+                <br><br>
+
+                <button
+                    class="btn btn-light"
+                    onclick="loadProducts()"
+                >
+                    تلاش دوباره
+                </button>
             </div>
-
         `;
-
     }
-
 }
 
 
 /* =====================================================
-   REVIEWS
+   REVIEW ELEMENTS
 ===================================================== */
 
 const reviewForm =
-    document.getElementById(
-        "reviewForm"
-    );
+    document.getElementById("reviewForm");
 
 const reviewName =
-    document.getElementById(
-        "reviewName"
-    );
+    document.getElementById("reviewName");
 
 const reviewComment =
-    document.getElementById(
-        "reviewComment"
-    );
+    document.getElementById("reviewComment");
 
 const reviewRating =
-    document.getElementById(
-        "reviewRating"
-    );
+    document.getElementById("reviewRating");
 
 const starInput =
-    document.getElementById(
-        "starInput"
-    );
+    document.getElementById("starInput");
 
 const reviewMessage =
-    document.getElementById(
-        "reviewMessage"
-    );
+    document.getElementById("reviewMessage");
 
 const reviewsList =
-    document.getElementById(
-        "reviewsList"
-    );
+    document.getElementById("reviewsList");
 
 const reviewCount =
-    document.getElementById(
-        "reviewCount"
-    );
+    document.getElementById("reviewCount");
 
 const reviewSubmit =
-    document.getElementById(
-        "reviewSubmit"
-    );
+    document.getElementById("reviewSubmit");
 
 
 /* =====================================================
-   STAR RATING
+   RATING
 ===================================================== */
 
 function setRating(rating){
 
-    rating =
-        Math.max(
-            1,
-            Math.min(
-                5,
-                Number(rating) || 5
-            )
-        );
+    rating=Math.max(
+        1,
+        Math.min(
+            5,
+            Number(rating)||5
+        )
+    );
 
-    reviewRating.value =
-        rating;
+    reviewRating.value=rating;
 
-    const buttons =
-        starInput.querySelectorAll(
-            "button"
-        );
+    starInput
+        .querySelectorAll("button")
+        .forEach(button=>{
 
-    buttons.forEach(button=>{
+            const value =
+                Number(button.dataset.rating);
 
-        const buttonRating =
-            Number(
-                button.dataset.rating
+            button.classList.toggle(
+                "active",
+                value<=rating
             );
 
-        button.classList.toggle(
-            "active",
-            buttonRating <= rating
-        );
-
-    });
-
+        });
 }
 
 
 starInput
-.querySelectorAll("button")
-.forEach(button=>{
+    .querySelectorAll("button")
+    .forEach(button=>{
 
-    button.addEventListener(
-        "click",
-        ()=>{
+        button.addEventListener("click",()=>{
 
             setRating(
-                Number(
-                    button.dataset.rating
-                )
+                Number(button.dataset.rating)
             );
 
-        }
-    );
+        });
 
-});
-
+    });
 
 setRating(5);
 
 
 /* =====================================================
-   SHOW REVIEW MESSAGE
+   REVIEW MESSAGE
 ===================================================== */
 
-function showReviewMessage(
-    text,
-    type
-){
+function showReviewMessage(text,type){
 
-    reviewMessage.textContent =
-        text;
+    reviewMessage.textContent=text;
 
     reviewMessage.className =
         "form-message " + type;
-
 }
 
 
@@ -1705,62 +1606,62 @@ function showReviewMessage(
 
 async function loadReviews(){
 
-    reviewsList.innerHTML = `
-
+    reviewsList.innerHTML=`
         <div class="review-loading">
             در حال دریافت نظرات...
         </div>
-
     `;
 
     try{
 
         const data =
-            await apiFetch(
-                "/api/reviews"
-            );
+            await apiFetch("/api/reviews");
 
         const reviews =
             Array.isArray(data.reviews)
             ? data.reviews
+            : Array.isArray(data)
+            ? data
             : [];
 
-        reviewCount.textContent =
-            reviews.length;
+        reviewCount.textContent=reviews.length;
 
         if(!reviews.length){
 
-            reviewsList.innerHTML = `
-
+            reviewsList.innerHTML=`
                 <div class="review-empty">
 
-                    <div style="font-size:35px;margin-bottom:10px">
+                    <div
+                        style="
+                            font-size:35px;
+                            margin-bottom:10px
+                        "
+                    >
                         💬
                     </div>
 
                     هنوز نظری ثبت نشده است.
-                    اولین نفری باشید که نظرش را ثبت می‌کند.
+
+                    <br>
+
+                    اولین نفری باشید که
+                    نظرش را ثبت می‌کند.
 
                 </div>
-
             `;
 
             return;
-
         }
 
         reviewsList.innerHTML =
-            reviews
-            .map(review=>{
+            reviews.map(review=>{
 
                 const rating =
                     Math.max(
                         1,
                         Math.min(
                             5,
-                            Number(
-                                review.rating
-                            ) || 5
+                            Number(review.rating)||5
                         )
                     );
 
@@ -1770,8 +1671,7 @@ async function loadReviews(){
 
                 const name =
                     escapeHtml(
-                        review.name ||
-                        "مشتری"
+                        review.name || "مشتری"
                     );
 
                 const comment =
@@ -1784,6 +1684,7 @@ async function loadReviews(){
                 const date =
                     escapeHtml(
                         review.created_at ||
+                        review.date ||
                         ""
                     );
 
@@ -1792,70 +1693,69 @@ async function loadReviews(){
                         (
                             review.name ||
                             "م"
-                        ).trim().charAt(0)
+                        )
+                        .trim()
+                        .charAt(0)
                     );
 
                 return `
+                    <article class="review-card">
 
-                <article class="review-card">
+                        <div class="review-top">
 
-                    <div class="review-top">
+                            <div class="reviewer">
 
-                        <div class="reviewer">
+                                <div class="avatar">
+                                    ${initial}
+                                </div>
 
-                            <div class="avatar">
-                                ${initial}
+                                <div>
+
+                                    <div class="reviewer-name">
+                                        ${name}
+                                    </div>
+
+                                    <div class="review-date">
+                                        ${date}
+                                    </div>
+
+                                </div>
+
                             </div>
 
-                            <div>
-
-                                <div class="reviewer-name">
-                                    ${name}
-                                </div>
-
-                                <div class="review-date">
-                                    ${date}
-                                </div>
-
+                            <div
+                                class="review-stars"
+                                aria-label="امتیاز ${rating} از 5"
+                            >
+                                ${stars}
                             </div>
 
                         </div>
 
-                        <div
-                            class="review-stars"
-                            aria-label="امتیاز ${rating} از 5"
-                        >
-                            ${stars}
+                        <div class="review-text">
+                            ${comment}
                         </div>
 
-                    </div>
-
-                    <div class="review-text">
-                        ${comment}
-                    </div>
-
-                </article>
-
+                    </article>
                 `;
 
-            })
-            .join("");
+            }).join("");
 
     }catch(error){
 
-        console.error(
-            "REVIEWS ERROR:",
-            error
-        );
+        console.error("REVIEWS ERROR:",error);
 
-        reviewCount.textContent =
-            "0";
+        reviewCount.textContent="0";
 
-        reviewsList.innerHTML = `
-
+        reviewsList.innerHTML=`
             <div class="review-empty">
 
-                <div style="font-size:35px;margin-bottom:10px">
+                <div
+                    style="
+                        font-size:35px;
+                        margin-bottom:10px
+                    "
+                >
                     ⚠️
                 </div>
 
@@ -1872,11 +1772,8 @@ async function loadReviews(){
                 </button>
 
             </div>
-
         `;
-
     }
-
 }
 
 
@@ -1897,9 +1794,7 @@ reviewForm.addEventListener(
             reviewComment.value.trim();
 
         const rating =
-            Number(
-                reviewRating.value
-            ) || 5;
+            Number(reviewRating.value)||5;
 
         if(!name){
 
@@ -1909,7 +1804,6 @@ reviewForm.addEventListener(
             );
 
             return;
-
         }
 
         if(!comment){
@@ -1920,28 +1814,12 @@ reviewForm.addEventListener(
             );
 
             return;
-
         }
 
-        if(rating < 1 || rating > 5){
+        reviewSubmit.disabled=true;
+        reviewSubmit.textContent="در حال ثبت...";
 
-            showReviewMessage(
-                "امتیاز باید بین ۱ تا ۵ باشد.",
-                "error"
-            );
-
-            return;
-
-        }
-
-        reviewSubmit.disabled =
-            true;
-
-        reviewSubmit.textContent =
-            "در حال ثبت...";
-
-        reviewMessage.className =
-            "form-message";
+        reviewMessage.className="form-message";
 
         try{
 
@@ -1949,7 +1827,6 @@ reviewForm.addEventListener(
                 await apiFetch(
                     "/api/reviews",
                     {
-
                         method:"POST",
 
                         body:JSON.stringify({
@@ -1958,20 +1835,20 @@ reviewForm.addEventListener(
 
                             rating:rating,
 
-                            comment:comment
+                            comment:comment,
+
+                            text:comment
 
                         })
-
                     }
                 );
 
-            if(!data.success){
+            if(data.success===false){
 
                 throw new Error(
                     data.message ||
                     "ثبت نظر انجام نشد."
                 );
-
             }
 
             showReviewMessage(
@@ -2001,12 +1878,9 @@ reviewForm.addEventListener(
 
         }finally{
 
-            reviewSubmit.disabled =
-                false;
+            reviewSubmit.disabled=false;
 
-            reviewSubmit.textContent =
-                "⭐ ثبت نظر";
-
+            reviewSubmit.textContent="⭐ ثبت نظر";
         }
 
     }
@@ -2018,14 +1892,13 @@ reviewForm.addEventListener(
 ===================================================== */
 
 const requestForm =
-    document.getElementById(
-        "requestForm"
-    );
+    document.getElementById("requestForm");
 
 const requestMessage =
-    document.getElementById(
-        "requestMessage"
-    );
+    document.getElementById("requestMessage");
+
+const requestSubmit =
+    document.getElementById("requestSubmit");
 
 
 requestForm.addEventListener(
@@ -2035,34 +1908,46 @@ requestForm.addEventListener(
         event.preventDefault();
 
         const name =
-            document.getElementById(
-                "requestName"
-            ).value.trim();
+            document
+                .getElementById("requestName")
+                .value
+                .trim();
 
         const phone =
-            document.getElementById(
-                "requestPhone"
-            ).value.trim();
+            document
+                .getElementById("requestPhone")
+                .value
+                .trim();
 
         const service =
-            document.getElementById(
-                "requestService"
-            ).value.trim();
+            document
+                .getElementById("requestService")
+                .value
+                .trim();
+
+        const shortDescription =
+            document
+                .getElementById("requestDescription")
+                .value
+                .trim();
+
+        const details =
+            document
+                .getElementById("requestDetails")
+                .value
+                .trim();
 
         const description =
             (
-                document.getElementById(
-                    "requestDescription"
-                ).value.trim()
-                +
+                shortDescription +
                 " " +
-                document.getElementById(
-                    "requestDetails"
-                ).value.trim()
+                details
             ).trim();
 
-        requestMessage.className =
-            "form-message";
+        requestSubmit.disabled=true;
+        requestSubmit.textContent="در حال ثبت...";
+
+        requestMessage.className="form-message";
 
         try{
 
@@ -2070,7 +1955,6 @@ requestForm.addEventListener(
                 await apiFetch(
                     "/api/request",
                     {
-
                         method:"POST",
 
                         body:JSON.stringify({
@@ -2084,9 +1968,16 @@ requestForm.addEventListener(
                             description:description
 
                         })
-
                     }
                 );
+
+            if(data.success===false){
+
+                throw new Error(
+                    data.message ||
+                    "ثبت درخواست انجام نشد."
+                );
+            }
 
             requestMessage.textContent =
                 data.message ||
@@ -2106,6 +1997,11 @@ requestForm.addEventListener(
             requestMessage.className =
                 "form-message error";
 
+        }finally{
+
+            requestSubmit.disabled=false;
+
+            requestSubmit.textContent="📩 ثبت درخواست";
         }
 
     }
@@ -2113,109 +2009,103 @@ requestForm.addEventListener(
 
 
 /* =====================================================
-   SUPPORT CHAT
+   CHAT
 ===================================================== */
 
 const supportBtn =
-    document.getElementById(
-        "supportBtn"
-    );
+    document.getElementById("supportBtn");
 
 const chatBox =
-    document.getElementById(
-        "chatBox"
-    );
+    document.getElementById("chatBox");
 
 const chatSend =
-    document.getElementById(
-        "chatSend"
-    );
+    document.getElementById("chatSend");
 
 const chatMessages =
-    document.getElementById(
-        "chatMessages"
-    );
+    document.getElementById("chatMessages");
+
+const chatName =
+    document.getElementById("chatName");
+
+const chatPhone =
+    document.getElementById("chatPhone");
+
+const chatText =
+    document.getElementById("chatText");
 
 
 supportBtn.addEventListener(
     "click",
     async ()=>{
 
-        chatBox.classList.toggle(
-            "open"
-        );
+        chatBox.classList.toggle("open");
 
         if(chatBox.classList.contains("open")){
 
             const phone =
-                document.getElementById(
-                    "chatPhone"
-                ).value.trim();
+                chatPhone.value.trim();
 
             if(phone){
 
-                await loadChat(
-                    phone
-                );
+                await loadChat(phone);
 
             }
-
         }
-
     }
 );
 
 
+/* =====================================================
+   LOAD CHAT
+===================================================== */
+
 async function loadChat(phone){
 
     if(!phone){
-
         return;
-
     }
 
     try{
 
-        const response =
-            await fetch(
+        const data =
+            await apiFetch(
                 "/chat?phone=" +
                 encodeURIComponent(phone)
             );
 
-        const data =
-            await response.json();
-
-        if(!data.success){
-
+        if(data.success===false){
             return;
-
         }
 
         const messages =
-            Array.isArray(
-                data.messages
-            )
+            Array.isArray(data.messages)
             ? data.messages
             : [];
 
+        if(!messages.length){
+
+            chatMessages.innerHTML="";
+            return;
+        }
+
         chatMessages.innerHTML =
-            messages
-            .map(message=>`
+            messages.map(message=>{
 
-                <div
-                    class="chat-message ${
-                        message.sender === "admin"
-                        ? "admin"
-                        : ""
-                    }"
-                >
-                    ${escapeHtml(
-                        message.message
-                    )}
-                </div>
+                return `
+                    <div
+                        class="chat-message ${
+                            message.sender==="admin"
+                            ? "admin"
+                            : ""
+                        }"
+                    >
+                        ${escapeHtml(
+                            message.message || ""
+                        )}
+                    </div>
+                `;
 
-            `)
-            .join("");
+            }).join("");
 
         chatMessages.scrollTop =
             chatMessages.scrollHeight;
@@ -2226,15 +2116,15 @@ async function loadChat(phone){
             "CHAT LOAD ERROR:",
             error
         );
-
     }
-
 }
 
 
-document.getElementById(
-    "chatPhone"
-).addEventListener(
+/* =====================================================
+   PHONE CHANGE
+===================================================== */
+
+chatPhone.addEventListener(
     "blur",
     function(){
 
@@ -2246,24 +2136,22 @@ document.getElementById(
 );
 
 
+/* =====================================================
+   SEND CHAT
+===================================================== */
+
 chatSend.addEventListener(
     "click",
     async ()=>{
 
         const name =
-            document.getElementById(
-                "chatName"
-            ).value.trim();
+            chatName.value.trim();
 
         const phone =
-            document.getElementById(
-                "chatPhone"
-            ).value.trim();
+            chatPhone.value.trim();
 
         const message =
-            document.getElementById(
-                "chatText"
-            ).value.trim();
+            chatText.value.trim();
 
         if(!name || !phone || !message){
 
@@ -2272,11 +2160,10 @@ chatSend.addEventListener(
             );
 
             return;
-
         }
 
-        chatSend.disabled =
-            true;
+        chatSend.disabled=true;
+        chatSend.textContent="در حال ارسال...";
 
         try{
 
@@ -2284,7 +2171,6 @@ chatSend.addEventListener(
                 await apiFetch(
                     "/chat/send",
                     {
-
                         method:"POST",
 
                         body:JSON.stringify({
@@ -2296,21 +2182,20 @@ chatSend.addEventListener(
                             message:message
 
                         })
-
                     }
                 );
 
-            if(data.success){
+            if(data.success===false){
 
-                document.getElementById(
-                    "chatText"
-                ).value = "";
-
-                await loadChat(
-                    phone
+                throw new Error(
+                    data.message ||
+                    "ارسال پیام انجام نشد."
                 );
-
             }
+
+            chatText.value="";
+
+            await loadChat(phone);
 
         }catch(error){
 
@@ -2321,9 +2206,8 @@ chatSend.addEventListener(
 
         }finally{
 
-            chatSend.disabled =
-                false;
-
+            chatSend.disabled=false;
+            chatSend.textContent="ارسال پیام";
         }
 
     }
@@ -2336,30 +2220,12 @@ chatSend.addEventListener(
 
 function escapeHtml(value){
 
-    return String(
-        value ?? ""
-    )
-    .replace(
-        /&/g,
-        "&amp;"
-    )
-    .replace(
-        /</g,
-        "&lt;"
-    )
-    .replace(
-        />/g,
-        "&gt;"
-    )
-    .replace(
-        /"/g,
-        "&quot;"
-    )
-    .replace(
-        /'/g,
-        "&#039;"
-    );
-
+    return String(value ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
 }
 
 
@@ -2367,16 +2233,8 @@ function escapeHtml(value){
    START
 ===================================================== */
 
-document.addEventListener(
-    "DOMContentLoaded",
-    ()=>{
-
-        loadReviews();
-
-        loadProducts();
-
-    }
-);
+loadReviews();
+loadProducts();
 
 </script>
 
