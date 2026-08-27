@@ -131,7 +131,9 @@ justify-content:center;
 font-family:Arial,sans-serif
 }
 
-.cart-count.show{display:flex}
+.cart-count.show{
+display:flex
+}
 
 /* MENU */
 .menu-panel{
@@ -393,11 +395,6 @@ margin:0;
 line-height:1.8
 }
 
-.category.active{
-border-color:#0879bd;
-background:#f5fbfe
-}
-
 /* SPECIAL */
 .special{background:#f5f7f9}
 
@@ -640,30 +637,6 @@ color:#81909d;
 font-size:11px
 }
 
-/* ERROR / LOADING */
-.products-status{
-grid-column:1/-1;
-text-align:center;
-padding:50px 20px;
-color:#81909d;
-font-size:11px
-}
-
-.products-status.error{
-color:#a22626
-}
-
-.retry-btn{
-margin-top:15px;
-border:0;
-border-radius:7px;
-padding:10px 18px;
-background:#0879bd;
-color:#fff;
-font-size:10px;
-cursor:pointer
-}
-
 /* CART MODAL */
 .modal{
 display:none;
@@ -676,7 +649,9 @@ justify-content:center;
 padding:15px
 }
 
-.modal.open{display:flex}
+.modal.open{
+display:flex
+}
 
 .modal-box{
 width:100%;
@@ -713,7 +688,9 @@ cursor:pointer;
 font-size:18px
 }
 
-.cart-items{padding:15px 20px}
+.cart-items{
+padding:15px 20px
+}
 
 .cart-item{
 display:flex;
@@ -742,7 +719,9 @@ height:100%;
 object-fit:cover
 }
 
-.cart-item-info{flex:1}
+.cart-item-info{
+flex:1
+}
 
 .cart-item-info strong{
 display:block;
@@ -830,7 +809,9 @@ font-size:10px;
 font-weight:bold
 }
 
-.order-submit:hover{background:#071b31}
+.order-submit:hover{
+background:#071b31
+}
 
 .order-message{
 display:none;
@@ -841,7 +822,9 @@ margin-top:9px;
 line-height:1.8
 }
 
-.order-message.show{display:block}
+.order-message.show{
+display:block
+}
 
 .order-message.success{
 background:#e9f8ef;
@@ -1100,10 +1083,20 @@ gap:9px
 
 footer{padding-bottom:100px}
 
-.modal-box{max-height:94vh}
+.modal-box{
+max-height:94vh
+}
 
-.cart-item{flex-wrap:wrap}
+.cart-item{
+flex-wrap:wrap
+}
 
+}
+
+/* CATEGORY FILTER */
+.category.active{
+border-color:#0879bd;
+background:#f5fbfe
 }
 </style>
 </head>
@@ -1348,8 +1341,26 @@ aria-label="اسلاید دوم"></button>
 
 <div class="special-products" id="specialProducts">
 
-<div class="products-status">
-در حال دریافت محصولات...
+<div class="deal-card">
+
+<div class="deal-image">❄️</div>
+
+<div class="deal-info">
+
+<small>محصول ویژه</small>
+
+<h3>در حال دریافت محصولات...</h3>
+
+<div class="deal-price">
+<strong>—</strong>
+<span>قیمت</span>
+</div>
+
+<button class="cart-btn" disabled>
+در حال بارگذاری
+</button>
+
+</div>
 </div>
 
 </div>
@@ -1379,7 +1390,7 @@ aria-label="اسلاید دوم"></button>
 
 <div class="product-grid" id="productGrid">
 
-<div class="products-status">
+<div class="empty-products">
 در حال دریافت محصولات...
 </div>
 
@@ -1500,7 +1511,7 @@ Dr <span>Borodat</span>
 
 <h3>🛒 سبد خرید</h3>
 
-<button class="modal-close" onclick="closeCart()">
+<button class="modal-close" onclick="closeCart">
 ×
 </button>
 
@@ -1563,35 +1574,44 @@ id="orderMessage">
 DATA
 ===================================================== */
 
-let products=[];
-let cart=[];
+let products = [];
+let cart = [];
 
 try{
 
-const savedCart=
-localStorage.getItem("drBorodatCart");
+cart = JSON.parse(
+localStorage.getItem("drBorodatCart") || "[]"
+);
 
-if(savedCart){
-
-const parsed=
-JSON.parse(savedCart);
-
-if(Array.isArray(parsed)){
-cart=parsed;
-}
-
+if(!Array.isArray(cart)){
+cart=[];
 }
 
 }catch(error){
-
-console.error(
-"CART LOAD ERROR:",
-error
-);
-
 cart=[];
-
 }
+
+
+/* =====================================================
+API
+===================================================== */
+
+/*
+ * محصولات داخل Borodat_panel ثبت می‌شوند.
+ * بنابراین فروشگاه Borodat-preview باید محصولات
+ * را مستقیماً از API پنل دریافت کند.
+ */
+
+const API_BASE =
+"https://borodat-panel.onrender.com";
+
+
+const PRODUCTS_API =
+API_BASE + "/api/products";
+
+
+const ORDER_API =
+API_BASE + "/api/order";
 
 
 /* =====================================================
@@ -1621,8 +1641,6 @@ const dots=
 document.querySelectorAll(".slider-dot");
 
 function showSlide(index){
-
-if(!slides.length)return;
 
 if(index<0){
 index=slides.length-1;
@@ -1691,15 +1709,15 @@ totalSeconds=
 
 }
 
-const hours=
+let hours=
 Math.floor(totalSeconds/3600);
 
-const minutes=
+let minutes=
 Math.floor(
 (totalSeconds%3600)/60
 );
 
-const seconds=
+let seconds=
 totalSeconds%60;
 
 document.getElementById(
@@ -1730,7 +1748,7 @@ updateCountdown,
 
 
 /* =====================================================
-ESCAPE HTML
+ESCAPE
 ===================================================== */
 
 function escapeHtml(value){
@@ -1746,92 +1764,6 @@ return String(value ?? "")
 
 
 /* =====================================================
-ESCAPE JS
-===================================================== */
-
-function escapeJs(value){
-
-return String(value ?? "")
-.replace(/\\/g,"\\\\")
-.replace(/'/g,"\\'")
-.replace(/\r/g,"")
-.replace(/\n/g," ");
-
-}
-
-
-/* =====================================================
-FORMAT PRICE
-===================================================== */
-
-function formatPrice(value){
-
-if(
-value===null ||
-value===undefined ||
-String(value).trim()===""
-){
-
-return "تماس بگیرید";
-
-}
-
-const raw=
-String(value)
-.trim()
-.replace(/,/g,"");
-
-const number=
-Number(raw);
-
-if(
-Number.isFinite(number) &&
-number>0
-){
-
-return number.toLocaleString("fa-IR")+" تومان";
-
-}
-
-return escapeHtml(value);
-
-}
-
-
-/* =====================================================
-NORMALIZE PRODUCT
-===================================================== */
-
-function normalizeProduct(product){
-
-if(!product || typeof product!=="object"){
-return null;
-}
-
-return {
-
-id:String(product.id ?? "").trim(),
-
-name:String(product.name ?? "").trim(),
-
-price:String(product.price ?? "").trim(),
-
-stock:String(product.stock ?? "0").trim(),
-
-category:String(product.category ?? "").trim(),
-
-description:String(product.description ?? "").trim(),
-
-image:String(product.image ?? "").trim(),
-
-created_at:String(product.created_at ?? "").trim()
-
-};
-
-}
-
-
-/* =====================================================
 LOAD PRODUCTS
 ===================================================== */
 
@@ -1842,30 +1774,11 @@ document.getElementById(
 "productGrid"
 );
 
-const special=
-document.getElementById(
-"specialProducts"
-);
-
-grid.innerHTML=
-`
-<div class="products-status">
-در حال دریافت محصولات...
-</div>
-`;
-
-special.innerHTML=
-`
-<div class="products-status">
-در حال دریافت محصولات...
-</div>
-`;
-
 try{
 
 const response=
 await fetch(
-"/api/products?ts="+Date.now(),
+PRODUCTS_API,
 {
 method:"GET",
 cache:"no-store",
@@ -1878,7 +1791,7 @@ headers:{
 if(!response.ok){
 
 throw new Error(
-"خطای سرور: HTTP "+response.status
+"HTTP "+response.status
 );
 
 }
@@ -1887,40 +1800,19 @@ const data=
 await response.json();
 
 console.log(
-"PRODUCT API RESPONSE:",
+"PRODUCT API:",
+PRODUCTS_API
+);
+
+console.log(
+"PRODUCT DATA:",
 data
 );
 
-if(
-!data ||
-data.success!==true
-){
-
-throw new Error(
-"پاسخ API معتبر نیست."
-);
-
-}
-
 products=
 Array.isArray(data.products)
-?
-data.products
-.map(normalizeProduct)
-.filter(function(item){
-
-return item &&
-item.id &&
-item.name;
-
-})
-:
-[];
-
-console.log(
-"PRODUCTS LOADED:",
-products
-);
+? data.products
+:[];
 
 renderProducts();
 renderSpecialProducts();
@@ -1934,41 +1826,8 @@ error
 
 grid.innerHTML=
 `
-<div class="products-status error">
-
-❌ دریافت محصولات انجام نشد.
-
-<br>
-
-<small>
-${escapeHtml(error.message)}
-</small>
-
-<br>
-
-<button
-class="retry-btn"
-onclick="loadProducts()">
-تلاش دوباره
-</button>
-
-</div>
-`;
-
-special.innerHTML=
-`
-<div class="products-status error">
-
-فعلاً امکان دریافت محصولات وجود ندارد.
-
-<br>
-
-<button
-class="retry-btn"
-onclick="loadProducts()">
-تلاش دوباره
-</button>
-
+<div class="empty-products">
+فعلاً محصولی برای نمایش وجود ندارد.
 </div>
 `;
 
@@ -1978,12 +1837,51 @@ onclick="loadProducts()">
 
 
 /* =====================================================
-PRODUCT CARD
+RENDER PRODUCTS
 ===================================================== */
 
-function createProductCard(product){
+function renderProducts(
+categoryFilter=""
+){
 
-const imageHtml=
+const grid=
+document.getElementById(
+"productGrid"
+);
+
+let list=
+products.slice();
+
+if(categoryFilter){
+
+list=
+list.filter(function(product){
+
+return String(
+product.category || ""
+).trim()===categoryFilter.trim();
+
+});
+
+}
+
+if(!list.length){
+
+grid.innerHTML=
+`
+<div class="empty-products">
+محصولی در این دسته‌بندی وجود ندارد.
+</div>
+`;
+
+return;
+
+}
+
+grid.innerHTML=
+list.map(function(product){
+
+let imageHtml=
 product.image
 ?
 `
@@ -1991,7 +1889,6 @@ product.image
 src="${escapeHtml(product.image)}"
 alt="${escapeHtml(product.name)}"
 loading="lazy"
-onerror="this.style.display='none';this.parentElement.insertAdjacentHTML('beforeend','<span>❄️</span>')"
 >
 `
 :
@@ -2026,7 +1923,9 @@ product.description ||
 <div class="product-bottom">
 
 <div class="product-price">
-${formatPrice(product.price)}
+${escapeHtml(
+product.price || "تماس بگیرید"
+)}
 </div>
 
 <button
@@ -2043,66 +1942,13 @@ aria-label="افزودن به سبد">
 </div>
 `;
 
-}
-
-
-/* =====================================================
-RENDER PRODUCTS
-===================================================== */
-
-function renderProducts(
-categoryFilter=""
-){
-
-const grid=
-document.getElementById(
-"productGrid"
-);
-
-let list=
-products.slice();
-
-const filter=
-String(categoryFilter || "")
-.trim();
-
-if(filter){
-
-list=
-list.filter(function(product){
-
-return String(
-product.category || ""
-)
-.trim()===filter;
-
-});
-
-}
-
-if(!list.length){
-
-grid.innerHTML=
-`
-<div class="empty-products">
-محصولی در این دسته‌بندی وجود ندارد.
-</div>
-`;
-
-return;
-
-}
-
-grid.innerHTML=
-list
-.map(createProductCard)
-.join("");
+}).join("");
 
 }
 
 
 /* =====================================================
-RENDER SPECIAL
+SPECIAL PRODUCTS
 ===================================================== */
 
 function renderSpecialProducts(){
@@ -2131,7 +1977,7 @@ products.slice(0,4);
 box.innerHTML=
 special.map(function(product){
 
-const imageHtml=
+let imageHtml=
 product.image
 ?
 `
@@ -2139,7 +1985,6 @@ product.image
 src="${escapeHtml(product.image)}"
 alt="${escapeHtml(product.name)}"
 loading="lazy"
-onerror="this.style.display='none';this.parentElement.insertAdjacentHTML('beforeend','<span>❄️</span>')"
 >
 `
 :
@@ -2167,7 +2012,9 @@ ${escapeHtml(product.name)}
 <div class="deal-price">
 
 <strong>
-${formatPrice(product.price)}
+${escapeHtml(
+product.price || "تماس بگیرید"
+)}
 </strong>
 
 <span>
@@ -2188,6 +2035,21 @@ onclick="addCart('${escapeJs(product.id)}')">
 `;
 
 }).join("");
+
+}
+
+
+/* =====================================================
+JS ESCAPE
+===================================================== */
+
+function escapeJs(value){
+
+return String(value ?? "")
+.replace(/\\/g,"\\\\")
+.replace(/'/g,"\\'")
+.replace(/\r/g,"")
+.replace(/\n/g," ");
 
 }
 
@@ -2220,23 +2082,16 @@ item=>String(item.id)===String(product.id)
 
 if(existing){
 
-existing.quantity=
-Number(existing.quantity || 1)+1;
+existing.quantity++;
 
 }else{
 
 cart.push({
-
 id:product.id,
-
 name:product.name,
-
 price:product.price,
-
 image:product.image || "",
-
 quantity:1
-
 });
 
 }
@@ -2256,21 +2111,10 @@ SAVE CART
 
 function saveCart(){
 
-try{
-
 localStorage.setItem(
 "drBorodatCart",
 JSON.stringify(cart)
 );
-
-}catch(error){
-
-console.error(
-"CART SAVE ERROR:",
-error
-);
-
-}
 
 updateCartCount();
 
@@ -2286,10 +2130,8 @@ function updateCartCount(){
 const count=
 cart.reduce(
 function(total,item){
-
 return total+
 Number(item.quantity || 0);
-
 },
 0
 );
@@ -2398,7 +2240,7 @@ ${escapeHtml(item.name)}
 </strong>
 
 <small>
-${formatPrice(item.price)}
+${escapeHtml(item.price || "تماس بگیرید")}
 </small>
 
 </div>
@@ -2466,7 +2308,6 @@ item=>String(item.id)!==String(productId)
 }
 
 saveCart();
-
 renderCart();
 
 }
@@ -2484,7 +2325,6 @@ item=>String(item.id)!==String(productId)
 );
 
 saveCart();
-
 renderCart();
 
 }
@@ -2536,29 +2376,24 @@ document.querySelector(
 );
 
 button.disabled=true;
-
 button.textContent=
 "در حال ثبت سفارش...";
 
 try{
 
-const responses=
-await Promise.all(
-
+const requests=
 cart.map(function(item){
 
 return fetch(
-"/api/order",
+ORDER_API,
 {
 method:"POST",
-
 headers:{
 "Content-Type":
 "application/json",
 "Accept":
 "application/json"
 },
-
 body:JSON.stringify({
 
 name:name,
@@ -2576,33 +2411,16 @@ item.quantity
 })
 };
 
-})
+});
 
-);
+const responses=
+await Promise.all(requests);
 
 const results=
 await Promise.all(
-
 responses.map(
-async function(response){
-
-const data=
-await response.json();
-
-if(!response.ok){
-
-throw new Error(
-data.message ||
-"خطا در ثبت سفارش"
-);
-
-}
-
-return data;
-
-}
+response=>response.json()
 )
-
 );
 
 const failed=
@@ -2622,7 +2440,6 @@ failed.message ||
 cart=[];
 
 saveCart();
-
 renderCart();
 
 showOrderMessage(
@@ -2647,14 +2464,12 @@ error
 
 showOrderMessage(
 "error",
-error.message ||
-"خطا در ثبت سفارش."
+error.message
 );
 
 }finally{
 
 button.disabled=false;
-
 button.textContent=
 "ثبت سفارش";
 
@@ -2715,18 +2530,6 @@ SEARCH
 
 function showSearch(){
 
-if(!products.length){
-
-showCartMessage(
-"هنوز محصولی دریافت نشده است."
-);
-
-loadProducts();
-
-return;
-
-}
-
 const search=
 prompt(
 "نام محصول یا قطعه مورد نظر را وارد کنید:"
@@ -2742,23 +2545,17 @@ products.filter(
 function(product){
 
 return (
-
 String(product.name || "")
 .toLowerCase()
 .includes(term)
-
 ||
-
 String(product.category || "")
 .toLowerCase()
 .includes(term)
-
 ||
-
 String(product.description || "")
 .toLowerCase()
 .includes(term)
-
 );
 
 });
@@ -2788,9 +2585,61 @@ return;
 }
 
 grid.innerHTML=
-found
-.map(createProductCard)
-.join("");
+found.map(function(product){
+
+const image=
+product.image
+?
+`
+<img
+src="${escapeHtml(product.image)}"
+alt="${escapeHtml(product.name)}"
+>
+`
+:
+"❄️";
+
+return `
+<div class="product">
+
+<div class="product-image">
+${image}
+</div>
+
+<div class="product-info">
+
+<small>
+${escapeHtml(product.category || "محصول")}
+</small>
+
+<h3>
+${escapeHtml(product.name)}
+</h3>
+
+<p>
+${escapeHtml(product.description || "")}
+</p>
+
+<div class="product-bottom">
+
+<div class="product-price">
+${escapeHtml(product.price || "تماس بگیرید")}
+</div>
+
+<button
+class="product-cart"
+onclick="addCart('${escapeJs(product.id)}')">
+🛒
+</button>
+
+</div>
+
+</div>
+
+</div>
+`;
+
+}).join("");
 
 document
 .getElementById("products")
