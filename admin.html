@@ -176,7 +176,9 @@ min-height:80px;
 resize:vertical
 }
 
-.form-full{grid-column:1/-1}
+.form-full{
+grid-column:1/-1
+}
 
 .add-btn{
 border:0;
@@ -490,7 +492,9 @@ onclick="loadDashboard()"
 
 </div>
 
-<div id="requests"></div>
+<div id="requests">
+<div class="empty">در حال دریافت اطلاعات...</div>
+</div>
 
 </section>
 
@@ -608,7 +612,9 @@ onclick="loadProductsOnly()"
 
 </div>
 
-<div id="orders"></div>
+<div id="orders">
+<div class="empty">در حال دریافت اطلاعات...</div>
+</div>
 
 </section>
 
@@ -698,8 +704,7 @@ onclick="sendReply()"
    API
 ===================================================== */
 
-const API_BASE =
-"https://borodat-panel.onrender.com";
+const API_BASE = "https://borodat-panel.onrender.com";
 
 
 /* =====================================================
@@ -707,12 +712,10 @@ const API_BASE =
 ===================================================== */
 
 let dashboardData = {
-
 requests:[],
 chats:[],
 products:[],
 orders:[]
-
 };
 
 let selectedChat = null;
@@ -737,14 +740,11 @@ return API_BASE + path;
 
 async function readJson(response){
 
-const text =
-await response.text();
+const text = await response.text();
 
 if(!text){
 
-throw new Error(
-"سرور پاسخ خالی برگرداند."
-);
+throw new Error("سرور پاسخ خالی برگرداند.");
 
 }
 
@@ -756,14 +756,9 @@ data = JSON.parse(text);
 
 }catch(error){
 
-console.error(
-"INVALID SERVER RESPONSE:",
-text
-);
+console.error("INVALID SERVER RESPONSE:",text);
 
-throw new Error(
-"سرور پاسخ JSON معتبر برنگرداند."
-);
+throw new Error("سرور پاسخ JSON معتبر برنگرداند.");
 
 }
 
@@ -799,7 +794,10 @@ const status =
 document.getElementById("status");
 
 status.textContent =
-"در حال دریافت اطلاعات...";
+"در حال اتصال...";
+
+status.style.color =
+"#bcd0df";
 
 try{
 
@@ -818,11 +816,12 @@ headers:{
 const data =
 await readJson(response);
 
-if(data.success !== true){
+if(!data || data.success !== true){
 
 throw new Error(
-data.message ||
-"پاسخ سرور معتبر نیست."
+data && data.message
+? data.message
+: "پاسخ سرور معتبر نیست."
 );
 
 }
@@ -864,15 +863,12 @@ if(selectedChat){
 const exists =
 dashboardData.chats.some(
 chat =>
-chat.id === selectedChat
+String(chat.id) === String(selectedChat)
 );
 
 if(exists){
 
-selectChat(
-selectedChat,
-false
-);
+selectChat(selectedChat,false);
 
 }else{
 
@@ -905,21 +901,27 @@ status.textContent =
 status.style.color =
 "#ff8b8b";
 
-const productsBox =
-document.getElementById("products");
+document.getElementById(
+"requests"
+).innerHTML =
+'<div class="empty">دریافت درخواست‌ها انجام نشد.</div>';
 
-if(productsBox){
-
-productsBox.innerHTML =
+document.getElementById(
+"products"
+).innerHTML =
 '<div class="empty">دریافت محصولات انجام نشد.</div>';
 
-}
+document.getElementById(
+"orders"
+).innerHTML =
+'<div class="empty">دریافت سفارش‌ها انجام نشد.</div>';
 
-}catchFinallyPlaceholder(){
+document.getElementById(
+"chatUsers"
+).innerHTML =
+'<div class="empty">دریافت گفتگوها انجام نشد.</div>';
 
-}
-
-finally{
+}finally{
 
 loadingDashboard = false;
 
@@ -957,11 +959,12 @@ headers:{
 const data =
 await readJson(response);
 
-if(data.success !== true){
+if(!data || data.success !== true){
 
 throw new Error(
-data.message ||
-"دریافت محصولات ناموفق بود."
+data && data.message
+? data.message
+: "دریافت محصولات ناموفق بود."
 );
 
 }
@@ -1037,9 +1040,7 @@ renderChats();
 function renderRequests(){
 
 const box =
-document.getElementById(
-"requests"
-);
+document.getElementById("requests");
 
 if(!dashboardData.requests.length){
 
@@ -1057,7 +1058,6 @@ box.innerHTML = `
 <thead>
 
 <tr>
-
 <th>نام</th>
 <th>شماره</th>
 <th>خدمت</th>
@@ -1065,7 +1065,6 @@ box.innerHTML = `
 <th>زمان</th>
 <th>وضعیت</th>
 <th>عملیات</th>
-
 </tr>
 
 </thead>
@@ -1110,14 +1109,14 @@ ${escapeHtml(item.status || "new")}
 
 <button
 type="button"
-onclick="updateRequest('${item.id}','done')"
+onclick="updateRequest('${escapeJs(item.id)}','done')"
 >
 انجام شد
 </button>
 
 <button
 type="button"
-onclick="updateRequest('${item.id}','processing')"
+onclick="updateRequest('${escapeJs(item.id)}','processing')"
 >
 در حال انجام
 </button>
@@ -1146,9 +1145,7 @@ onclick="updateRequest('${item.id}','processing')"
 function renderProducts(){
 
 const box =
-document.getElementById(
-"products"
-);
+document.getElementById("products");
 
 if(!box){
 
@@ -1172,13 +1169,11 @@ box.innerHTML = `
 <thead>
 
 <tr>
-
 <th>نام</th>
 <th>دسته‌بندی</th>
 <th>قیمت</th>
 <th>موجودی</th>
 <th>عملیات</th>
-
 </tr>
 
 </thead>
@@ -1211,14 +1206,14 @@ ${escapeHtml(product.stock)}
 
 <button
 type="button"
-onclick="editProduct('${product.id}')"
+onclick="editProduct('${escapeJs(product.id)}')"
 >
 ویرایش
 </button>
 
 <button
 type="button"
-onclick="deleteProduct('${product.id}')"
+onclick="deleteProduct('${escapeJs(product.id)}')"
 >
 حذف
 </button>
@@ -1247,9 +1242,7 @@ onclick="deleteProduct('${product.id}')"
 function renderOrders(){
 
 const box =
-document.getElementById(
-"orders"
-);
+document.getElementById("orders");
 
 if(!dashboardData.orders.length){
 
@@ -1267,7 +1260,6 @@ box.innerHTML = `
 <thead>
 
 <tr>
-
 <th>نام</th>
 <th>شماره</th>
 <th>محصول</th>
@@ -1275,7 +1267,6 @@ box.innerHTML = `
 <th>زمان</th>
 <th>وضعیت</th>
 <th>عملیات</th>
-
 </tr>
 
 </thead>
@@ -1320,14 +1311,14 @@ ${escapeHtml(order.status || "new")}
 
 <button
 type="button"
-onclick="updateOrder('${order.id}','processing')"
+onclick="updateOrder('${escapeJs(order.id)}','processing')"
 >
 در حال انجام
 </button>
 
 <button
 type="button"
-onclick="updateOrder('${order.id}','done')"
+onclick="updateOrder('${escapeJs(order.id)}','done')"
 >
 تکمیل شد
 </button>
@@ -1350,15 +1341,13 @@ onclick="updateOrder('${order.id}','done')"
 
 
 /* =====================================================
-   CHATS LIST
+   CHATS
 ===================================================== */
 
 function renderChats(){
 
 const box =
-document.getElementById(
-"chatUsers"
-);
+document.getElementById("chatUsers");
 
 if(!dashboardData.chats.length){
 
@@ -1383,23 +1372,19 @@ sortedChats.map(chat => `
 
 <div
 class="chat-user ${
-selectedChat === chat.id
+String(selectedChat) === String(chat.id)
 ? "active"
 : ""
 }"
-onclick="selectChat('${chat.id}')"
+onclick="selectChat('${escapeJs(chat.id)}')"
 >
 
 <strong>
-${escapeHtml(
-chat.name || "مشتری"
-)}
+${escapeHtml(chat.name || "مشتری")}
 </strong>
 
 <small dir="ltr">
-${escapeHtml(
-chat.phone || ""
-)}
+${escapeHtml(chat.phone || "")}
 </small>
 
 </div>
@@ -1413,10 +1398,7 @@ chat.phone || ""
    SELECT CHAT
 ===================================================== */
 
-function selectChat(
-id,
-scroll=true
-){
+function selectChat(id,scroll=true){
 
 selectedChat = id;
 
@@ -1425,18 +1407,14 @@ renderChats();
 const chat =
 dashboardData.chats.find(
 item =>
-item.id === id
+String(item.id) === String(id)
 );
 
 const header =
-document.getElementById(
-"chatHeader"
-);
+document.getElementById("chatHeader");
 
 const box =
-document.getElementById(
-"messages"
-);
+document.getElementById("messages");
 
 if(!chat){
 
@@ -1479,14 +1457,10 @@ message.sender === "admin"
 : "customer"
 }">
 
-${escapeHtml(
-message.message
-)}
+${escapeHtml(message.message)}
 
 <span class="msg-time">
-${escapeHtml(
-message.created_at || ""
-)}
+${escapeHtml(message.created_at || "")}
 </span>
 
 </div>
@@ -1496,14 +1470,12 @@ message.created_at || ""
 
 if(scroll){
 
-requestAnimationFrame(
-() => {
+requestAnimationFrame(() => {
 
 box.scrollTop =
 box.scrollHeight;
 
-}
-);
+});
 
 }
 
@@ -1533,14 +1505,10 @@ return;
 }
 
 const input =
-document.getElementById(
-"replyInput"
-);
+document.getElementById("replyInput");
 
 const button =
-document.getElementById(
-"replyButton"
-);
+document.getElementById("replyButton");
 
 const message =
 input.value.trim();
@@ -1566,10 +1534,8 @@ api("/api/admin/chat/reply"),
 {
 method:"POST",
 headers:{
-"Content-Type":
-"application/json",
-"Accept":
-"application/json"
+"Content-Type":"application/json",
+"Accept":"application/json"
 },
 body:JSON.stringify({
 chat_id:selectedChat,
@@ -1581,11 +1547,12 @@ message:message
 const data =
 await readJson(response);
 
-if(data.success !== true){
+if(!data || data.success !== true){
 
 throw new Error(
-data.message ||
-"ارسال پاسخ ناموفق بود."
+data && data.message
+? data.message
+: "ارسال پاسخ ناموفق بود."
 );
 
 }
@@ -1634,9 +1601,7 @@ button.textContent =
 ===================================================== */
 
 document
-.getElementById(
-"replyInput"
-)
+.getElementById("replyInput")
 .addEventListener(
 "keydown",
 function(event){
@@ -1661,9 +1626,7 @@ sendReply();
 ===================================================== */
 
 document
-.getElementById(
-"productForm"
-)
+.getElementById("productForm")
 .addEventListener(
 "submit",
 async function(e){
@@ -1671,46 +1634,30 @@ async function(e){
 e.preventDefault();
 
 const messageBox =
-document.getElementById(
-"productMessage"
-);
+document.getElementById("productMessage");
 
 const addButton =
-document.getElementById(
-"addProductButton"
-);
+document.getElementById("addProductButton");
 
 const payload = {
 
 name:
-document.getElementById(
-"productName"
-).value.trim(),
+document.getElementById("productName").value.trim(),
 
 price:
-document.getElementById(
-"productPrice"
-).value.trim(),
+document.getElementById("productPrice").value.trim(),
 
 stock:
-document.getElementById(
-"productStock"
-).value.trim(),
+document.getElementById("productStock").value.trim(),
 
 category:
-document.getElementById(
-"productCategory"
-).value.trim(),
+document.getElementById("productCategory").value.trim(),
 
 image:
-document.getElementById(
-"productImage"
-).value.trim(),
+document.getElementById("productImage").value.trim(),
 
 description:
-document.getElementById(
-"productDescription"
-).value.trim()
+document.getElementById("productDescription").value.trim()
 
 };
 
@@ -1732,35 +1679,25 @@ api("/api/admin/products"),
 {
 method:"POST",
 headers:{
-"Content-Type":
-"application/json",
-"Accept":
-"application/json"
+"Content-Type":"application/json",
+"Accept":"application/json"
 },
-body:JSON.stringify(
-payload
-)
+body:JSON.stringify(payload)
 }
 );
 
 const data =
 await readJson(response);
 
-if(
-data.success !== true
-){
+if(!data || data.success !== true){
 
 throw new Error(
-data.message ||
-"ثبت محصول ناموفق بود."
+data && data.message
+? data.message
+: "ثبت محصول ناموفق بود."
 );
 
 }
-
-
-/* -----------------------------------------
-   محصول جدید را همان لحظه به لیست اضافه کن
------------------------------------------ */
 
 if(data.product){
 
@@ -1782,11 +1719,6 @@ document.getElementById(
 "productStock"
 ).value = "0";
 
-
-/* -----------------------------------------
-   بلافاصله جدول محصولات را نمایش بده
------------------------------------------ */
-
 document.getElementById(
 "productCount"
 ).textContent =
@@ -1794,18 +1726,9 @@ dashboardData.products.length;
 
 renderProducts();
 
-
-/* -----------------------------------------
-   بعداً اطلاعات کامل داشبورد را آرام بگیر
------------------------------------------ */
-
 setTimeout(
-() => {
-
-loadDashboard();
-
-},
-300
+() => loadDashboard(),
+500
 );
 
 }catch(error){
@@ -1853,15 +1776,11 @@ try{
 
 const response =
 await fetch(
-api(
-"/api/admin/products/" +
-id
-),
+api("/api/admin/products/" + encodeURIComponent(id)),
 {
 method:"DELETE",
 headers:{
-"Accept":
-"application/json"
+"Accept":"application/json"
 }
 }
 );
@@ -1869,13 +1788,12 @@ headers:{
 const data =
 await readJson(response);
 
-if(
-data.success !== true
-){
+if(!data || data.success !== true){
 
 throw new Error(
-data.message ||
-"حذف محصول ناموفق بود."
+data && data.message
+? data.message
+: "حذف محصول ناموفق بود."
 );
 
 }
@@ -1883,7 +1801,7 @@ data.message ||
 dashboardData.products =
 dashboardData.products.filter(
 product =>
-product.id !== id
+String(product.id) !== String(id)
 );
 
 document.getElementById(
@@ -1919,7 +1837,7 @@ async function editProduct(id){
 const product =
 dashboardData.products.find(
 item =>
-item.id === id
+String(item.id) === String(id)
 );
 
 if(!product){
@@ -1931,7 +1849,7 @@ return;
 const name =
 prompt(
 "نام محصول:",
-product.name
+product.name || ""
 );
 
 if(name === null){
@@ -1943,7 +1861,7 @@ return;
 const price =
 prompt(
 "قیمت:",
-product.price
+product.price || ""
 );
 
 if(price === null){
@@ -1955,7 +1873,7 @@ return;
 const stock =
 prompt(
 "موجودی:",
-product.stock
+product.stock || "0"
 );
 
 if(stock === null){
@@ -1967,7 +1885,7 @@ return;
 const category =
 prompt(
 "دسته‌بندی:",
-product.category
+product.category || ""
 );
 
 if(category === null){
@@ -1980,17 +1898,12 @@ try{
 
 const response =
 await fetch(
-api(
-"/api/admin/products/" +
-id
-),
+api("/api/admin/products/" + encodeURIComponent(id)),
 {
 method:"PATCH",
 headers:{
-"Content-Type":
-"application/json",
-"Accept":
-"application/json"
+"Content-Type":"application/json",
+"Accept":"application/json"
 },
 body:JSON.stringify({
 
@@ -2009,13 +1922,12 @@ category:category.trim()
 const data =
 await readJson(response);
 
-if(
-data.success !== true
-){
+if(!data || data.success !== true){
 
 throw new Error(
-data.message ||
-"ویرایش ناموفق بود."
+data && data.message
+? data.message
+: "ویرایش ناموفق بود."
 );
 
 }
@@ -2023,7 +1935,7 @@ data.message ||
 const index =
 dashboardData.products.findIndex(
 item =>
-item.id === id
+String(item.id) === String(id)
 );
 
 if(index !== -1){
@@ -2067,26 +1979,18 @@ error.message ||
    UPDATE ORDER
 ===================================================== */
 
-async function updateOrder(
-id,
-status
-){
+async function updateOrder(id,status){
 
 try{
 
 const response =
 await fetch(
-api(
-"/api/admin/orders/" +
-id
-),
+api("/api/admin/orders/" + encodeURIComponent(id)),
 {
 method:"PATCH",
 headers:{
-"Content-Type":
-"application/json",
-"Accept":
-"application/json"
+"Content-Type":"application/json",
+"Accept":"application/json"
 },
 body:JSON.stringify({
 status:status
@@ -2097,13 +2001,12 @@ status:status
 const data =
 await readJson(response);
 
-if(
-data.success !== true
-){
+if(!data || data.success !== true){
 
 throw new Error(
-data.message ||
-"تغییر وضعیت ناموفق بود."
+data && data.message
+? data.message
+: "تغییر وضعیت ناموفق بود."
 );
 
 }
@@ -2111,7 +2014,7 @@ data.message ||
 const order =
 dashboardData.orders.find(
 item =>
-item.id === id
+String(item.id) === String(id)
 );
 
 if(order){
@@ -2123,6 +2026,11 @@ order.status = status;
 renderOrders();
 
 }catch(error){
+
+console.error(
+"UPDATE ORDER ERROR:",
+error
+);
 
 alert(
 error.message ||
@@ -2138,26 +2046,18 @@ error.message ||
    UPDATE REQUEST
 ===================================================== */
 
-async function updateRequest(
-id,
-status
-){
+async function updateRequest(id,status){
 
 try{
 
 const response =
 await fetch(
-api(
-"/api/admin/requests/" +
-id
-),
+api("/api/admin/requests/" + encodeURIComponent(id)),
 {
 method:"PATCH",
 headers:{
-"Content-Type":
-"application/json",
-"Accept":
-"application/json"
+"Content-Type":"application/json",
+"Accept":"application/json"
 },
 body:JSON.stringify({
 status:status
@@ -2168,13 +2068,12 @@ status:status
 const data =
 await readJson(response);
 
-if(
-data.success !== true
-){
+if(!data || data.success !== true){
 
 throw new Error(
-data.message ||
-"تغییر وضعیت ناموفق بود."
+data && data.message
+? data.message
+: "تغییر وضعیت ناموفق بود."
 );
 
 }
@@ -2182,7 +2081,7 @@ data.message ||
 const item =
 dashboardData.requests.find(
 request =>
-request.id === id
+String(request.id) === String(id)
 );
 
 if(item){
@@ -2194,6 +2093,11 @@ item.status = status;
 renderRequests();
 
 }catch(error){
+
+console.error(
+"UPDATE REQUEST ERROR:",
+error
+);
 
 alert(
 error.message ||
@@ -2211,29 +2115,27 @@ error.message ||
 
 function escapeHtml(value){
 
-return String(
-value ?? ""
-)
-.replace(
-/&/g,
-"&amp;"
-)
-.replace(
-/</g,
-"&lt;"
-)
-.replace(
-/>/g,
-"&gt;"
-)
-.replace(
-/"/g,
-"&quot;"
-)
-.replace(
-/'/g,
-"&#039;"
-);
+return String(value ?? "")
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
+
+}
+
+
+/* =====================================================
+   ESCAPE JAVASCRIPT STRING
+===================================================== */
+
+function escapeJs(value){
+
+return String(value ?? "")
+.replace(/\\/g,"\\\\")
+.replace(/'/g,"\\'")
+.replace(/\r/g,"\\r")
+.replace(/\n/g,"\\n");
 
 }
 
@@ -2242,7 +2144,14 @@ value ?? ""
    START
 ===================================================== */
 
+document.addEventListener(
+"DOMContentLoaded",
+function(){
+
 loadDashboard();
+
+}
+);
 
 </script>
 
