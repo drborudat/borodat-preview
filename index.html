@@ -3,805 +3,730 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-
 <title>دکتر برودت | خدمات و فروش تجهیزات سرمایشی</title>
-
 <meta name="description" content="دکتر برودت ارائه‌دهنده خدمات نصب، سرویس و تعمیر کولر گازی و تجهیزات سرمایشی.">
 
 <style>
-*{
-    box-sizing:border-box;
-}
-
-html{
-    scroll-behavior:smooth;
-}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
 
 body{
-    margin:0;
-    font-family:Tahoma,Arial,sans-serif;
-    background:#f7fbff;
-    color:#102238;
-    overflow-x:hidden;
+margin:0;
+font-family:Tahoma,Arial,sans-serif;
+background:#f7fbff;
+color:#102238;
+overflow-x:hidden
 }
 
-a{
-    text-decoration:none;
-    color:inherit;
-}
+a{text-decoration:none;color:inherit}
 
-button,
-input,
-textarea,
-select{
-    font-family:inherit;
-}
+button,input,textarea,select{font-family:inherit}
 
 .container{
-    width:min(1150px,92%);
-    margin:auto;
+width:min(1150px,92%);
+margin:auto
 }
 
 /* HEADER */
-
 header{
-    position:sticky;
-    top:0;
-    z-index:1000;
-    background:rgba(255,255,255,.96);
-    border-bottom:1px solid #e6eef5;
-    backdrop-filter:blur(12px);
+position:sticky;
+top:0;
+z-index:1000;
+background:rgba(255,255,255,.96);
+border-bottom:1px solid #e6eef5;
+backdrop-filter:blur(12px)
 }
 
 .nav{
-    min-height:76px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:20px;
+min-height:76px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:20px
 }
 
 .logo{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    font-size:20px;
-    font-weight:900;
-    color:#0877c9;
+display:flex;
+align-items:center;
+gap:10px;
+font-size:20px;
+font-weight:900;
+color:#0877c9
 }
 
 .logo-mark{
-    width:42px;
-    height:42px;
-    border-radius:13px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:#e9f6ff;
-    font-size:23px;
+width:42px;
+height:42px;
+border-radius:13px;
+display:flex;
+align-items:center;
+justify-content:center;
+background:#e9f6ff;
+font-size:23px
 }
 
 .nav-links{
-    display:flex;
-    align-items:center;
-    gap:25px;
+display:flex;
+align-items:center;
+gap:25px
 }
 
 .nav-links a{
-    font-size:14px;
-    font-weight:700;
-    color:#30465c;
-    transition:.2s;
+font-size:14px;
+font-weight:700;
+color:#30465c;
+transition:.2s
 }
 
-.nav-links a:hover{
-    color:#0782d5;
-}
+.nav-links a:hover{color:#0782d5}
 
 .menu-btn{
-    display:none;
-    border:0;
-    background:#eef8ff;
-    color:#0877c9;
-    width:44px;
-    height:44px;
-    border-radius:12px;
-    font-size:22px;
-    cursor:pointer;
+display:none;
+border:0;
+background:#eef8ff;
+color:#0877c9;
+width:44px;
+height:44px;
+border-radius:12px;
+font-size:22px;
+cursor:pointer
 }
 
 /* HERO */
-
 .hero{
-    padding:85px 0 70px;
-    background:
-        radial-gradient(circle at 85% 15%,#dff4ff 0,transparent 30%),
-        linear-gradient(135deg,#ffffff,#f1f9ff);
+padding:85px 0 70px;
+background:
+radial-gradient(circle at 85% 15%,#dff4ff 0,transparent 30%),
+linear-gradient(135deg,#fff,#f1f9ff)
 }
 
 .hero-grid{
-    display:grid;
-    grid-template-columns:1.1fr .9fr;
-    align-items:center;
-    gap:45px;
+display:grid;
+grid-template-columns:1.1fr .9fr;
+align-items:center;
+gap:45px
 }
 
 .hero h1{
-    margin:0 0 18px;
-    font-size:clamp(34px,5vw,58px);
-    line-height:1.35;
+margin:0 0 18px;
+font-size:clamp(34px,5vw,58px);
+line-height:1.35
 }
 
-.hero h1 span{
-    color:#0782d5;
-}
+.hero h1 span{color:#0782d5}
 
 .hero p{
-    margin:0 0 30px;
-    color:#62778a;
-    line-height:2;
-    font-size:17px;
+margin:0 0 30px;
+color:#62778a;
+line-height:2;
+font-size:17px
 }
 
 .hero-buttons{
-    display:flex;
-    flex-wrap:wrap;
-    gap:12px;
+display:flex;
+flex-wrap:wrap;
+gap:12px
 }
 
 .btn{
-    border:0;
-    cursor:pointer;
-    border-radius:14px;
-    padding:14px 22px;
-    font-weight:800;
-    font-size:14px;
-    display:inline-flex;
-    justify-content:center;
-    align-items:center;
-    gap:8px;
-    transition:.2s;
+border:0;
+cursor:pointer;
+border-radius:14px;
+padding:14px 22px;
+font-weight:800;
+font-size:14px;
+display:inline-flex;
+justify-content:center;
+align-items:center;
+gap:8px;
+transition:.2s
 }
 
 .btn-primary{
-    background:#0782d5;
-    color:white;
-    box-shadow:0 12px 28px rgba(8,130,213,.22);
+background:#0782d5;
+color:#fff;
+box-shadow:0 12px 28px rgba(8,130,213,.22)
 }
 
 .btn-primary:hover{
-    transform:translateY(-2px);
-    background:#056eaf;
+transform:translateY(-2px);
+background:#056eaf
 }
 
 .btn-light{
-    background:white;
-    color:#0877c9;
-    border:1px solid #dbeaf4;
+background:#fff;
+color:#0877c9;
+border:1px solid #dbeaf4
 }
 
-.btn-light:hover{
-    background:#eef9ff;
-}
+.btn-light:hover{background:#eef9ff}
 
 .hero-card{
-    min-height:350px;
-    border-radius:32px;
-    background:linear-gradient(145deg,#087ed0,#064d91);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:white;
-    box-shadow:0 25px 55px rgba(4,83,145,.22);
-    position:relative;
-    overflow:hidden;
+min-height:350px;
+border-radius:32px;
+background:linear-gradient(145deg,#087ed0,#064d91);
+display:flex;
+align-items:center;
+justify-content:center;
+color:#fff;
+box-shadow:0 25px 55px rgba(4,83,145,.22);
+position:relative;
+overflow:hidden
 }
 
 .hero-card:before,
 .hero-card:after{
-    content:"";
-    position:absolute;
-    border-radius:50%;
-    border:1px solid rgba(255,255,255,.15);
+content:"";
+position:absolute;
+border-radius:50%;
+border:1px solid rgba(255,255,255,.15)
 }
 
 .hero-card:before{
-    width:300px;
-    height:300px;
+width:300px;
+height:300px
 }
 
 .hero-card:after{
-    width:430px;
-    height:430px;
+width:430px;
+height:430px
 }
 
 .hero-icon{
-    position:relative;
-    z-index:2;
-    text-align:center;
+position:relative;
+z-index:2;
+text-align:center
 }
 
 .hero-icon .snow{
-    font-size:90px;
-    display:block;
-    margin-bottom:10px;
+font-size:90px;
+display:block;
+margin-bottom:10px
 }
 
-.hero-icon strong{
-    font-size:24px;
-}
+.hero-icon strong{font-size:24px}
 
 /* SECTIONS */
-
-section{
-    padding:75px 0;
-}
+section{padding:75px 0}
 
 .section-head{
-    text-align:center;
-    margin-bottom:45px;
+text-align:center;
+margin-bottom:45px
 }
 
 .section-head h2{
-    margin:0 0 12px;
-    font-size:32px;
+margin:0 0 12px;
+font-size:32px
 }
 
 .section-head p{
-    margin:0;
-    color:#718497;
+margin:0;
+color:#718497
 }
 
 /* SERVICES */
-
-.services{
-    background:white;
-}
+.services{background:#fff}
 
 .service-grid{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:20px;
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:20px
 }
 
 .service-card{
-    padding:30px 24px;
-    background:#f8fcff;
-    border:1px solid #e4f0f7;
-    border-radius:22px;
-    transition:.25s;
+padding:30px 24px;
+background:#f8fcff;
+border:1px solid #e4f0f7;
+border-radius:22px;
+transition:.25s
 }
 
 .service-card:hover{
-    transform:translateY(-5px);
-    box-shadow:0 15px 35px rgba(18,82,120,.08);
+transform:translateY(-5px);
+box-shadow:0 15px 35px rgba(18,82,120,.08)
 }
 
 .service-icon{
-    width:58px;
-    height:58px;
-    border-radius:17px;
-    background:#e8f6ff;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:29px;
-    margin-bottom:18px;
+width:58px;
+height:58px;
+border-radius:17px;
+background:#e8f6ff;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:29px;
+margin-bottom:18px
 }
 
-.service-card h3{
-    margin:0 0 10px;
-}
+.service-card h3{margin:0 0 10px}
 
 .service-card p{
-    margin:0;
-    color:#6d8091;
-    line-height:1.9;
-    font-size:14px;
+margin:0;
+color:#6d8091;
+line-height:1.9;
+font-size:14px
 }
 
 /* PRODUCTS */
-
-.products{
-    background:#f7fbff;
-}
+.products{background:#f7fbff}
 
 .product-grid{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:20px;
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:20px
 }
 
 .product-card{
-    background:white;
-    border:1px solid #e2edf5;
-    border-radius:22px;
-    overflow:hidden;
-    box-shadow:0 8px 25px rgba(22,70,100,.04);
+background:#fff;
+border:1px solid #e2edf5;
+border-radius:22px;
+overflow:hidden;
+box-shadow:0 8px 25px rgba(22,70,100,.04)
 }
 
 .product-image{
-    height:190px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:#eef8ff;
-    font-size:65px;
-    overflow:hidden;
+height:190px;
+display:flex;
+align-items:center;
+justify-content:center;
+background:#eef8ff;
+font-size:65px
 }
 
-.product-content{
-    padding:20px;
+.product-image img{
+width:100%;
+height:100%;
+object-fit:cover
 }
 
-.product-content h3{
-    margin:0 0 8px;
-}
+.product-content{padding:20px}
+
+.product-content h3{margin:0 0 8px}
 
 .product-content p{
-    color:#718497;
-    font-size:13px;
-    line-height:1.8;
-    min-height:45px;
+color:#718497;
+font-size:13px;
+line-height:1.8
 }
 
 .product-price{
-    color:#0782d5;
-    font-weight:900;
-    margin:15px 0;
+color:#0782d5;
+font-weight:900;
+margin:15px 0
 }
 
 /* REQUEST */
-
-.request{
-    background:white;
-}
+.request{background:#fff}
 
 .form-box{
-    max-width:850px;
-    margin:auto;
-    padding:32px;
-    border:1px solid #e2edf5;
-    border-radius:25px;
-    background:#fbfdff;
+max-width:850px;
+margin:auto;
+padding:32px;
+border:1px solid #e2edf5;
+border-radius:25px;
+background:#fbfdff
 }
 
 .form-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:16px;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:16px
 }
 
 .field{
-    display:flex;
-    flex-direction:column;
-    gap:8px;
+display:flex;
+flex-direction:column;
+gap:8px
 }
 
-.field.full{
-    grid-column:1/-1;
-}
+.field.full{grid-column:1/-1}
 
 .field label{
-    font-size:13px;
-    font-weight:800;
+font-size:13px;
+font-weight:800
 }
 
 .field input,
 .field textarea,
 .field select{
-    width:100%;
-    border:1px solid #dce9f2;
-    border-radius:13px;
-    padding:13px 14px;
-    outline:none;
-    background:white;
-    color:#102238;
+width:100%;
+border:1px solid #dce9f2;
+border-radius:13px;
+padding:13px 14px;
+outline:none;
+background:#fff;
+color:#102238
 }
 
 .field input:focus,
 .field textarea:focus,
 .field select:focus{
-    border-color:#0782d5;
+border-color:#0782d5
 }
 
 .field textarea{
-    min-height:120px;
-    resize:vertical;
+min-height:120px;
+resize:vertical
 }
 
 .form-message{
-    display:none;
-    margin-top:15px;
-    padding:13px;
-    border-radius:12px;
-    text-align:center;
-    font-size:14px;
-    font-weight:700;
+display:none;
+margin-top:15px;
+padding:13px;
+border-radius:12px;
+text-align:center;
+font-size:14px;
+font-weight:700
 }
 
 .form-message.success{
-    display:block;
-    background:#e9f9ef;
-    color:#19733d;
+display:block;
+background:#e9f9ef;
+color:#19733d
 }
 
 .form-message.error{
-    display:block;
-    background:#fff0f0;
-    color:#a62b2b;
+display:block;
+background:#fff0f0;
+color:#a62b2b
 }
 
 /* REVIEWS */
-
 .reviews{
-    background:linear-gradient(180deg,#f7fbff,#ffffff);
+background:linear-gradient(180deg,#f7fbff,#fff)
 }
 
 .review-layout{
-    display:grid;
-    grid-template-columns:380px 1fr;
-    gap:30px;
-    align-items:start;
+display:grid;
+grid-template-columns:380px 1fr;
+gap:30px;
+align-items:start
 }
 
 .review-form{
-    background:white;
-    border:1px solid #dfebf4;
-    border-radius:24px;
-    padding:27px;
-    box-shadow:0 10px 35px rgba(15,70,100,.06);
-    position:sticky;
-    top:100px;
+background:#fff;
+border:1px solid #dfebf4;
+border-radius:24px;
+padding:27px;
+box-shadow:0 10px 35px rgba(15,70,100,.06);
+position:sticky;
+top:100px
 }
 
-.review-form h3{
-    margin:0 0 8px;
-}
+.review-form h3{margin:0 0 8px}
 
-.review-form > p{
-    margin:0 0 22px;
-    color:#7a8b99;
-    font-size:13px;
-    line-height:1.8;
+.review-form>p{
+margin:0 0 22px;
+color:#7a8b99;
+font-size:13px;
+line-height:1.8
 }
 
 .rating-title{
-    font-size:13px;
-    font-weight:800;
-    margin-bottom:8px;
+font-size:13px;
+font-weight:800;
+margin-bottom:8px
 }
 
 .star-input{
-    direction:rtl;
-    display:flex;
-    gap:3px;
-    margin-bottom:18px;
+direction:rtl;
+display:flex;
+gap:3px;
+margin-bottom:18px
 }
 
 .star-input button{
-    border:0;
-    background:none;
-    padding:2px;
-    cursor:pointer;
-    font-size:31px;
-    line-height:1;
-    color:#ccd6dd;
-    transition:.15s;
+border:0;
+background:none;
+padding:2px;
+cursor:pointer;
+font-size:31px;
+line-height:1;
+color:#ccd6dd;
+transition:.15s
 }
 
-.star-input button.active{
-    color:#f6b800;
+.star-input button.active,
+.star-input button:hover,
+.star-input button:hover~button{
+color:#f6b800
 }
 
 .reviews-list{
-    display:grid;
-    gap:15px;
+display:grid;
+gap:15px
 }
 
 .review-card{
-    background:white;
-    border:1px solid #e2edf5;
-    border-radius:20px;
-    padding:21px;
-    box-shadow:0 8px 25px rgba(20,70,100,.04);
+background:#fff;
+border:1px solid #e2edf5;
+border-radius:20px;
+padding:21px;
+box-shadow:0 8px 25px rgba(20,70,100,.04)
 }
 
 .review-top{
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-start;
-    gap:15px;
+display:flex;
+justify-content:space-between;
+align-items:flex-start;
+gap:15px
 }
 
 .reviewer{
-    display:flex;
-    align-items:center;
-    gap:11px;
+display:flex;
+align-items:center;
+gap:11px
 }
 
 .avatar{
-    width:43px;
-    height:43px;
-    border-radius:50%;
-    background:#e8f6ff;
-    color:#0877c9;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-weight:900;
+width:43px;
+height:43px;
+border-radius:50%;
+background:#e8f6ff;
+color:#0877c9;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:900
 }
 
 .reviewer-name{
-    font-weight:900;
-    font-size:14px;
+font-weight:900;
+font-size:14px
 }
 
 .review-date{
-    color:#9aa9b4;
-    font-size:11px;
-    margin-top:4px;
+color:#9aa9b4;
+font-size:11px;
+margin-top:4px
 }
 
 .review-stars{
-    color:#f6b800;
-    font-size:17px;
-    white-space:nowrap;
+color:#f6b800;
+font-size:17px;
+white-space:nowrap
 }
 
 .review-text{
-    margin:15px 0 0;
-    color:#536a7c;
-    line-height:2;
-    font-size:14px;
-    white-space:pre-wrap;
-    word-break:break-word;
+margin:15px 0 0;
+color:#536a7c;
+line-height:2;
+font-size:14px;
+white-space:pre-wrap;
+word-break:break-word
 }
 
 .review-empty{
-    padding:45px 20px;
-    border:1px dashed #d7e5ee;
-    border-radius:20px;
-    text-align:center;
-    color:#81919e;
-    background:#fbfdff;
+padding:45px 20px;
+border:1px dashed #d7e5ee;
+border-radius:20px;
+text-align:center;
+color:#81919e;
+background:#fbfdff
 }
 
 .review-loading{
-    text-align:center;
-    padding:30px;
-    color:#7b8d9b;
+text-align:center;
+padding:30px;
+color:#7b8d9b
 }
 
 .review-count{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    min-width:35px;
-    height:25px;
-    padding:0 9px;
-    border-radius:20px;
-    background:#eaf7ff;
-    color:#0877c9;
-    font-size:12px;
-    margin-right:7px;
+display:inline-flex;
+align-items:center;
+justify-content:center;
+min-width:35px;
+height:25px;
+padding:0 9px;
+border-radius:20px;
+background:#eaf7ff;
+color:#0877c9;
+font-size:12px;
+margin-right:7px
 }
 
 /* CHAT */
-
 .support{
-    position:fixed;
-    left:20px;
-    bottom:20px;
-    z-index:900;
+position:fixed;
+left:20px;
+bottom:20px;
+z-index:900
 }
 
 .support-btn{
-    width:58px;
-    height:58px;
-    border-radius:50%;
-    border:0;
-    cursor:pointer;
-    background:#0782d5;
-    color:white;
-    font-size:25px;
-    box-shadow:0 10px 30px rgba(8,130,213,.3);
+width:58px;
+height:58px;
+border-radius:50%;
+border:0;
+cursor:pointer;
+background:#0782d5;
+color:#fff;
+font-size:25px;
+box-shadow:0 10px 30px rgba(8,130,213,.3)
 }
 
 .chat-box{
-    display:none;
-    position:absolute;
-    left:0;
-    bottom:70px;
-    width:330px;
-    background:white;
-    border:1px solid #dce9f2;
-    border-radius:20px;
-    overflow:hidden;
-    box-shadow:0 20px 50px rgba(0,0,0,.13);
+display:none;
+position:absolute;
+left:0;
+bottom:70px;
+width:330px;
+background:#fff;
+border:1px solid #dce9f2;
+border-radius:20px;
+overflow:hidden;
+box-shadow:0 20px 50px rgba(0,0,0,.13)
 }
 
-.chat-box.open{
-    display:block;
-}
+.chat-box.open{display:block}
 
 .chat-head{
-    background:#0782d5;
-    color:white;
-    padding:17px;
-    font-weight:900;
+background:#0782d5;
+color:#fff;
+padding:17px;
+font-weight:900
 }
 
-.chat-body{
-    padding:15px;
-}
+.chat-body{padding:15px}
 
 .chat-body input,
 .chat-body textarea{
-    width:100%;
-    border:1px solid #dce9f2;
-    border-radius:11px;
-    padding:10px;
-    margin-bottom:8px;
-    outline:none;
+width:100%;
+border:1px solid #dce9f2;
+border-radius:11px;
+padding:10px;
+margin-bottom:8px;
+outline:none
 }
 
 .chat-body textarea{
-    height:80px;
-    resize:none;
+height:80px;
+resize:none
 }
 
 .chat-messages{
-    max-height:180px;
-    overflow:auto;
-    margin-bottom:10px;
+max-height:180px;
+overflow:auto;
+margin-bottom:10px
 }
 
 .chat-message{
-    padding:9px 11px;
-    border-radius:12px;
-    margin-bottom:7px;
-    background:#eef8ff;
-    font-size:12px;
-    line-height:1.8;
+padding:9px 11px;
+border-radius:12px;
+margin-bottom:7px;
+background:#eef8ff;
+font-size:12px;
+line-height:1.8
 }
 
-.chat-message.admin{
-    background:#edf9f0;
-}
+.chat-message.admin{background:#edf9f0}
 
 /* FOOTER */
-
 footer{
-    background:#09253b;
-    color:white;
-    padding:45px 0 25px;
+background:#09253b;
+color:#fff;
+padding:45px 0 25px
 }
 
 .footer-grid{
-    display:grid;
-    grid-template-columns:1.3fr 1fr 1fr;
-    gap:35px;
+display:grid;
+grid-template-columns:1.3fr 1fr 1fr;
+gap:35px
 }
 
-footer h3{
-    margin-top:0;
-}
+footer h3{margin-top:0}
 
 footer p,
 footer a{
-    color:#b8cad7;
-    font-size:13px;
-    line-height:2;
+color:#b8cad7;
+font-size:13px;
+line-height:2
 }
 
 .footer-bottom{
-    border-top:1px solid rgba(255,255,255,.1);
-    margin-top:30px;
-    padding-top:20px;
-    text-align:center;
-    color:#8fa6b7;
-    font-size:12px;
+border-top:1px solid rgba(255,255,255,.1);
+margin-top:30px;
+padding-top:20px;
+text-align:center;
+color:#8fa6b7;
+font-size:12px
 }
 
 /* RESPONSIVE */
-
 @media(max-width:850px){
 
-    .nav-links{
-        display:none;
-        position:absolute;
-        top:76px;
-        right:4%;
-        left:4%;
-        background:white;
-        border:1px solid #e3edf4;
-        border-radius:18px;
-        padding:15px;
-        flex-direction:column;
-        align-items:stretch;
-        box-shadow:0 15px 35px rgba(20,70,100,.1);
-    }
+.nav-links{
+display:none;
+position:absolute;
+top:76px;
+right:4%;
+left:4%;
+background:#fff;
+border:1px solid #e3edf4;
+border-radius:18px;
+padding:15px;
+flex-direction:column;
+align-items:stretch;
+box-shadow:0 15px 35px rgba(20,70,100,.1)
+}
 
-    .nav-links.open{
-        display:flex;
-    }
+.nav-links.open{display:flex}
 
-    .nav-links a{
-        padding:10px;
-    }
+.nav-links a{padding:10px}
 
-    .menu-btn{
-        display:block;
-    }
+.menu-btn{display:block}
 
-    .hero-grid{
-        grid-template-columns:1fr;
-    }
+.hero-grid{grid-template-columns:1fr}
 
-    .hero-card{
-        min-height:280px;
-    }
+.hero-card{min-height:280px}
 
-    .service-grid,
-    .product-grid{
-        grid-template-columns:1fr 1fr;
-    }
+.service-grid,
+.product-grid{
+grid-template-columns:1fr 1fr
+}
 
-    .review-layout{
-        grid-template-columns:1fr;
-    }
+.review-layout{grid-template-columns:1fr}
 
-    .review-form{
-        position:static;
-    }
+.review-form{
+position:static
+}
 
-    .footer-grid{
-        grid-template-columns:1fr 1fr;
-    }
+.footer-grid{
+grid-template-columns:1fr 1fr
+}
+
 }
 
 @media(max-width:580px){
 
-    section{
-        padding:55px 0;
-    }
+section{padding:55px 0}
 
-    .hero{
-        padding:55px 0;
-    }
+.hero{padding:55px 0}
 
-    .hero h1{
-        font-size:34px;
-    }
+.hero h1{font-size:34px}
 
-    .service-grid,
-    .product-grid,
-    .form-grid,
-    .footer-grid{
-        grid-template-columns:1fr;
-    }
+.service-grid,
+.product-grid,
+.form-grid,
+.footer-grid{
+grid-template-columns:1fr
+}
 
-    .field.full{
-        grid-column:auto;
-    }
+.field.full{grid-column:auto}
 
-    .form-box{
-        padding:20px;
-    }
+.form-box{padding:20px}
 
-    .review-top{
-        flex-direction:column;
-    }
+.review-top{flex-direction:column}
 
-    .chat-box{
-        width:calc(100vw - 40px);
-    }
+.chat-box{
+width:calc(100vw - 40px)
+}
 
-    .support{
-        left:15px;
-        bottom:15px;
-    }
+.support{
+left:15px;
+bottom:15px
+}
+
 }
 </style>
 </head>
@@ -809,40 +734,33 @@ footer a{
 <body>
 
 <header>
-
 <div class="container nav">
 
 <a href="#home" class="logo">
-    <span class="logo-mark">❄️</span>
-    <span>Dr Borodat | دکتر برودت</span>
+<span class="logo-mark">❄️</span>
+<span>Dr Borodat | دکتر برودت</span>
 </a>
 
 <button class="menu-btn" id="menuBtn">☰</button>
 
 <nav class="nav-links" id="navLinks">
-    <a href="#home">خانه</a>
-    <a href="#services">خدمات</a>
-    <a href="#products">محصولات</a>
-    <a href="#request">ثبت درخواست</a>
-    <a href="#reviews">نظرات مشتریان</a>
+<a href="#home">خانه</a>
+<a href="#services">خدمات</a>
+<a href="#products">محصولات</a>
+<a href="#request">ثبت درخواست</a>
+<a href="#reviews">نظرات مشتریان</a>
 </nav>
 
 </div>
-
 </header>
 
 <main>
 
 <section class="hero" id="home">
-
 <div class="container hero-grid">
 
 <div>
-
-<h1>
-خنکی مطمئن با
-<span>دکتر برودت</span>
-</h1>
+<h1>خنکی مطمئن با <span>دکتر برودت</span></h1>
 
 <p>
 ارائه خدمات تخصصی نصب، سرویس و تعمیر کولر گازی
@@ -860,123 +778,71 @@ footer a{
 </a>
 
 </div>
-
 </div>
 
 <div class="hero-card">
-
 <div class="hero-icon">
-
 <span class="snow">❄️</span>
-
-<strong>
-خدمات تخصصی سرمایشی
-</strong>
-
+<strong>خدمات تخصصی سرمایشی</strong>
+</div>
 </div>
 
 </div>
-
-</div>
-
 </section>
 
 <section class="services" id="services">
-
 <div class="container">
 
 <div class="section-head">
-
 <h2>خدمات ما</h2>
-
-<p>
-هر چیزی که برای نگهداری و تعمیر سیستم سرمایشی نیاز دارید.
-</p>
-
+<p>هر چیزی که برای نگهداری و تعمیر سیستم سرمایشی نیاز دارید.</p>
 </div>
 
 <div class="service-grid">
 
 <div class="service-card">
-
 <div class="service-icon">🔧</div>
-
 <h3>نصب کولر گازی</h3>
-
-<p>
-نصب اصولی انواع کولر گازی و اسپلیت با رعایت استانداردهای فنی.
-</p>
-
+<p>نصب اصولی انواع کولر گازی و اسپلیت با رعایت استانداردهای فنی.</p>
 </div>
 
 <div class="service-card">
-
 <div class="service-icon">🛠️</div>
-
 <h3>سرویس دوره‌ای</h3>
-
-<p>
-سرویس و شست‌وشوی تخصصی برای افزایش راندمان و طول عمر دستگاه.
-</p>
-
+<p>سرویس و شست‌وشوی تخصصی برای افزایش راندمان و طول عمر دستگاه.</p>
 </div>
 
 <div class="service-card">
-
 <div class="service-icon">❄️</div>
-
 <h3>تعمیرات تخصصی</h3>
-
-<p>
-عیب‌یابی و تعمیر مشکلات سرمایش، نشتی، صدا و عملکرد دستگاه.
-</p>
-
+<p>عیب‌یابی و تعمیر مشکلات سرمایش، نشتی، صدا و عملکرد دستگاه.</p>
 </div>
 
 </div>
-
 </div>
-
 </section>
 
 <section class="products" id="products">
-
 <div class="container">
 
 <div class="section-head">
-
 <h2>محصولات</h2>
-
-<p>
-محصولات موجود در فروشگاه از طریق پنل مدیریت قابل کنترل هستند.
-</p>
-
+<p>محصولات موجود در فروشگاه از طریق پنل مدیریت قابل کنترل هستند.</p>
 </div>
 
 <div class="product-grid" id="productGrid">
-
-<div class="review-loading">
-در حال دریافت محصولات...
+<div class="review-loading">در حال دریافت محصولات...</div>
 </div>
 
 </div>
-
-</div>
-
 </section>
 
 <section class="request" id="request">
-
 <div class="container">
 
 <div class="section-head">
-
 <h2>ثبت درخواست خدمات</h2>
-
-<p>
-اطلاعات خود را وارد کنید تا درخواست شما ثبت شود.
-</p>
-
+<p>اطلاعات خود را وارد کنید تا درخواست شما ثبت شود.</p>
 </div>
 
 <div class="form-box">
@@ -986,102 +852,54 @@ footer a{
 <div class="form-grid">
 
 <div class="field">
-
 <label>نام و نام خانوادگی</label>
-
-<input
-type="text"
-id="requestName"
-placeholder="مثلاً علی احمدی"
-required
->
-
+<input type="text" id="requestName" placeholder="مثلاً علی احمدی" required>
 </div>
 
 <div class="field">
-
 <label>شماره تماس</label>
-
-<input
-type="tel"
-id="requestPhone"
-placeholder="09123456789"
-required
->
-
+<input type="tel" id="requestPhone" placeholder="09123456789" required>
 </div>
 
 <div class="field">
-
 <label>نوع خدمت</label>
 
 <select id="requestService" required>
-
 <option value="">انتخاب کنید</option>
-
 <option value="نصب">نصب</option>
-
 <option value="سرویس">سرویس</option>
-
 <option value="تعمیر">تعمیر</option>
-
 </select>
 
 </div>
 
 <div class="field">
-
-<label>توضیحات کوتاه</label>
-
-<input
-type="text"
-id="requestDescription"
-placeholder="توضیح کوتاه"
->
-
+<label>توضیحات</label>
+<input type="text" id="requestDescription" placeholder="توضیح کوتاه">
 </div>
 
 <div class="field full">
-
 <label>توضیحات کامل</label>
-
-<textarea
-id="requestDetails"
-placeholder="مشکل یا درخواست خود را بنویسید..."
-></textarea>
-
+<textarea id="requestDetails" placeholder="مشکل یا درخواست خود را بنویسید..."></textarea>
 </div>
 
 <div class="field full">
-
-<button
-type="submit"
-class="btn btn-primary"
-id="requestSubmit"
->
-📩 ثبت درخواست
-</button>
-
+<button type="submit" class="btn btn-primary">📩 ثبت درخواست</button>
 </div>
 
 </div>
-
 </form>
 
 <div id="requestMessage" class="form-message"></div>
 
 </div>
-
 </div>
-
 </section>
 
 <section class="reviews" id="reviews">
-
 <div class="container">
 
 <div class="section-head">
-
 <h2>
 نظرات مشتریان
 <span class="review-count" id="reviewCount">0</span>
@@ -1090,7 +908,6 @@ id="requestSubmit"
 <p>
 تجربه مشتریان دکتر برودت را بخوانید و نظر خودتان را ثبت کنید.
 </p>
-
 </div>
 
 <div class="review-layout">
@@ -1106,93 +923,49 @@ id="requestSubmit"
 <form id="reviewForm">
 
 <div class="field">
-
 <label>نام شما</label>
-
-<input
-type="text"
-id="reviewName"
-placeholder="نام و نام خانوادگی"
-maxlength="100"
-required
->
-
+<input type="text" id="reviewName" placeholder="نام و نام خانوادگی" maxlength="100" required>
 </div>
 
 <br>
 
-<div class="rating-title">
-امتیاز شما
-</div>
+<div class="rating-title">امتیاز شما</div>
 
 <div class="star-input" id="starInput">
-
 <button type="button" data-rating="5">★</button>
 <button type="button" data-rating="4">★</button>
 <button type="button" data-rating="3">★</button>
 <button type="button" data-rating="2">★</button>
 <button type="button" data-rating="1">★</button>
-
 </div>
 
-<input
-type="hidden"
-id="reviewRating"
-value="5"
->
+<input type="hidden" id="reviewRating" value="5">
 
 <div class="field">
-
 <label>متن نظر</label>
-
-<textarea
-id="reviewComment"
-placeholder="نظر شما درباره خدمات دکتر برودت..."
-maxlength="1000"
-required
-></textarea>
-
+<textarea id="reviewComment" placeholder="نظر شما درباره خدمات دکتر برودت..." maxlength="1000" required></textarea>
 </div>
 
 <br>
 
-<button
-type="submit"
-class="btn btn-primary"
-id="reviewSubmit"
-style="width:100%"
->
+<button type="submit" class="btn btn-primary" id="reviewSubmit" style="width:100%">
 ⭐ ثبت نظر
 </button>
 
 </form>
 
-<div
-id="reviewMessage"
-class="form-message"
-></div>
+<div id="reviewMessage" class="form-message"></div>
 
 </div>
 
 <div>
-
-<div
-id="reviewsList"
-class="reviews-list"
->
-
-<div class="review-loading">
-در حال دریافت نظرات...
+<div id="reviewsList" class="reviews-list">
+<div class="review-loading">در حال دریافت نظرات...</div>
+</div>
 </div>
 
 </div>
-
 </div>
-
-</div>
-
-</div>
-
 </section>
 
 </main>
@@ -1207,47 +980,22 @@ class="reviews-list"
 
 <div class="chat-body">
 
-<div
-class="chat-messages"
-id="chatMessages"
->
-</div>
+<div class="chat-messages" id="chatMessages"></div>
 
-<input
-type="text"
-id="chatName"
-placeholder="نام شما"
->
+<input type="text" id="chatName" placeholder="نام شما">
 
-<input
-type="tel"
-id="chatPhone"
-placeholder="شماره تماس"
->
+<input type="tel" id="chatPhone" placeholder="شماره تماس">
 
-<textarea
-id="chatText"
-placeholder="پیام خود را بنویسید..."
-></textarea>
+<textarea id="chatText" placeholder="پیام خود را بنویسید..."></textarea>
 
-<button
-class="btn btn-primary"
-style="width:100%"
-id="chatSend"
->
+<button class="btn btn-primary" style="width:100%" id="chatSend">
 ارسال پیام
 </button>
 
 </div>
-
 </div>
 
-<button
-class="support-btn"
-id="supportBtn"
->
-💬
-</button>
+<button class="support-btn" id="supportBtn">💬</button>
 
 </div>
 
@@ -1258,980 +1006,618 @@ id="supportBtn"
 <div class="footer-grid">
 
 <div>
-
 <h3>❄️ دکتر برودت</h3>
-
 <p>
 خدمات تخصصی نصب، سرویس و تعمیر کولر گازی
 و تجهیزات سرمایشی.
 </p>
-
 </div>
 
 <div>
-
 <h3>دسترسی سریع</h3>
-
-<p>
-<a href="#services">خدمات</a>
-</p>
-
-<p>
-<a href="#products">محصولات</a>
-</p>
-
-<p>
-<a href="#reviews">نظرات مشتریان</a>
-</p>
-
+<p><a href="#services">خدمات</a></p>
+<p><a href="#products">محصولات</a></p>
+<p><a href="#reviews">نظرات مشتریان</a></p>
 </div>
 
 <div>
-
 <h3>ارتباط با ما</h3>
-
-<p>
-📞 تماس با پشتیبانی
-</p>
-
-<p>
-💬 ارسال پیام آنلاین
-</p>
-
+<p>📞 تماس با پشتیبانی</p>
+<p>💬 ارسال پیام آنلاین</p>
 </div>
 
 </div>
 
 <div class="footer-bottom">
-
 © دکتر برودت — تمامی حقوق محفوظ است.
-
 </div>
 
 </div>
-
 </footer>
 
 <script>
 
-/* =====================================================
-   SERVER
-   این آدرس مخصوص سرور پیش‌نمایش است
-===================================================== */
+/* MENU */
 
-const API_BASE = "https://borodat-panel.onrender.com";
-
-
-/* =====================================================
-   MENU
-===================================================== */
-
-const menuBtn = document.getElementById("menuBtn");
-const navLinks = document.getElementById("navLinks");
+const menuBtn=document.getElementById("menuBtn");
+const navLinks=document.getElementById("navLinks");
 
 menuBtn.addEventListener("click",()=>{
-    navLinks.classList.toggle("open");
+navLinks.classList.toggle("open");
 });
 
 document.querySelectorAll(".nav-links a").forEach(link=>{
-    link.addEventListener("click",()=>{
-        navLinks.classList.remove("open");
-    });
+link.addEventListener("click",()=>{
+navLinks.classList.remove("open");
+});
 });
 
 
-/* =====================================================
-   API HELPER
-===================================================== */
+/* API */
 
-async function apiFetch(url, options={}){
+async function apiFetch(url,options={}){
 
-    const fullUrl =
-        url.startsWith("http")
-        ? url
-        : API_BASE + url;
+const response=await fetch(url,{
+...options,
+headers:{
+"Content-Type":"application/json",
+...(options.headers||{})
+}
+});
 
-    const response = await fetch(fullUrl,{
-        ...options,
-        headers:{
-            "Accept":"application/json",
-            ...(options.body ? {
-                "Content-Type":"application/json"
-            } : {}),
-            ...(options.headers || {})
-        }
-    });
+let data={};
 
-    let data={};
+try{
+data=await response.json();
+}catch(e){}
 
-    try{
-        data=await response.json();
-    }catch(error){
-        data={};
-    }
+if(!response.ok){
+throw new Error(
+data.message||"خطایی در ارتباط با سرور رخ داد."
+);
+}
 
-    if(!response.ok){
-
-        throw new Error(
-            data.message ||
-            data.error ||
-            "خطایی در ارتباط با سرور رخ داد."
-        );
-
-    }
-
-    return data;
+return data;
 }
 
 
-/* =====================================================
-   PRODUCTS
-===================================================== */
+/* ESCAPE */
+
+function escapeHtml(value){
+
+return String(value??"")
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
+
+}
+
+
+/* PRODUCTS */
 
 async function loadProducts(){
 
-    const grid =
-        document.getElementById("productGrid");
+const grid=document.getElementById("productGrid");
 
-    grid.innerHTML=`
-        <div class="review-loading" style="grid-column:1/-1">
-            در حال دریافت محصولات...
-        </div>
-    `;
+try{
 
-    try{
+const data=await apiFetch("/api/products");
 
-        const data =
-            await apiFetch("/api/products");
+const products=
+Array.isArray(data.products)
+?data.products
+:[];
 
-        const products =
-            Array.isArray(data.products)
-            ? data.products
-            : Array.isArray(data)
-            ? data
-            : [];
+if(!products.length){
 
-        if(!products.length){
+grid.innerHTML=`
+<div class="review-empty" style="grid-column:1/-1">
+هنوز محصولی ثبت نشده است.
+</div>`;
 
-            grid.innerHTML=`
-                <div
-                    class="review-empty"
-                    style="grid-column:1/-1"
-                >
-                    هنوز محصولی ثبت نشده است.
-                </div>
-            `;
+return;
+}
 
-            return;
-        }
+grid.innerHTML=products.map(product=>{
 
-        grid.innerHTML =
-            products.map(product=>{
+const image=
+product.image&&String(product.image).trim()
+?`<img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}">`
+:"❄️";
 
-                const image =
-                    product.image &&
-                    String(product.image).trim()
-                    ? `
-                        <img
-                            src="${escapeHtml(product.image)}"
-                            alt="${escapeHtml(product.name || "محصول")}"
-                            style="
-                                width:100%;
-                                height:100%;
-                                object-fit:cover;
-                                display:block;
-                            "
-                        >
-                      `
-                    : "❄️";
+return `
+<div class="product-card">
 
-                return `
-                    <div class="product-card">
+<div class="product-image">
+${image}
+</div>
 
-                        <div class="product-image">
-                            ${image}
-                        </div>
+<div class="product-content">
 
-                        <div class="product-content">
+<h3>${escapeHtml(product.name)}</h3>
 
-                            <h3>
-                                ${escapeHtml(product.name || "محصول")}
-                            </h3>
+<p>${escapeHtml(product.description||"")}</p>
 
-                            <p>
-                                ${escapeHtml(
-                                    product.description || ""
-                                )}
-                            </p>
+<div class="product-price">
+${escapeHtml(product.price||"")}
+</div>
 
-                            <div class="product-price">
-                                ${escapeHtml(
-                                    product.price || ""
-                                )}
-                            </div>
+</div>
+</div>
+`;
 
-                        </div>
+}).join("");
 
-                    </div>
-                `;
+}catch(error){
 
-            }).join("");
+console.error("PRODUCT ERROR:",error);
 
-    }catch(error){
+grid.innerHTML=`
+<div class="review-empty" style="grid-column:1/-1">
+دریافت محصولات با خطا مواجه شد.
+</div>`;
 
-        console.error("PRODUCT ERROR:",error);
+}
 
-        grid.innerHTML=`
-            <div
-                class="review-empty"
-                style="grid-column:1/-1"
-            >
-                <div style="font-size:35px;margin-bottom:10px">
-                    ⚠️
-                </div>
-
-                دریافت محصولات از سرور انجام نشد.
-
-                <br><br>
-
-                <button
-                    class="btn btn-light"
-                    onclick="loadProducts()"
-                >
-                    تلاش دوباره
-                </button>
-            </div>
-        `;
-    }
 }
 
 
-/* =====================================================
-   REVIEW ELEMENTS
-===================================================== */
+/* REVIEWS */
 
-const reviewForm =
-    document.getElementById("reviewForm");
+const reviewForm=document.getElementById("reviewForm");
+const reviewName=document.getElementById("reviewName");
+const reviewComment=document.getElementById("reviewComment");
+const reviewRating=document.getElementById("reviewRating");
+const starInput=document.getElementById("starInput");
+const reviewMessage=document.getElementById("reviewMessage");
+const reviewsList=document.getElementById("reviewsList");
+const reviewCount=document.getElementById("reviewCount");
+const reviewSubmit=document.getElementById("reviewSubmit");
 
-const reviewName =
-    document.getElementById("reviewName");
-
-const reviewComment =
-    document.getElementById("reviewComment");
-
-const reviewRating =
-    document.getElementById("reviewRating");
-
-const starInput =
-    document.getElementById("starInput");
-
-const reviewMessage =
-    document.getElementById("reviewMessage");
-
-const reviewsList =
-    document.getElementById("reviewsList");
-
-const reviewCount =
-    document.getElementById("reviewCount");
-
-const reviewSubmit =
-    document.getElementById("reviewSubmit");
-
-
-/* =====================================================
-   RATING
-===================================================== */
 
 function setRating(rating){
 
-    rating=Math.max(
-        1,
-        Math.min(
-            5,
-            Number(rating)||5
-        )
-    );
+rating=Math.max(1,Math.min(5,Number(rating)||5));
 
-    reviewRating.value=rating;
+reviewRating.value=rating;
 
-    starInput
-        .querySelectorAll("button")
-        .forEach(button=>{
+starInput.querySelectorAll("button").forEach(button=>{
 
-            const value =
-                Number(button.dataset.rating);
+const buttonRating=Number(button.dataset.rating);
 
-            button.classList.toggle(
-                "active",
-                value<=rating
-            );
+button.classList.toggle(
+"active",
+buttonRating<=rating
+);
 
-        });
+});
+
 }
 
-
-starInput
-    .querySelectorAll("button")
-    .forEach(button=>{
-
-        button.addEventListener("click",()=>{
-
-            setRating(
-                Number(button.dataset.rating)
-            );
-
-        });
-
-    });
+starInput.querySelectorAll("button").forEach(button=>{
+button.addEventListener("click",()=>{
+setRating(Number(button.dataset.rating));
+});
+});
 
 setRating(5);
 
 
-/* =====================================================
-   REVIEW MESSAGE
-===================================================== */
-
 function showReviewMessage(text,type){
 
-    reviewMessage.textContent=text;
+reviewMessage.textContent=text;
+reviewMessage.className="form-message "+type;
 
-    reviewMessage.className =
-        "form-message " + type;
 }
 
 
-/* =====================================================
-   LOAD REVIEWS
-===================================================== */
+/* LOAD REVIEWS */
 
 async function loadReviews(){
 
-    reviewsList.innerHTML=`
-        <div class="review-loading">
-            در حال دریافت نظرات...
-        </div>
-    `;
+reviewsList.innerHTML=`
+<div class="review-loading">
+در حال دریافت نظرات...
+</div>`;
 
-    try{
+try{
 
-        const data =
-            await apiFetch("/api/reviews");
+const data=await apiFetch("/api/reviews");
 
-        const reviews =
-            Array.isArray(data.reviews)
-            ? data.reviews
-            : Array.isArray(data)
-            ? data
-            : [];
+const reviews=
+Array.isArray(data.reviews)
+?data.reviews
+:[];
 
-        reviewCount.textContent=reviews.length;
+reviewCount.textContent=reviews.length;
 
-        if(!reviews.length){
+if(!reviews.length){
 
-            reviewsList.innerHTML=`
-                <div class="review-empty">
+reviewsList.innerHTML=`
+<div class="review-empty">
 
-                    <div
-                        style="
-                            font-size:35px;
-                            margin-bottom:10px
-                        "
-                    >
-                        💬
-                    </div>
+<div style="font-size:35px;margin-bottom:10px">
+💬
+</div>
 
-                    هنوز نظری ثبت نشده است.
+هنوز نظری ثبت نشده است.
+اولین نفری باشید که نظرش را ثبت می‌کند.
 
-                    <br>
+</div>`;
 
-                    اولین نفری باشید که
-                    نظرش را ثبت می‌کند.
+return;
+}
 
-                </div>
-            `;
+reviewsList.innerHTML=reviews.map(review=>{
 
-            return;
-        }
+const rating=Math.max(
+1,
+Math.min(5,Number(review.rating)||5)
+);
 
-        reviewsList.innerHTML =
-            reviews.map(review=>{
+const stars=
+"★".repeat(rating)+
+"☆".repeat(5-rating);
 
-                const rating =
-                    Math.max(
-                        1,
-                        Math.min(
-                            5,
-                            Number(review.rating)||5
-                        )
-                    );
+const name=escapeHtml(
+review.name||"مشتری"
+);
 
-                const stars =
-                    "★".repeat(rating) +
-                    "☆".repeat(5-rating);
+const comment=escapeHtml(
+review.comment??review.text??""
+);
 
-                const name =
-                    escapeHtml(
-                        review.name || "مشتری"
-                    );
+const date=escapeHtml(
+review.created_at||""
+);
 
-                const comment =
-                    escapeHtml(
-                        review.comment ??
-                        review.text ??
-                        ""
-                    );
+const initial=escapeHtml(
+(review.name||"م").trim().charAt(0)
+);
 
-                const date =
-                    escapeHtml(
-                        review.created_at ||
-                        review.date ||
-                        ""
-                    );
+return `
+<article class="review-card">
 
-                const initial =
-                    escapeHtml(
-                        (
-                            review.name ||
-                            "م"
-                        )
-                        .trim()
-                        .charAt(0)
-                    );
+<div class="review-top">
 
-                return `
-                    <article class="review-card">
+<div class="reviewer">
 
-                        <div class="review-top">
+<div class="avatar">
+${initial}
+</div>
 
-                            <div class="reviewer">
+<div>
 
-                                <div class="avatar">
-                                    ${initial}
-                                </div>
+<div class="reviewer-name">
+${name}
+</div>
 
-                                <div>
+<div class="review-date">
+${date}
+</div>
 
-                                    <div class="reviewer-name">
-                                        ${name}
-                                    </div>
+</div>
 
-                                    <div class="review-date">
-                                        ${date}
-                                    </div>
+</div>
 
-                                </div>
+<div class="review-stars"
+aria-label="امتیاز ${rating} از 5">
+${stars}
+</div>
 
-                            </div>
+</div>
 
-                            <div
-                                class="review-stars"
-                                aria-label="امتیاز ${rating} از 5"
-                            >
-                                ${stars}
-                            </div>
+<div class="review-text">
+${comment}
+</div>
 
-                        </div>
+</article>
+`;
 
-                        <div class="review-text">
-                            ${comment}
-                        </div>
+}).join("");
 
-                    </article>
-                `;
+}catch(error){
 
-            }).join("");
+console.error("REVIEWS ERROR:",error);
 
-    }catch(error){
+reviewCount.textContent="0";
 
-        console.error("REVIEWS ERROR:",error);
+reviewsList.innerHTML=`
+<div class="review-empty">
 
-        reviewCount.textContent="0";
+<div style="font-size:35px;margin-bottom:10px">
+⚠️
+</div>
 
-        reviewsList.innerHTML=`
-            <div class="review-empty">
+دریافت نظرات از سرور با مشکل مواجه شد.
 
-                <div
-                    style="
-                        font-size:35px;
-                        margin-bottom:10px
-                    "
-                >
-                    ⚠️
-                </div>
+<br><br>
 
-                دریافت نظرات از سرور
-                با مشکل مواجه شد.
+<button class="btn btn-light" onclick="loadReviews()">
+تلاش دوباره
+</button>
 
-                <br><br>
+</div>`;
 
-                <button
-                    class="btn btn-light"
-                    onclick="loadReviews()"
-                >
-                    تلاش دوباره
-                </button>
+}
 
-            </div>
-        `;
-    }
 }
 
 
-/* =====================================================
-   CREATE REVIEW
-===================================================== */
+/* CREATE REVIEW */
 
-reviewForm.addEventListener(
-    "submit",
-    async function(event){
+reviewForm.addEventListener("submit",async event=>{
 
-        event.preventDefault();
+event.preventDefault();
 
-        const name =
-            reviewName.value.trim();
+const name=reviewName.value.trim();
+const comment=reviewComment.value.trim();
+const rating=Number(reviewRating.value)||5;
 
-        const comment =
-            reviewComment.value.trim();
+if(!name){
 
-        const rating =
-            Number(reviewRating.value)||5;
-
-        if(!name){
-
-            showReviewMessage(
-                "لطفاً نام خود را وارد کنید.",
-                "error"
-            );
-
-            return;
-        }
-
-        if(!comment){
-
-            showReviewMessage(
-                "لطفاً متن نظر را وارد کنید.",
-                "error"
-            );
-
-            return;
-        }
-
-        reviewSubmit.disabled=true;
-        reviewSubmit.textContent="در حال ثبت...";
-
-        reviewMessage.className="form-message";
-
-        try{
-
-            const data =
-                await apiFetch(
-                    "/api/reviews",
-                    {
-                        method:"POST",
-
-                        body:JSON.stringify({
-
-                            name:name,
-
-                            rating:rating,
-
-                            comment:comment,
-
-                            text:comment
-
-                        })
-                    }
-                );
-
-            if(data.success===false){
-
-                throw new Error(
-                    data.message ||
-                    "ثبت نظر انجام نشد."
-                );
-            }
-
-            showReviewMessage(
-                data.message ||
-                "نظر شما با موفقیت ثبت شد ❤️",
-                "success"
-            );
-
-            reviewForm.reset();
-
-            setRating(5);
-
-            await loadReviews();
-
-        }catch(error){
-
-            console.error(
-                "CREATE REVIEW ERROR:",
-                error
-            );
-
-            showReviewMessage(
-                error.message ||
-                "ثبت نظر انجام نشد.",
-                "error"
-            );
-
-        }finally{
-
-            reviewSubmit.disabled=false;
-
-            reviewSubmit.textContent="⭐ ثبت نظر";
-        }
-
-    }
+showReviewMessage(
+"لطفاً نام خود را وارد کنید.",
+"error"
 );
 
+return;
+}
 
-/* =====================================================
-   SERVICE REQUEST
-===================================================== */
+if(!comment){
 
-const requestForm =
-    document.getElementById("requestForm");
-
-const requestMessage =
-    document.getElementById("requestMessage");
-
-const requestSubmit =
-    document.getElementById("requestSubmit");
-
-
-requestForm.addEventListener(
-    "submit",
-    async function(event){
-
-        event.preventDefault();
-
-        const name =
-            document
-                .getElementById("requestName")
-                .value
-                .trim();
-
-        const phone =
-            document
-                .getElementById("requestPhone")
-                .value
-                .trim();
-
-        const service =
-            document
-                .getElementById("requestService")
-                .value
-                .trim();
-
-        const shortDescription =
-            document
-                .getElementById("requestDescription")
-                .value
-                .trim();
-
-        const details =
-            document
-                .getElementById("requestDetails")
-                .value
-                .trim();
-
-        const description =
-            (
-                shortDescription +
-                " " +
-                details
-            ).trim();
-
-        requestSubmit.disabled=true;
-        requestSubmit.textContent="در حال ثبت...";
-
-        requestMessage.className="form-message";
-
-        try{
-
-            const data =
-                await apiFetch(
-                    "/api/request",
-                    {
-                        method:"POST",
-
-                        body:JSON.stringify({
-
-                            name:name,
-
-                            phone:phone,
-
-                            service:service,
-
-                            description:description
-
-                        })
-                    }
-                );
-
-            if(data.success===false){
-
-                throw new Error(
-                    data.message ||
-                    "ثبت درخواست انجام نشد."
-                );
-            }
-
-            requestMessage.textContent =
-                data.message ||
-                "درخواست شما با موفقیت ثبت شد ❤️";
-
-            requestMessage.className =
-                "form-message success";
-
-            requestForm.reset();
-
-        }catch(error){
-
-            requestMessage.textContent =
-                error.message ||
-                "ثبت درخواست انجام نشد.";
-
-            requestMessage.className =
-                "form-message error";
-
-        }finally{
-
-            requestSubmit.disabled=false;
-
-            requestSubmit.textContent="📩 ثبت درخواست";
-        }
-
-    }
+showReviewMessage(
+"لطفاً متن نظر را وارد کنید.",
+"error"
 );
 
+return;
+}
 
-/* =====================================================
-   CHAT
-===================================================== */
+reviewSubmit.disabled=true;
+reviewSubmit.textContent="در حال ثبت...";
 
-const supportBtn =
-    document.getElementById("supportBtn");
+reviewMessage.className="form-message";
 
-const chatBox =
-    document.getElementById("chatBox");
+try{
 
-const chatSend =
-    document.getElementById("chatSend");
+const data=await apiFetch("/api/reviews",{
 
-const chatMessages =
-    document.getElementById("chatMessages");
+method:"POST",
 
-const chatName =
-    document.getElementById("chatName");
+body:JSON.stringify({
+name:name,
+rating:rating,
+comment:comment
+})
 
-const chatPhone =
-    document.getElementById("chatPhone");
+});
 
-const chatText =
-    document.getElementById("chatText");
+if(!data.success){
 
-
-supportBtn.addEventListener(
-    "click",
-    async ()=>{
-
-        chatBox.classList.toggle("open");
-
-        if(chatBox.classList.contains("open")){
-
-            const phone =
-                chatPhone.value.trim();
-
-            if(phone){
-
-                await loadChat(phone);
-
-            }
-        }
-    }
+throw new Error(
+data.message||"ثبت نظر انجام نشد."
 );
 
+}
 
-/* =====================================================
-   LOAD CHAT
-===================================================== */
+showReviewMessage(
+data.message||"نظر شما با موفقیت ثبت شد ❤️",
+"success"
+);
+
+reviewForm.reset();
+setRating(5);
+
+await loadReviews();
+
+}catch(error){
+
+console.error(
+"CREATE REVIEW ERROR:",
+error
+);
+
+showReviewMessage(
+error.message||"ثبت نظر انجام نشد.",
+"error"
+);
+
+}finally{
+
+reviewSubmit.disabled=false;
+reviewSubmit.textContent="⭐ ثبت نظر";
+
+}
+
+});
+
+
+/* REQUEST */
+
+const requestForm=document.getElementById("requestForm");
+const requestMessage=document.getElementById("requestMessage");
+
+requestForm.addEventListener("submit",async event=>{
+
+event.preventDefault();
+
+const name=document.getElementById("requestName").value.trim();
+const phone=document.getElementById("requestPhone").value.trim();
+const service=document.getElementById("requestService").value.trim();
+
+const description=(
+document.getElementById("requestDescription").value.trim()
++" "+
+document.getElementById("requestDetails").value.trim()
+).trim();
+
+requestMessage.className="form-message";
+
+try{
+
+const data=await apiFetch("/api/request",{
+
+method:"POST",
+
+body:JSON.stringify({
+name:name,
+phone:phone,
+service:service,
+description:description
+})
+
+});
+
+requestMessage.textContent=
+data.message||
+"درخواست شما با موفقیت ثبت شد ❤️";
+
+requestMessage.className="form-message success";
+
+requestForm.reset();
+
+}catch(error){
+
+requestMessage.textContent=
+error.message||
+"ثبت درخواست انجام نشد.";
+
+requestMessage.className="form-message error";
+
+}
+
+});
+
+
+/* CHAT */
+
+const supportBtn=document.getElementById("supportBtn");
+const chatBox=document.getElementById("chatBox");
+const chatSend=document.getElementById("chatSend");
+const chatMessages=document.getElementById("chatMessages");
+
+supportBtn.addEventListener("click",async()=>{
+
+chatBox.classList.toggle("open");
+
+if(chatBox.classList.contains("open")){
+
+const phone=document.getElementById("chatPhone").value.trim();
+
+if(phone){
+await loadChat(phone);
+}
+
+}
+
+});
+
 
 async function loadChat(phone){
 
-    if(!phone){
-        return;
-    }
+if(!phone)return;
 
-    try{
+try{
 
-        const data =
-            await apiFetch(
-                "/chat?phone=" +
-                encodeURIComponent(phone)
-            );
+const response=await fetch(
+"/chat?phone="+encodeURIComponent(phone)
+);
 
-        if(data.success===false){
-            return;
-        }
+const data=await response.json();
 
-        const messages =
-            Array.isArray(data.messages)
-            ? data.messages
-            : [];
+if(!data.success)return;
 
-        if(!messages.length){
+const messages=
+Array.isArray(data.messages)
+?data.messages
+:[];
 
-            chatMessages.innerHTML="";
-            return;
-        }
+chatMessages.innerHTML=messages.map(message=>`
 
-        chatMessages.innerHTML =
-            messages.map(message=>{
+<div class="chat-message ${
+message.sender==="admin"?"admin":""
+}">
+${escapeHtml(message.message)}
+</div>
 
-                return `
-                    <div
-                        class="chat-message ${
-                            message.sender==="admin"
-                            ? "admin"
-                            : ""
-                        }"
-                    >
-                        ${escapeHtml(
-                            message.message || ""
-                        )}
-                    </div>
-                `;
+`).join("");
 
-            }).join("");
+chatMessages.scrollTop=chatMessages.scrollHeight;
 
-        chatMessages.scrollTop =
-            chatMessages.scrollHeight;
+}catch(error){
 
-    }catch(error){
+console.error("CHAT LOAD ERROR:",error);
 
-        console.error(
-            "CHAT LOAD ERROR:",
-            error
-        );
-    }
+}
+
 }
 
 
-/* =====================================================
-   PHONE CHANGE
-===================================================== */
+document.getElementById("chatPhone")
+.addEventListener("blur",function(){
 
-chatPhone.addEventListener(
-    "blur",
-    function(){
+loadChat(this.value.trim());
 
-        loadChat(
-            this.value.trim()
-        );
-
-    }
-);
+});
 
 
-/* =====================================================
-   SEND CHAT
-===================================================== */
+chatSend.addEventListener("click",async()=>{
 
-chatSend.addEventListener(
-    "click",
-    async ()=>{
+const name=document.getElementById("chatName").value.trim();
+const phone=document.getElementById("chatPhone").value.trim();
+const message=document.getElementById("chatText").value.trim();
 
-        const name =
-            chatName.value.trim();
+if(!name||!phone||!message){
 
-        const phone =
-            chatPhone.value.trim();
+alert("نام، شماره تماس و پیام را وارد کنید.");
 
-        const message =
-            chatText.value.trim();
-
-        if(!name || !phone || !message){
-
-            alert(
-                "نام، شماره تماس و پیام را وارد کنید."
-            );
-
-            return;
-        }
-
-        chatSend.disabled=true;
-        chatSend.textContent="در حال ارسال...";
-
-        try{
-
-            const data =
-                await apiFetch(
-                    "/chat/send",
-                    {
-                        method:"POST",
-
-                        body:JSON.stringify({
-
-                            name:name,
-
-                            phone:phone,
-
-                            message:message
-
-                        })
-                    }
-                );
-
-            if(data.success===false){
-
-                throw new Error(
-                    data.message ||
-                    "ارسال پیام انجام نشد."
-                );
-            }
-
-            chatText.value="";
-
-            await loadChat(phone);
-
-        }catch(error){
-
-            alert(
-                error.message ||
-                "ارسال پیام انجام نشد."
-            );
-
-        }finally{
-
-            chatSend.disabled=false;
-            chatSend.textContent="ارسال پیام";
-        }
-
-    }
-);
-
-
-/* =====================================================
-   HTML ESCAPE
-===================================================== */
-
-function escapeHtml(value){
-
-    return String(value ?? "")
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;")
-        .replace(/'/g,"&#039;");
+return;
 }
 
+chatSend.disabled=true;
 
-/* =====================================================
-   START
-===================================================== */
+try{
+
+const data=await apiFetch("/chat/send",{
+
+method:"POST",
+
+body:JSON.stringify({
+name:name,
+phone:phone,
+message:message
+})
+
+});
+
+if(data.success){
+
+document.getElementById("chatText").value="";
+
+await loadChat(phone);
+
+}
+
+}catch(error){
+
+alert(
+error.message||
+"ارسال پیام انجام نشد."
+);
+
+}finally{
+
+chatSend.disabled=false;
+
+}
+
+});
+
+
+/* START */
 
 loadReviews();
 loadProducts();
