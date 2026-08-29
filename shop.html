@@ -3,7 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>فروشگاه | دکتر برودت</title>
+
+<title>فروشگاه تجهیزات سرمایشی و کولر گازی | دکتر برودت</title>
+
+<meta name="description" content="فروشگاه دکتر برودت؛ ارائه و تأمین کولر گازی، قطعات کولر گازی و تجهیزات سرمایشی و تهویه. برای خرید و دریافت اطلاعات محصولات با کارشناسان دکتر برودت تماس بگیرید.">
+
+<meta name="robots" content="index, follow">
+
+<link rel="canonical" href="https://drborudat.ir/shop.html">
+
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fa_IR">
+<meta property="og:title" content="فروشگاه تجهیزات سرمایشی و کولر گازی | دکتر برودت">
+<meta property="og:description" content="فروشگاه دکتر برودت؛ کولر گازی، قطعات و تجهیزات سرمایشی و تهویه.">
+<meta property="og:url" content="https://drborudat.ir/shop.html">
+<meta property="og:site_name" content="دکتر برودت">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="فروشگاه تجهیزات سرمایشی و کولر گازی | دکتر برودت">
+<meta name="twitter:description" content="فروشگاه دکتر برودت؛ کولر گازی، قطعات و تجهیزات سرمایشی و تهویه.">
 
 <style>
 *{box-sizing:border-box}
@@ -430,7 +448,6 @@ footer{padding-bottom:100px}
 <strong id="cartTotalCount">0</strong>
 </div>
 
-<!-- فرم کامل ثبت سفارش -->
 <div class="order-form">
 
 <label for="orderName">نام و نام خانوادگی</label>
@@ -453,7 +470,7 @@ autocomplete="tel"
 <label for="orderAddress">آدرس کامل</label>
 <textarea
 id="orderAddress"
-placeholder="استان، شهر، خیابان، کوچه، پلاک، واحد و ... "
+placeholder="استان، شهر، خیابان، کوچه، پلاک، واحد و ..."
 autocomplete="street-address"
 ></textarea>
 
@@ -843,7 +860,6 @@ saveCart();
 renderCart();
 }
 
-/* ثبت سفارش کامل */
 async function submitOrder(){
 
 if(!cart.length){
@@ -864,7 +880,6 @@ showOrderMessage(
 return;
 }
 
-/* بررسی کدپستی */
 const cleanPostal=postalCode.replace(/\D/g,"");
 
 if(cleanPostal.length!==10){
@@ -882,11 +897,6 @@ button.textContent="در حال ثبت سفارش...";
 
 try{
 
-/*
-هر محصول یک سفارش جداگانه ثبت می‌شود،
-اما اطلاعات مشتری و آدرس برای همه محصولات ارسال می‌شود.
-*/
-
 const responses=await Promise.all(
 cart.map(item=>
 
@@ -902,19 +912,13 @@ body:JSON.stringify({
 
 name:name,
 phone:phone,
-
-/* اطلاعات جدید سفارش */
 address:address,
 postal_code:cleanPostal,
-
-/* برای سازگاری با پنل */
 full_address:address,
 postcode:cleanPostal,
-
 product_id:item.id,
 product_name:item.name,
 quantity:String(item.quantity),
-
 price:item.price
 
 })
@@ -949,7 +953,6 @@ data.message||
 }
 }
 
-/* سفارش با موفقیت ثبت شد */
 cart=[];
 saveCart();
 renderCart();
