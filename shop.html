@@ -29,7 +29,9 @@
 
 <style>
 
-*{box-sizing:border-box}
+*{
+box-sizing:border-box
+}
 
 html{
 scroll-behavior:smooth
@@ -48,7 +50,9 @@ text-decoration:none;
 color:inherit
 }
 
-button,input{
+button,
+input,
+textarea{
 font-family:inherit
 }
 
@@ -132,6 +136,11 @@ justify-content:center;
 cursor:pointer;
 padding:0;
 position:relative
+}
+
+.header-icon:hover{
+background:#f5f9fb;
+border-color:#0879bd
 }
 
 .icon-svg{
@@ -301,6 +310,10 @@ font-size:11px;
 font-weight:bold
 }
 
+.slide-button:hover{
+background:#071b31
+}
+
 .slider-arrow{
 position:absolute;
 z-index:5;
@@ -317,6 +330,10 @@ align-items:center;
 justify-content:center;
 font-size:23px;
 cursor:pointer
+}
+
+.slider-arrow:hover{
+background:rgba(8,121,189,.8)
 }
 
 .slider-arrow.prev{
@@ -411,7 +428,8 @@ padding:22px;
 display:flex;
 align-items:center;
 gap:15px;
-transition:.25s
+transition:.25s;
+cursor:pointer
 }
 
 .category:hover{
@@ -450,7 +468,7 @@ background:#f5fbfe
 }
 
 
-/* INTERNAL SEO LINKS */
+/* SEO LINKS */
 
 .shop-seo-links{
 background:#f5f7f9;
@@ -466,7 +484,8 @@ font-size:25px
 }
 
 .shop-seo-links .category{
-background:#fff
+background:#fff;
+cursor:pointer
 }
 
 
@@ -853,6 +872,10 @@ border:1px solid #dce5eb;
 background:#fff;
 border-radius:5px;
 cursor:pointer
+}
+
+.qty-controls button:hover{
+background:#edf7fb
 }
 
 .qty-controls span{
@@ -1312,6 +1335,12 @@ max-height:94vh
 flex-wrap:wrap
 }
 
+.cart-message{
+max-width:90%;
+white-space:normal;
+text-align:center
+}
+
 }
 
 </style>
@@ -1340,6 +1369,7 @@ flex-wrap:wrap
 
 <button
 class="header-icon"
+type="button"
 aria-label="جستجو"
 onclick="showSearch()"
 >
@@ -1357,6 +1387,7 @@ onclick="showSearch()"
 
 <button
 class="header-icon"
+type="button"
 aria-label="سبد خرید"
 onclick="showCart()"
 >
@@ -1383,6 +1414,7 @@ id="cartCount"
 
 <button
 class="header-icon"
+type="button"
 aria-label="منو"
 onclick="toggleMenu()"
 >
@@ -1515,6 +1547,7 @@ href="#products"
 
 <button
 class="slider-arrow prev"
+type="button"
 onclick="changeSlide(-1)"
 aria-label="قبلی"
 >
@@ -1523,6 +1556,7 @@ aria-label="قبلی"
 
 <button
 class="slider-arrow next"
+type="button"
 onclick="changeSlide(1)"
 aria-label="بعدی"
 >
@@ -1535,12 +1569,14 @@ aria-label="بعدی"
 
 <button
 class="slider-dot active"
+type="button"
 onclick="goToSlide(0)"
 aria-label="اسلاید اول"
 ></button>
 
 <button
 class="slider-dot"
+type="button"
 onclick="goToSlide(1)"
 aria-label="اسلاید دوم"
 ></button>
@@ -1671,8 +1707,6 @@ data-category=""
 </section>
 
 
-
-<!-- INTERNAL SEO LINKS -->
 
 <section
 class="shop-seo-links"
@@ -2129,6 +2163,7 @@ id="cartModal"
 
 <button
 class="modal-close"
+type="button"
 onclick="closeCart()"
 >
 ×
@@ -2215,6 +2250,7 @@ autocomplete="postal-code"
 
 <button
 class="order-submit"
+type="button"
 onclick="submitOrder()"
 >
 ثبت سفارش
@@ -2246,6 +2282,10 @@ id="cartMessage"
 
 <script>
 
+"use strict";
+
+
+/* API */
 
 const API_BASE="https://borodat-panel.onrender.com";
 
@@ -2254,10 +2294,14 @@ const PRODUCTS_API=API_BASE+"/api/products";
 const ORDER_API=API_BASE+"/api/order";
 
 
+/* DATA */
+
 let products=[];
 
 let cart=[];
 
+
+/* LOAD CART */
 
 try{
 
@@ -2269,29 +2313,40 @@ if(savedCart){
 const parsed=
 JSON.parse(savedCart);
 
-if(Array.isArray(parsed))
+if(Array.isArray(parsed)){
 cart=parsed;
+}
 
 }
 
-}catch(e){
+}catch(error){
+
+console.error(
+"CART LOAD ERROR:",
+error
+);
 
 cart=[];
 
 }
 
 
+/* MENU */
 
 function toggleMenu(){
 
-document
-.getElementById("menu")
-.classList
-.toggle("open");
+const menu=
+document.getElementById("menu");
+
+if(!menu)
+return;
+
+menu.classList.toggle("open");
 
 }
 
 
+/* SLIDER */
 
 let currentSlide=0;
 
@@ -2300,7 +2355,6 @@ document.querySelectorAll(".slide");
 
 const dots=
 document.querySelectorAll(".slider-dot");
-
 
 
 function showSlide(index){
@@ -2317,23 +2371,24 @@ index=0;
 currentSlide=index;
 
 slides.forEach(
-(slide,i)=>
+(slide,i)=>{
 slide.classList.toggle(
 "active",
 i===currentSlide
-)
+);
+}
 );
 
 dots.forEach(
-(dot,i)=>
+(dot,i)=>{
 dot.classList.toggle(
 "active",
 i===currentSlide
-)
+);
+}
 );
 
 }
-
 
 
 function changeSlide(direction){
@@ -2345,7 +2400,6 @@ currentSlide+direction
 }
 
 
-
 function goToSlide(index){
 
 showSlide(index);
@@ -2353,51 +2407,65 @@ showSlide(index);
 }
 
 
-
 setInterval(
-()=>changeSlide(1),
+()=>{
+changeSlide(1);
+},
 6000
 );
 
 
+/* COUNTDOWN */
 
 let totalSeconds=
 (8*60*60)+(45*60);
 
 
-
 function updateCountdown(){
 
-if(totalSeconds<=0)
-totalSeconds=(8*60*60)+(45*60);
+const hours=
+document.getElementById("hours");
 
-document
-.getElementById("hours")
-.textContent=
+const minutes=
+document.getElementById("minutes");
+
+const seconds=
+document.getElementById("seconds");
+
+if(!hours||!minutes||!seconds)
+return;
+
+if(totalSeconds<=0){
+
+totalSeconds=
+(8*60*60)+(45*60);
+
+}
+
+
+hours.textContent=
 String(
 Math.floor(totalSeconds/3600)
 ).padStart(2,"0");
 
-document
-.getElementById("minutes")
-.textContent=
+
+minutes.textContent=
 String(
 Math.floor(
 (totalSeconds%3600)/60
 )
 ).padStart(2,"0");
 
-document
-.getElementById("seconds")
-.textContent=
+
+seconds.textContent=
 String(
 totalSeconds%60
 ).padStart(2,"0");
 
+
 totalSeconds--;
 
 }
-
 
 
 updateCountdown();
@@ -2408,6 +2476,7 @@ updateCountdown,
 );
 
 
+/* SECURITY */
 
 function escapeHtml(value){
 
@@ -2426,7 +2495,6 @@ return String(value??"")
 }
 
 
-
 function escapeJs(value){
 
 return String(value??"")
@@ -2442,6 +2510,7 @@ return String(value??"")
 }
 
 
+/* PRICE */
 
 function formatPrice(value){
 
@@ -2449,39 +2518,53 @@ if(
 value===null||
 value===undefined||
 String(value).trim()===""
-)
+){
+
 return "تماس بگیرید";
+
+}
+
 
 const raw=
 String(value)
 .trim()
 .replace(/,/g,"");
 
+
 const number=
 Number(raw);
+
 
 if(
 Number.isFinite(number)&&
 number>0
-)
+){
 
 return number
 .toLocaleString("fa-IR")
 +" تومان";
+
+}
+
 
 return escapeHtml(value);
 
 }
 
 
+/* NORMALIZE PRODUCT */
 
 function normalizeProduct(product){
 
 if(
 !product||
 typeof product!=="object"
-)
+){
+
 return null;
+
+}
+
 
 return{
 
@@ -2542,52 +2625,74 @@ product.createdAt??
 }
 
 
+/* EXTRACT PRODUCTS */
 
 function extractProducts(data){
 
 if(Array.isArray(data))
 return data;
 
+
 if(
 !data||
 typeof data!=="object"
-)
-return [];
-
-if(Array.isArray(data.products))
-return data.products;
-
-if(Array.isArray(data.data))
-return data.data;
-
-if(
-data.data&&
-typeof data.data==="object"&&
-Array.isArray(data.data.products)
-)
-return data.data.products;
-
-if(Array.isArray(data.items))
-return data.items;
-
-if(
-data.result&&
-Array.isArray(data.result)
-)
-return data.result;
-
-if(
-data.result&&
-typeof data.result==="object"&&
-Array.isArray(data.result.products)
-)
-return data.result.products;
+){
 
 return [];
 
 }
 
 
+if(Array.isArray(data.products))
+return data.products;
+
+
+if(Array.isArray(data.data))
+return data.data;
+
+
+if(
+data.data&&
+typeof data.data==="object"&&
+Array.isArray(data.data.products)
+){
+
+return data.data.products;
+
+}
+
+
+if(Array.isArray(data.items))
+return data.items;
+
+
+if(
+data.result&&
+Array.isArray(data.result)
+){
+
+return data.result;
+
+}
+
+
+if(
+data.result&&
+typeof data.result==="object"&&
+Array.isArray(data.result.products)
+){
+
+return data.result.products;
+
+}
+
+
+return [];
+
+}
+
+
+/* LOAD PRODUCTS */
 
 async function loadProducts(){
 
@@ -2598,8 +2703,13 @@ const special=
 document.getElementById("specialProducts");
 
 
+if(!grid||!special)
+return;
+
+
 grid.innerHTML=
 '<div class="products-status">در حال دریافت محصولات...</div>';
+
 
 special.innerHTML=
 '<div class="products-status">در حال دریافت محصولات...</div>';
@@ -2629,19 +2739,22 @@ headers:{
 );
 
 
-if(!response.ok)
+if(!response.ok){
 
 throw new Error(
 "خطای سرور: HTTP "+
 response.status
 );
 
+}
+
 
 const text=
 await response.text();
 
 
-let data;
+let data={};
+
 
 try{
 
@@ -2650,7 +2763,7 @@ text?
 JSON.parse(text):
 {};
 
-}catch(e){
+}catch(error){
 
 throw new Error(
 "پاسخ API JSON معتبر نیست."
@@ -2677,8 +2790,10 @@ if(!products.length){
 grid.innerHTML=
 '<div class="empty-products">هنوز محصولی برای نمایش ثبت نشده است.</div>';
 
+
 special.innerHTML=
 '<div class="empty-products">هنوز محصولی ثبت نشده است.</div>';
+
 
 return;
 
@@ -2700,27 +2815,48 @@ error
 
 grid.innerHTML=
 
-'<div class="products-status error">❌ دریافت محصولات انجام نشد.<br><small>'+
+'<div class="products-status error">'+
+'❌ دریافت محصولات انجام نشد.'+
+'<br>'+
+'<small>'+
 escapeHtml(error.message)+
-'</small><br><button class="retry-btn" onclick="loadProducts()">تلاش دوباره</button></div>';
+'</small>'+
+'<br>'+
+'<button class="retry-btn" type="button" onclick="loadProducts()">'+
+'تلاش دوباره'+
+'</button>'+
+'</div>';
 
 
 special.innerHTML=
 
-'<div class="products-status error">❌ امکان دریافت محصولات وجود ندارد.<br><small>'+
+'<div class="products-status error">'+
+'❌ امکان دریافت محصولات وجود ندارد.'+
+'<br>'+
+'<small>'+
 escapeHtml(error.message)+
-'</small><br><button class="retry-btn" onclick="loadProducts()">تلاش دوباره</button></div>';
+'</small>'+
+'<br>'+
+'<button class="retry-btn" type="button" onclick="loadProducts()">'+
+'تلاش دوباره'+
+'</button>'+
+'</div>';
 
 }
 
 }
 
 
+/* PRODUCT IMAGE */
 
 function productImageHtml(product){
 
-if(!product.image)
+if(!product.image){
+
 return "❄️";
+
+}
+
 
 return '<img src="'+
 escapeHtml(product.image)+
@@ -2731,6 +2867,7 @@ escapeHtml(product.name)+
 }
 
 
+/* PRODUCT CARD */
 
 function createProductCard(product){
 
@@ -2766,7 +2903,7 @@ product.description||
 formatPrice(product.price)+
 '</div>'+
 
-'<button class="product-cart" onclick="addCart(\''+
+'<button class="product-cart" type="button" onclick="addCart(\''+
 escapeJs(product.id)+
 '\')" aria-label="افزودن به سبد">'+
 '🛒'+
@@ -2781,14 +2918,21 @@ escapeJs(product.id)+
 }
 
 
+/* RENDER PRODUCTS */
 
 function renderProducts(categoryFilter=""){
 
 const grid=
 document.getElementById("productGrid");
 
+
+if(!grid)
+return;
+
+
 let list=
 products.slice();
+
 
 const filter=
 String(
@@ -2827,11 +2971,16 @@ list
 }
 
 
+/* SPECIAL PRODUCTS */
 
 function renderSpecialProducts(){
 
 const box=
 document.getElementById("specialProducts");
+
+
+if(!box)
+return;
 
 
 if(!products.length){
@@ -2874,13 +3023,11 @@ escapeHtml(product.name)+
 formatPrice(product.price)+
 '</strong>'+
 
-'<span>
-قیمت
-</span>'+
+'<span>قیمت</span>'+
 
 '</div>'+
 
-'<button class="cart-btn" onclick="addCart(\''+
+'<button class="cart-btn" type="button" onclick="addCart(\''+
 escapeJs(product.id)+
 '\')">'+
 '🛒 افزودن به سبد'+
@@ -2896,6 +3043,7 @@ escapeJs(product.id)+
 }
 
 
+/* ADD CART */
 
 function addCart(productId){
 
@@ -2954,6 +3102,7 @@ quantity:1
 
 saveCart();
 
+
 showCartMessage(
 "🛒 «"+
 product.name+
@@ -2963,6 +3112,7 @@ product.name+
 }
 
 
+/* SAVE CART */
 
 function saveCart(){
 
@@ -2973,13 +3123,22 @@ localStorage.setItem(
 JSON.stringify(cart)
 );
 
-}catch(e){}
+}catch(error){
+
+console.error(
+"CART SAVE ERROR:",
+error
+);
+
+}
+
 
 updateCartCount();
 
 }
 
 
+/* CART COUNT */
 
 function updateCartCount(){
 
@@ -2992,56 +3151,81 @@ Number(item.quantity||0),
 );
 
 
-document
-.getElementById("cartCount")
-.textContent=count;
+const badge=
+document.getElementById("cartCount");
+
+const total=
+document.getElementById("cartTotalCount");
 
 
-document
-.getElementById("cartCount")
-.classList
-.toggle(
+if(badge){
+
+badge.textContent=count;
+
+badge.classList.toggle(
 "show",
 count>0
 );
 
+}
 
-document
-.getElementById("cartTotalCount")
-.textContent=count;
+
+if(total){
+
+total.textContent=count;
+
+}
 
 }
 
 
+/* SHOW CART */
 
 function showCart(){
 
 renderCart();
 
-document
-.getElementById("cartModal")
-.classList
-.add("open");
+
+const modal=
+document.getElementById("cartModal");
+
+
+if(modal){
+
+modal.classList.add("open");
+
+}
 
 }
 
 
+/* CLOSE CART */
 
 function closeCart(){
 
-document
-.getElementById("cartModal")
-.classList
-.remove("open");
+const modal=
+document.getElementById("cartModal");
+
+
+if(modal){
+
+modal.classList.remove("open");
+
+}
 
 }
 
 
+/* RENDER CART */
 
 function renderCart(){
 
 const box=
 document.getElementById("cartItems");
+
+
+if(!box)
+return;
 
 
 if(!cart.length){
@@ -3066,7 +3250,7 @@ item.image?
 escapeHtml(item.image)+
 '" alt="'+
 escapeHtml(item.name)+
-'" onerror="this.style.display=\'none\';this.parentElement.insertAdjacentHTML(\'beforeend\',\'<span>❄️</span>\');">'
+'" loading="lazy" onerror="this.style.display=\'none\';this.parentElement.insertAdjacentHTML(\'beforeend\',\'<span>❄️</span>\');">'
 
 :
 
@@ -3093,7 +3277,7 @@ formatPrice(item.price)+
 
 '<div class="qty-controls">'+
 
-'<button onclick="changeQuantity(\''+
+'<button type="button" onclick="changeQuantity(\''+
 escapeJs(item.id)+
 '\',-1)">−</button>'+
 
@@ -3101,13 +3285,13 @@ escapeJs(item.id)+
 Number(item.quantity||1)+
 '</span>'+
 
-'<button onclick="changeQuantity(\''+
+'<button type="button" onclick="changeQuantity(\''+
 escapeJs(item.id)+
 '\',1)">+</button>'+
 
 '</div>'+
 
-'<button class="remove-item" onclick="removeCartItem(\''+
+'<button class="remove-item" type="button" onclick="removeCartItem(\''+
 escapeJs(item.id)+
 '\')">حذف</button>'+
 
@@ -3121,6 +3305,7 @@ updateCartCount();
 }
 
 
+/* CHANGE QUANTITY */
 
 function changeQuantity(productId,amount){
 
@@ -3160,6 +3345,7 @@ renderCart();
 }
 
 
+/* REMOVE CART ITEM */
 
 function removeCartItem(productId){
 
@@ -3170,6 +3356,7 @@ String(item.id)!==
 String(productId)
 );
 
+
 saveCart();
 
 renderCart();
@@ -3177,8 +3364,7 @@ renderCart();
 }
 
 
-
-/* ثبت سفارش */
+/* SUBMIT ORDER */
 
 async function submitOrder(){
 
@@ -3264,14 +3450,17 @@ document.querySelector(
 );
 
 
+if(button){
+
 button.disabled=true;
 
 button.textContent=
 "در حال ثبت سفارش...";
 
+}
+
 
 try{
-
 
 const responses=
 await Promise.all(
@@ -3355,7 +3544,11 @@ text?
 JSON.parse(text):
 {};
 
-}catch(e){}
+}catch(error){
+
+data={};
+
+}
 
 
 if(!response.ok){
@@ -3383,7 +3576,7 @@ data.message||
 }
 
 
-/* موفق */
+/* SUCCESS */
 
 cart=[];
 
@@ -3438,6 +3631,8 @@ error.message||
 
 }finally{
 
+if(button){
+
 button.disabled=false;
 
 button.textContent=
@@ -3447,7 +3642,10 @@ button.textContent=
 
 }
 
+}
 
+
+/* ORDER MESSAGE */
 
 function showOrderMessage(
 type,
@@ -3459,15 +3657,22 @@ document.getElementById(
 "orderMessage"
 );
 
+
+if(!box)
+return;
+
+
 box.className=
 "order-message show "+
 type;
+
 
 box.textContent=text;
 
 }
 
 
+/* CART MESSAGE */
 
 function showCartMessage(text){
 
@@ -3475,6 +3680,11 @@ const message=
 document.getElementById(
 "cartMessage"
 );
+
+
+if(!message)
+return;
+
 
 message.textContent=text;
 
@@ -3491,6 +3701,7 @@ message.classList.remove("show");
 }
 
 
+/* SEARCH */
 
 function showSearch(){
 
@@ -3516,8 +3727,11 @@ prompt(
 if(
 !search||
 !search.trim()
-)
+){
+
 return;
+
+}
 
 
 const term=
@@ -3536,13 +3750,11 @@ product.name||""
 .toLowerCase()
 .includes(term)||
 
-
 String(
 product.category||""
 )
 .toLowerCase()
 .includes(term)||
-
 
 String(
 product.description||""
@@ -3557,6 +3769,10 @@ const grid=
 document.getElementById(
 "productGrid"
 );
+
+
+if(!grid)
+return;
 
 
 if(!found.length){
@@ -3591,6 +3807,7 @@ behavior:"smooth"
 }
 
 
+/* CATEGORY FILTER */
 
 document
 .querySelectorAll(
@@ -3607,7 +3824,9 @@ e.preventDefault();
 
 
 document
-.querySelectorAll(".category")
+.querySelectorAll(
+".category[data-category]"
+)
 .forEach(
 item=>
 item.classList.remove(
@@ -3624,50 +3843,71 @@ this.dataset.category||""
 );
 
 
-document
-.getElementById("products")
-.scrollIntoView({
+const productsSection=
+document.getElementById(
+"products"
+);
+
+
+if(productsSection){
+
+productsSection.scrollIntoView({
 behavior:"smooth"
 });
 
 }
 
-);
-
 }
 
 );
 
+}
+);
 
 
-document
-.getElementById("cartModal")
-.addEventListener(
+/* CLOSE CART WITH BACKDROP */
+
+const cartModal=
+document.getElementById("cartModal");
+
+
+if(cartModal){
+
+cartModal.addEventListener(
 "click",
 function(e){
 
-if(e.target===this)
+if(e.target===this){
+
 closeCart();
 
 }
 
+}
 );
 
+}
 
+
+/* CLOSE MENU OUTSIDE */
 
 document.addEventListener(
 "click",
 function(e){
 
 const menu=
-document.getElementById(
-"menu"
-);
+document.getElementById("menu");
+
+
+if(!menu)
+return;
+
 
 const insideMenu=
 e.target.closest(
 ".menu-panel"
 );
+
 
 const menuButton=
 e.target.closest(
@@ -3686,15 +3926,41 @@ menu.classList.remove("open");
 }
 
 }
-
 );
 
 
+/* ESC KEY */
+
+document.addEventListener(
+"keydown",
+function(e){
+
+if(e.key==="Escape"){
+
+closeCart();
+
+
+const menu=
+document.getElementById("menu");
+
+
+if(menu){
+
+menu.classList.remove("open");
+
+}
+
+}
+
+}
+);
+
+
+/* INITIALIZE */
 
 updateCartCount();
 
 loadProducts();
-
 
 </script>
 
