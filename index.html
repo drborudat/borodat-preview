@@ -2189,77 +2189,35 @@ class="form-message"
 
 <div class="heading">
 
-<small>MAGAZINE</small>
+<small>VIDEO TRAINING</small>
 
-<h2>مقالات و آموزش‌های کولر گازی</h2>
+<h2>ویدیوهای آموزشی کولر گازی</h2>
 
 <p>
-مطالب کاربردی درباره کولر گازی و سیستم‌های سرمایشی
+آموزش‌های کاربردی دکتر برودت برای استفاده، سرویس و نگهداری کولر گازی
 </p>
 
 </div>
 
-<div class="article-grid">
+<div id="homeVideos" class="article-grid">
 
-<article class="article">
+<div class="article">
 
-<div class="article-img"><i class="fa-solid fa-snowflake"></i></div>
+<div class="article-img">
+<i class="fa-solid fa-circle-play"></i>
+</div>
 
 <div class="article-body">
 
 <small>آموزش</small>
 
-<h3>
-چه زمانی کولر گازی نیاز به سرویس دارد؟
-</h3>
+<h3>در حال دریافت ویدیوهای آموزشی...</h3>
 
-<p>
-نشانه‌های مهمی که زمان سرویس دستگاه را مشخص می‌کنند.
-</p>
+<p>لطفاً چند لحظه صبر کنید.</p>
 
 </div>
 
-</article>
-
-<article class="article">
-
-<div class="article-img"><i class="fa-solid fa-wrench"></i></div>
-
-<div class="article-body">
-
-<small>تعمیرات</small>
-
-<h3>
-چرا کولر باد گرم می‌زند؟
-</h3>
-
-<p>
-دلایل رایج گرم شدن باد کولر گازی.
-</p>
-
 </div>
-
-</article>
-
-<article class="article">
-
-<div class="article-img"><i class="fa-solid fa-circle-info"></i></div>
-
-<div class="article-body">
-
-<small>نگهداری</small>
-
-<h3>
-چطور مصرف کولر را کاهش دهیم؟
-</h3>
-
-<p>
-چند نکته ساده برای استفاده بهتر از کولر.
-</p>
-
-</div>
-
-</article>
 
 </div>
 
@@ -2933,6 +2891,15 @@ grid.appendChild(article);
 
 }
 
+
+function escapeJs(value){
+    return String(value ?? "")
+        .replace(/\\/g, "\\\\")
+        .replace(/'/g, "\\'")
+        .replace(/"/g, '\\"')
+        .replace(/\r/g, "\\r")
+        .replace(/\n/g, "\\n");
+}
 
 function escapeHtml(value){
 
@@ -4277,3 +4244,145 @@ body.db-menu-open .db-support-button{
 </body>
 
 </html>
+
+<script>
+async function loadHomeVideos(){
+    const box = document.getElementById("homeVideos");
+    if(!box) return;
+
+    try{
+        const response = await fetch(
+            "https://borodat-panel.onrender.com/api/videos"
+        );
+
+        if(!response.ok){
+            throw new Error("خطا در دریافت ویدیوها");
+        }
+
+        const data = await response.json();
+        const videos = Array.isArray(data)
+            ? data
+            : (data.videos || []);
+
+        if(!videos.length){
+            box.innerHTML = `
+                <div class="article">
+                    <div class="article-img">
+                        <i class="fa-solid fa-video-slash"></i>
+                    </div>
+                    <div class="article-body">
+                        <small>آموزش</small>
+                        <h3>هنوز ویدیوی آموزشی منتشر نشده است.</h3>
+                        <p>به‌زودی آموزش‌های جدید دکتر برودت در این بخش قرار می‌گیرد.</p>
+                    </div>
+                </div>
+            `;
+            return;
+        }
+
+        box.innerHTML = videos.map(video => {
+
+            const cover = video.cover
+                ? `<img src="${escapeHtml(video.cover)}" alt="${escapeHtml(video.title || "ویدیوی آموزشی")}">`
+                : `<div class="article-img"><i class="fa-solid fa-circle-play"></i></div>`;
+
+            return `
+                <article class="article">
+
+                    <div class="article-img">
+                        ${cover}
+                    </div>
+
+                    <div class="article-body">
+
+                        <small>ویدیوی آموزشی</small>
+
+                        <h3>${escapeHtml(video.title || "")}</h3>
+
+                        <p>${escapeHtml(video.description || "")}</p>
+
+                        <button
+                            type="button"
+                            onclick="playHomeVideo('${escapeJs(video.video_url || "")}')"
+                            style="margin-top:10px;padding:10px 16px;border:0;border-radius:8px;background:#0879BD;color:#fff;cursor:pointer;font-family:inherit;"
+                        >
+                            ▶ مشاهده ویدیو
+                        </button>
+
+                    </div>
+
+                </article>
+            `;
+        }).join("");
+
+    }catch(error){
+        console.error("HOME VIDEOS ERROR:", error);
+
+        box.innerHTML = `
+            <div class="article">
+                <div class="article-img">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <div class="article-body">
+                    <small>ویدیو</small>
+                    <h3>دریافت ویدیوها با مشکل مواجه شد.</h3>
+                    <p>لطفاً بعداً دوباره تلاش کنید.</p>
+                </div>
+            </div>
+        `;
+    }
+}
+
+function playHomeVideo(url){
+    if(!url) return;
+
+    const safeUrl = String(url);
+
+    const win = window.open(
+        "",
+        "_blank",
+        "width=900,height=650"
+    );
+
+    if(!win){
+        window.location.href = safeUrl;
+        return;
+    }
+
+    win.document.write(`
+        <!DOCTYPE html>
+        <html lang="fa" dir="rtl">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width,initial-scale=1">
+            <title>ویدیوی آموزشی دکتر برودت</title>
+            <style>
+                body{
+                    margin:0;
+                    background:#071B31;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    min-height:100vh;
+                    font-family:Arial,sans-serif;
+                }
+                video{
+                    width:95%;
+                    max-width:1000px;
+                    max-height:90vh;
+                    border-radius:12px;
+                    background:#000;
+                }
+            </style>
+        </head>
+        <body>
+            <video controls autoplay playsinline src="${safeUrl}"></video>
+        </body>
+        </html>
+    `);
+
+    win.document.close();
+}
+
+document.addEventListener("DOMContentLoaded", loadHomeVideos);
+</script>

@@ -183,6 +183,21 @@ def init_database():
                 )
             """)
 
+            # -----------------------------------------
+            # VIDEOS
+            # -----------------------------------------
+
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS videos (
+                    id TEXT PRIMARY KEY,
+                    title TEXT NOT NULL,
+                    description TEXT DEFAULT '',
+                    cover TEXT DEFAULT '',
+                    video_url TEXT NOT NULL,
+                    created_at TEXT NOT NULL
+                )
+            """)
+
         connection.commit()
 
     finally:
@@ -1834,8 +1849,307 @@ def admin_chat_reply():
 
 
 # =====================================================
+# VIDEOS
+# =====================================================
+
+@app.route(
+    "/api/videos",
+    methods=["GET"]
+)
+def get_videos():
+
+    connection = get_connection()
+
+    try:
+
+        with connection.cursor() as cur:
+
+            cur.execute("""
+                SELECT
+                    id,
+                    title,
+                    description,
+                    cover,
+                    video_url,
+                    created_at
+                FROM videos
+                ORDER BY created_at DESC
+            """)
+
+            rows = cur.fetchall()
+
+            videos = [
+                {
+                    "id": row[0],
+                    "title": row[1],
+                    "description": row[2],
+                    "cover": row[3],
+                    "video_url": row[4],
+                    "created_at": row[5]
+                }
+                for row in rows
+            ]
+
+        return jsonify({
+            "success": True,
+            "videos": videos
+        })
+
+    except Exception as e:
+
+        print(
+            "VIDEOS LOAD ERROR:",
+            e
+        )
+
+        return jsonify({
+            "success": False,
+            "message": "دریافت ویدیوها انجام نشد."
+        }), 500
+
+    finally:
+
+        connection.close()
+
+
+@app.route(
+    "/api/admin/videos",
+    methods=["POST"]
+)
+def add_video():
+
+    data = request.get_json(
+        silent=True
+    ) or {}
+
+    title = str(
+        data.get("title", "")
+    ).strip()
+
+    description = str(
+        data.get("description", "")
+    ).strip()
+
+    cover = str(
+        data.get("cover", "")
+    ).strip()
+
+    video_url = str(
+        data.get("video_url", "")
+    ).strip()
+
+    if not title or not video_url:
+
+        return jsonify({
+            "success": False,
+            "message": "عنوان و لینک ویدیو الزامی است."
+        }), 400
+
+    video = {
+        "id": str(uuid.uuid4()),
+        "title": title,
+        "description": description,
+        "cover": cover,
+        "video_url": video_url,
+        "created_at": now()
+    }
+
+    connection = get_connection()
+
+    try:
+
+        with connection.cursor() as cur:
+
+            cur.execute("""
+                INSERT INTO videos
+                (
+                    id,
+                    title,
+                    description,
+                    cover,
+                    video_url,
+                    created_at
+                )
+                VALUES
+                (%s,%s,%s,%s,%s,%s)
+            """, (
+                video["id"],
+                video["title"],
+                video["description"],
+                video["cover"],
+                video["video_url"],
+                video["created_at"]
+            ))
+
+        connection.commit()
+
+    except Exception as e:
+
+        connection.rollback()
+
+        print(
+            "VIDEO SAVE ERROR:",
+            e
+        )
+
+        return jsonify({
+            "success": False,
+            "message": "ذخیره ویدیو انجام نشد."
+        }), 500
+
+    finally:
+
+        connection.close()
+
+    return jsonify({
+        "success": True,
+        "message": "ویدیو با موفقیت ثبت شد.",
+        "video": video
+    })
+
+
+@app.route(
+    "/api/admin/videos/<video_id>",
+    methods=["PATCH"]
+)
+def update_video(video_id):
+
+    data = request.get_json(
+        silent=True
+    ) or {}
+
+    title = str(
+        data.get("title", "")
+    ).strip()
+
+    description = str(
+        data.get("description", "")
+    ).strip()
+
+    cover = str(
+        data.get("cover", "")
+    ).strip()
+
+    video_url = str(
+        data.get("video_url", "")
+    ).strip()
+
+    if not title or not video_url:
+
+        return jsonify({
+            "success": False,
+            "message": "عنوان و لینک ویدیو الزامی است."
+        }), 400
+
+    connection = get_connection()
+
+    try:
+
+        with connection.cursor() as cur:
+
+            cur.execute("""
+                UPDATE videos
+                SET
+                    title = %s,
+                    description = %s,
+                    cover = %s,
+                    video_url = %s
+                WHERE id = %s
+            """, (
+                title,
+                description,
+                cover,
+                video_url,
+                video_id
+            ))
+
+            if cur.rowcount == 0:
+
+                return jsonify({
+                    "success": False,
+                    "message": "ویدیو پیدا نشد."
+                }), 404
+
+        connection.commit()
+
+    except Exception as e:
+
+        connection.rollback()
+
+        print(
+            "VIDEO UPDATE ERROR:",
+            e
+        )
+
+        return jsonify({
+            "success": False,
+            "message": "ویرایش ویدیو انجام نشد."
+        }), 500
+
+    finally:
+
+        connection.close()
+
+    return jsonify({
+        "success": True,
+        "message": "ویدیو با موفقیت ویرایش شد."
+    })
+
+
+@app.route(
+    "/api/admin/videos/<video_id>",
+    methods=["DELETE"]
+)
+def delete_video(video_id):
+
+    connection = get_connection()
+
+    try:
+
+        with connection.cursor() as cur:
+
+            cur.execute("""
+                DELETE FROM videos
+                WHERE id = %s
+            """, (video_id,))
+
+            if cur.rowcount == 0:
+
+                return jsonify({
+                    "success": False,
+                    "message": "ویدیو پیدا نشد."
+                }), 404
+
+        connection.commit()
+
+    except Exception as e:
+
+        connection.rollback()
+
+        print(
+            "VIDEO DELETE ERROR:",
+            e
+        )
+
+        return jsonify({
+            "success": False,
+            "message": "حذف ویدیو انجام نشد."
+        }), 500
+
+    finally:
+
+        connection.close()
+
+    return jsonify({
+        "success": True,
+        "message": "ویدیو با موفقیت حذف شد."
+    })
+
+
+# =====================================================
 # PRODUCTS - ADD
 # =====================================================
+
 
 @app.route(
     "/api/admin/products",
