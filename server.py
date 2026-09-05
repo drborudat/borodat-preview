@@ -188,51 +188,7 @@ def init_database():
             """)
 
             # -----------------------------------------
-            # =====================================================
-# SUPABASE STORAGE HELPERS
-# =====================================================
-
-def upload_to_supabase(file_storage, folder):
-    if not SUPABASE_URL or not SUPABASE_KEY:
-        raise RuntimeError("تنظیمات Supabase در Render کامل نیست.")
-
-    filename = file_storage.filename or "file"
-    safe_name = "".join(
-        c if c.isalnum() or c in "._-" else "_"
-        for c in filename
-    )
-    path = f"{folder}/{uuid.uuid4()}_{safe_name}"
-
-    url = (
-        f"{SUPABASE_URL}/storage/v1/object/"
-        f"{SUPABASE_BUCKET}/{path}"
-    )
-
-    content_type = file_storage.mimetype or "application/octet-stream"
-
-    response = requests.post(
-        url,
-        headers={
-            "Authorization": f"Bearer {SUPABASE_KEY}",
-            "apikey": SUPABASE_KEY,
-            "Content-Type": content_type,
-            "x-upsert": "false"
-        },
-        data=file_storage.stream
-    )
-
-    if response.status_code not in (200, 201):
-        raise RuntimeError(
-            f"Supabase upload failed: {response.text}"
-        )
-
-    return (
-        f"{SUPABASE_URL}/storage/v1/object/public/"
-        f"{SUPABASE_BUCKET}/{path}"
-    )
-
-
-# VIDEOS
+            # VIDEOS
             # -----------------------------------------
 
             cur.execute("""
@@ -1897,6 +1853,50 @@ def admin_chat_reply():
 
 
 # =====================================================
+# =====================================================
+# SUPABASE STORAGE HELPERS
+# =====================================================
+
+def upload_to_supabase(file_storage, folder):
+    if not SUPABASE_URL or not SUPABASE_KEY:
+        raise RuntimeError("تنظیمات Supabase در Render کامل نیست.")
+
+    filename = file_storage.filename or "file"
+    safe_name = "".join(
+        c if c.isalnum() or c in "._-" else "_"
+        for c in filename
+    )
+    path = f"{folder}/{uuid.uuid4()}_{safe_name}"
+
+    url = (
+        f"{SUPABASE_URL}/storage/v1/object/"
+        f"{SUPABASE_BUCKET}/{path}"
+    )
+
+    content_type = file_storage.mimetype or "application/octet-stream"
+
+    response = requests.post(
+        url,
+        headers={
+            "Authorization": f"Bearer {SUPABASE_KEY}",
+            "apikey": SUPABASE_KEY,
+            "Content-Type": content_type,
+            "x-upsert": "false"
+        },
+        data=file_storage.stream
+    )
+
+    if response.status_code not in (200, 201):
+        raise RuntimeError(
+            f"Supabase upload failed: {response.text}"
+        )
+
+    return (
+        f"{SUPABASE_URL}/storage/v1/object/public/"
+        f"{SUPABASE_BUCKET}/{path}"
+    )
+
+
 # VIDEOS
 # =====================================================
 
