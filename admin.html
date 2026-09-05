@@ -473,6 +473,36 @@ gap:10px
 
 /* VIDEO MANAGEMENT */
 
+
+.video-file{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    padding:14px;
+    border:1px dashed #0879bd;
+    border-radius:10px;
+    background:#f7fbff;
+    cursor:pointer;
+}
+
+.video-file span{
+    font-weight:700;
+    color:#071b31;
+}
+
+.video-file input[type="file"]{
+    width:100%;
+    padding:8px;
+    cursor:pointer;
+}
+
+.video-upload-status{
+    min-height:24px;
+    color:#0879bd;
+    font-weight:700;
+    text-align:center;
+}
+
 .video-form{
 display:grid;
 gap:12px;
@@ -755,21 +785,25 @@ placeholder="توضیحات ویدیو"
 rows="3"
 ></textarea>
 
+<label class="video-file">
+<span>🖼️ انتخاب کاور از گالری</span>
 <input
-id="videoCover"
-type="text"
-placeholder="لینک تصویر کاور"
-autocomplete="off"
-dir="ltr"
+id="videoCoverFile"
+type="file"
+accept="image/*"
 >
+</label>
 
+<label class="video-file">
+<span>🎬 انتخاب ویدیو از گالری</span>
 <input
-id="videoUrl"
-type="text"
-placeholder="لینک ویدیو"
-autocomplete="off"
-dir="ltr"
+id="videoFile"
+type="file"
+accept="video/*"
 >
+</label>
+
+<div id="videoUploadStatus" class="video-upload-status"></div>
 
 <button
 type="button"
@@ -1375,7 +1409,7 @@ function renderVideos(videos){
                     <th>کاور</th>
                     <th>عنوان</th>
                     <th>توضیحات</th>
-                    <th>لینک ویدیو</th>
+                    <th>ویدیو</th>
                     <th>عملیات</th>
                 </tr>
             </thead>
@@ -1392,9 +1426,9 @@ function renderVideos(videos){
                         <td><strong>${escapeHtml(video.title || "")}</strong></td>
                         <td>${escapeHtml(video.description || "")}</td>
                         <td>
-                            <div class="video-link">
-                                ${escapeHtml(video.video_url || "")}
-                            </div>
+                            <span class="video-ready">
+                                ▶️ ویدیو آماده پخش
+                            </span>
                         </td>
                         <td>
                             <button class="edit" onclick="editVideo('${escapeJs(video.id)}')">
@@ -1415,104 +1449,234 @@ function renderVideos(videos){
 async function addVideo(){
     const title = document.getElementById("videoTitle").value.trim();
     const description = document.getElementById("videoDescription").value.trim();
-    const cover = document.getElementById("videoCover").value.trim();
-    const video_url = document.getElementById("videoUrl").value.trim();
+    const videoFile = document.getElementById("videoFile").files[0];
+    const coverFile = document.getElementById("videoCoverFile").files[0];
+    const status = document.getElementById("videoUploadStatus");
 
-    if(!title || !video_url){
-        alert("عنوان و لینک ویدیو را وارد کنید.");
+    if(!title || !videoFile){
+        alert("عنوان و فایل ویدیو را انتخاب کنید.");
         return;
     }
 
+    if(!videoFile.type.startsWith("video/")){
+        alert("فایل انتخاب‌شده باید ویدیو باشد.");
+        return;
+    }
+
+    if(coverFile && !coverFile.type.startsWith("image/")){
+        alert("فایل کاور باید تصویر باشد.");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("video", videoFile);
+
+    if(coverFile){
+        formData.append("cover", coverFile);
+    }
+
     try{
+        status.textContent = "⏳ در حال آپلود ویدیو...";
+
         const res = await fetch(API_BASE + "/api/admin/videos", {
             method:"POST",
-            headers:{
-                "Content-Type":"application/json"
-            },
-            body:JSON.stringify({
-                title,
-                description,
-                cover,
-                video_url
-            })
+            body:formData
         });
 
         const data = await res.json();
 
         if(!res.ok){
-            throw new Error(data.error || "افزودن ویدیو ناموفق بود");
+            throw new Error(data.message || data.error || "آپلود ویدیو ناموفق بود");
         }
 
         document.getElementById("videoTitle").value = "";
         document.getElementById("videoDescription").value = "";
-        document.getElementById("videoCover").value = "";
-        document.getElementById("videoUrl").value = "";
+        document.getElementById("videoFile").value = "";
+        document.getElementById("videoCoverFile").value = "";
+        status.textContent = "";
 
         await loadVideos();
 
-        alert("ویدیو با موفقیت اضافه شد.");
+        alert("ویدیو با موفقیت آپلود و اضافه شد.");
+
     }catch(err){
         console.error(err);
-        alert(err.message || "خطا در افزودن ویدیو");
+        status.textContent = "";
+        alert(err.message || "خطا در آپلود ویدیو");
     }
 }
-
 async function editVideo(id){
     try{
         const res = await fetch(API_BASE + "/api/videos");
-        if(!res.ok) throw new Error("خطا در دریافت اطلاعات ویدیو");
+
+        if(!res.ok){
+            throw new Error("خطا در دریافت اطلاعات ویدیو");
+        }
 
         const data = await res.json();
-        const videos = Array.isArray(data) ? data : (data.videos || []);
-        const video = videos.find(v => String(v.id) === String(id));
+        const videos = Array.isArray(data)
+            ? data
+            : (data.videos || []);
+
+        const video = videos.find(
+            v => String(v.id) === String(id)
+        );
 
         if(!video){
             alert("ویدیو پیدا نشد.");
             return;
         }
 
-        const title = prompt("عنوان ویدیو:", video.title || "");
+        const title = prompt(
+            "عنوان ویدیو:",
+            video.title || ""
+        );
+
         if(title === null) return;
 
-        const description = prompt("توضیحات ویدیو:", video.description || "");
+        const description = prompt(
+            "توضیحات ویدیو:",
+            video.description || ""
+        );
+
         if(description === null) return;
 
-        const cover = prompt("لینک تصویر کاور:", video.cover || "");
-        if(cover === null) return;
-
-        const video_url = prompt("لینک ویدیو:", video.video_url || "");
-        if(video_url === null) return;
-
-        if(!title.trim() || !video_url.trim()){
-            alert("عنوان و لینک ویدیو نمی‌تواند خالی باشد.");
+        if(!title.trim()){
+            alert("عنوان ویدیو نمی‌تواند خالی باشد.");
             return;
         }
 
-        const update = await fetch(API_BASE + "/api/admin/videos/" + encodeURIComponent(id), {
-            method:"PATCH",
-            headers:{
-                "Content-Type":"application/json"
-            },
-            body:JSON.stringify({
-                title:title.trim(),
-                description:description.trim(),
-                cover:cover.trim(),
-                video_url:video_url.trim()
-            })
-        });
+        const videoFileInput =
+            document.getElementById("videoFile");
+
+        const coverFileInput =
+            document.getElementById("videoCoverFile");
+
+        videoFileInput.value = "";
+        coverFileInput.value = "";
+
+        const chooseFiles = confirm(
+            "آیا می‌خواهید فایل ویدیو یا کاور را هم از گالری تغییر دهید؟"
+        );
+
+        if(chooseFiles){
+            videoFileInput.click();
+
+            await new Promise(resolve => {
+                videoFileInput.addEventListener(
+                    "change",
+                    resolve,
+                    { once:true }
+                );
+            });
+
+            if(videoFileInput.files[0]){
+                const selected =
+                    videoFileInput.files[0];
+
+                if(!selected.type.startsWith("video/")){
+                    alert("فایل انتخاب‌شده باید ویدیو باشد.");
+                    return;
+                }
+            }
+
+            coverFileInput.click();
+
+            await new Promise(resolve => {
+                coverFileInput.addEventListener(
+                    "change",
+                    resolve,
+                    { once:true }
+                );
+            });
+
+            if(coverFileInput.files[0]){
+                const selected =
+                    coverFileInput.files[0];
+
+                if(!selected.type.startsWith("image/")){
+                    alert("فایل کاور باید تصویر باشد.");
+                    return;
+                }
+            }
+        }
+
+        const formData = new FormData();
+
+        formData.append(
+            "title",
+            title.trim()
+        );
+
+        formData.append(
+            "description",
+            description.trim()
+        );
+
+        if(videoFileInput.files[0]){
+            formData.append(
+                "video",
+                videoFileInput.files[0]
+            );
+        }
+
+        if(coverFileInput.files[0]){
+            formData.append(
+                "cover",
+                coverFileInput.files[0]
+            );
+        }
+
+        const status =
+            document.getElementById("videoUploadStatus");
+
+        status.textContent =
+            "⏳ در حال ذخیره تغییرات...";
+
+        const update = await fetch(
+            API_BASE +
+            "/api/admin/videos/" +
+            encodeURIComponent(id),
+            {
+                method:"PATCH",
+                body:formData
+            }
+        );
 
         const result = await update.json();
 
         if(!update.ok){
-            throw new Error(result.error || "ویرایش ناموفق بود");
+            throw new Error(
+                result.message ||
+                result.error ||
+                "ویرایش ناموفق بود"
+            );
         }
 
+        videoFileInput.value = "";
+        coverFileInput.value = "";
+        status.textContent = "";
+
         await loadVideos();
+
         alert("ویدیو با موفقیت ویرایش شد.");
 
     }catch(err){
         console.error(err);
-        alert(err.message || "خطا در ویرایش ویدیو");
+
+        const status =
+            document.getElementById("videoUploadStatus");
+
+        if(status){
+            status.textContent = "";
+        }
+
+        alert(
+            err.message ||
+            "خطا در ویرایش ویدیو"
+        );
     }
 }
 

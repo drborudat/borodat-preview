@@ -23,6 +23,10 @@ ADMIN_ID = 746740194
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
+SUPABASE_URL = os.environ.get("SUPABASE_URL")
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
+SUPABASE_BUCKET = os.environ.get("SUPABASE_BUCKET", "videos")
+
 
 # =====================================================
 # DATABASE CONNECTION
@@ -184,7 +188,51 @@ def init_database():
             """)
 
             # -----------------------------------------
-            # VIDEOS
+            # =====================================================
+# SUPABASE STORAGE HELPERS
+# =====================================================
+
+def upload_to_supabase(file_storage, folder):
+    if not SUPABASE_URL or not SUPABASE_KEY:
+        raise RuntimeError("تنظیمات Supabase در Render کامل نیست.")
+
+    filename = file_storage.filename or "file"
+    safe_name = "".join(
+        c if c.isalnum() or c in "._-" else "_"
+        for c in filename
+    )
+    path = f"{folder}/{uuid.uuid4()}_{safe_name}"
+
+    url = (
+        f"{SUPABASE_URL}/storage/v1/object/"
+        f"{SUPABASE_BUCKET}/{path}"
+    )
+
+    content_type = file_storage.mimetype or "application/octet-stream"
+
+    response = requests.post(
+        url,
+        headers={
+            "Authorization": f"Bearer {SUPABASE_KEY}",
+            "apikey": SUPABASE_KEY,
+            "Content-Type": content_type,
+            "x-upsert": "false"
+        },
+        data=file_storage.stream
+    )
+
+    if response.status_code not in (200, 201):
+        raise RuntimeError(
+            f"Supabase upload failed: {response.text}"
+        )
+
+    return (
+        f"{SUPABASE_URL}/storage/v1/object/public/"
+        f"{SUPABASE_BUCKET}/{path}"
+    )
+
+
+# VIDEOS
             # -----------------------------------------
 
             cur.execute("""
@@ -1918,94 +1966,90 @@ def get_videos():
 )
 def add_video():
 
-    data = request.get_json(
-        silent=True
-    ) or {}
+    title = str(request.form.get("title", "")).strip()
+    description = str(request.form.get("description", "")).strip()
 
-    title = str(
-        data.get("title", "")
-    ).strip()
+    video_file = request.files.get("video")
+    cover_file = request.files.get("cover")
 
-    description = str(
-        data.get("description", "")
-    ).strip()
-
-    cover = str(
-        data.get("cover", "")
-    ).strip()
-
-    video_url = str(
-        data.get("video_url", "")
-    ).strip()
-
-    if not title or not video_url:
-
+    if not title or not video_file or not video_file.filename:
         return jsonify({
             "success": False,
-            "message": "عنوان و لینک ویدیو الزامی است."
+            "message": "عنوان و فایل ویدیو الزامی است."
         }), 400
 
-    video = {
-        "id": str(uuid.uuid4()),
-        "title": title,
-        "description": description,
-        "cover": cover,
-        "video_url": video_url,
-        "created_at": now()
-    }
+    if not video_file.mimetype.startswith("video/"):
+        return jsonify({
+            "success": False,
+            "message": "فایل انتخاب‌شده ویدیو نیست."
+        }), 400
 
-    connection = get_connection()
+    if cover_file and cover_file.filename:
+        if not cover_file.mimetype.startswith("image/"):
+            return jsonify({
+                "success": False,
+                "message": "فایل کاور باید تصویر باشد."
+            }), 400
 
     try:
+        video_url = upload_to_supabase(video_file, "videos")
 
-        with connection.cursor() as cur:
+        cover_url = ""
+        if cover_file and cover_file.filename:
+            cover_url = upload_to_supabase(cover_file, "covers")
 
-            cur.execute("""
-                INSERT INTO videos
-                (
-                    id,
-                    title,
-                    description,
-                    cover,
-                    video_url,
-                    created_at
-                )
-                VALUES
-                (%s,%s,%s,%s,%s,%s)
-            """, (
-                video["id"],
-                video["title"],
-                video["description"],
-                video["cover"],
-                video["video_url"],
-                video["created_at"]
-            ))
+        video = {
+            "id": str(uuid.uuid4()),
+            "title": title,
+            "description": description,
+            "cover": cover_url,
+            "video_url": video_url,
+            "created_at": now()
+        }
 
-        connection.commit()
+        connection = get_connection()
+
+        try:
+            with connection.cursor() as cur:
+                cur.execute("""
+                    INSERT INTO videos
+                    (
+                        id,
+                        title,
+                        description,
+                        cover,
+                        video_url,
+                        created_at
+                    )
+                    VALUES
+                    (%s,%s,%s,%s,%s,%s)
+                """, (
+                    video["id"],
+                    video["title"],
+                    video["description"],
+                    video["cover"],
+                    video["video_url"],
+                    video["created_at"]
+                ))
+
+            connection.commit()
+
+        finally:
+            connection.close()
+
+        return jsonify({
+            "success": True,
+            "message": "ویدیو با موفقیت آپلود و ثبت شد.",
+            "video": video
+        })
 
     except Exception as e:
-
-        connection.rollback()
-
-        print(
-            "VIDEO SAVE ERROR:",
-            e
-        )
+        print("VIDEO UPLOAD ERROR:", e)
 
         return jsonify({
             "success": False,
-            "message": "ذخیره ویدیو انجام نشد."
+            "message": "آپلود ویدیو انجام نشد."
         }), 500
-
-    finally:
-
-        connection.close()
-
-    return jsonify({
-        "success": True,
-        "message": "ویدیو با موفقیت ثبت شد.",
-        "video": video
-    })
 
 
 @app.route(
@@ -2014,38 +2058,66 @@ def add_video():
 )
 def update_video(video_id):
 
-    data = request.get_json(
-        silent=True
-    ) or {}
+    title = str(request.form.get("title", "")).strip()
+    description = str(request.form.get("description", "")).strip()
 
-    title = str(
-        data.get("title", "")
-    ).strip()
+    video_file = request.files.get("video")
+    cover_file = request.files.get("cover")
 
-    description = str(
-        data.get("description", "")
-    ).strip()
-
-    cover = str(
-        data.get("cover", "")
-    ).strip()
-
-    video_url = str(
-        data.get("video_url", "")
-    ).strip()
-
-    if not title or not video_url:
-
+    if not title:
         return jsonify({
             "success": False,
-            "message": "عنوان و لینک ویدیو الزامی است."
+            "message": "عنوان ویدیو الزامی است."
         }), 400
 
     connection = get_connection()
 
     try:
-
         with connection.cursor() as cur:
+
+            cur.execute("""
+                SELECT cover, video_url
+                FROM videos
+                WHERE id = %s
+            """, (video_id,))
+
+            old = cur.fetchone()
+
+            if not old:
+                return jsonify({
+                    "success": False,
+                    "message": "ویدیو پیدا نشد."
+                }), 404
+
+            old_cover = old[0] or ""
+            old_video_url = old[1] or ""
+
+            video_url = old_video_url
+            cover_url = old_cover
+
+            if video_file and video_file.filename:
+                if not video_file.mimetype.startswith("video/"):
+                    return jsonify({
+                        "success": False,
+                        "message": "فایل جدید باید ویدیو باشد."
+                    }), 400
+
+                video_url = upload_to_supabase(
+                    video_file,
+                    "videos"
+                )
+
+            if cover_file and cover_file.filename:
+                if not cover_file.mimetype.startswith("image/"):
+                    return jsonify({
+                        "success": False,
+                        "message": "فایل کاور باید تصویر باشد."
+                    }), 400
+
+                cover_url = upload_to_supabase(
+                    cover_file,
+                    "covers"
+                )
 
             cur.execute("""
                 UPDATE videos
@@ -2058,22 +2130,14 @@ def update_video(video_id):
             """, (
                 title,
                 description,
-                cover,
+                cover_url,
                 video_url,
                 video_id
             ))
 
-            if cur.rowcount == 0:
-
-                return jsonify({
-                    "success": False,
-                    "message": "ویدیو پیدا نشد."
-                }), 404
-
         connection.commit()
 
     except Exception as e:
-
         connection.rollback()
 
         print(
@@ -2087,7 +2151,6 @@ def update_video(video_id):
         }), 500
 
     finally:
-
         connection.close()
 
     return jsonify({
@@ -2105,25 +2168,63 @@ def delete_video(video_id):
     connection = get_connection()
 
     try:
-
         with connection.cursor() as cur:
+
+            cur.execute("""
+                SELECT cover, video_url
+                FROM videos
+                WHERE id = %s
+            """, (video_id,))
+
+            row = cur.fetchone()
+
+            if not row:
+                return jsonify({
+                    "success": False,
+                    "message": "ویدیو پیدا نشد."
+                }), 404
+
+            cover_url = row[0] or ""
+            video_url = row[1] or ""
 
             cur.execute("""
                 DELETE FROM videos
                 WHERE id = %s
             """, (video_id,))
 
-            if cur.rowcount == 0:
-
-                return jsonify({
-                    "success": False,
-                    "message": "ویدیو پیدا نشد."
-                }), 404
-
         connection.commit()
 
-    except Exception as e:
+        for file_url in (video_url, cover_url):
+            if file_url and SUPABASE_URL in file_url:
+                try:
+                    prefix = (
+                        f"{SUPABASE_URL}/storage/v1/object/"
+                        f"public/{SUPABASE_BUCKET}/"
+                    )
 
+                    if file_url.startswith(prefix):
+                        file_path = file_url[len(prefix):]
+
+                        delete_url = (
+                            f"{SUPABASE_URL}/storage/v1/object/"
+                            f"{SUPABASE_BUCKET}/{file_path}"
+                        )
+
+                        requests.delete(
+                            delete_url,
+                            headers={
+                                "Authorization":
+                                    f"Bearer {SUPABASE_KEY}",
+                                "apikey": SUPABASE_KEY
+                            }
+                        )
+                except Exception as storage_error:
+                    print(
+                        "STORAGE DELETE ERROR:",
+                        storage_error
+                    )
+
+    except Exception as e:
         connection.rollback()
 
         print(
@@ -2137,18 +2238,12 @@ def delete_video(video_id):
         }), 500
 
     finally:
-
         connection.close()
 
     return jsonify({
         "success": True,
-        "message": "ویدیو با موفقیت حذف شد."
+        "message": "ویدیو و فایل‌های آن با موفقیت حذف شدند."
     })
-
-
-# =====================================================
-# PRODUCTS - ADD
-# =====================================================
 
 
 @app.route(
