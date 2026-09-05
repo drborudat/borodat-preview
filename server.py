@@ -1883,7 +1883,8 @@ def upload_to_supabase(file_storage, folder):
             "Content-Type": content_type,
             "x-upsert": "false"
         },
-        data=file_storage.stream
+        data=file_storage.stream,
+        timeout=120
     )
 
     if response.status_code not in (200, 201):
