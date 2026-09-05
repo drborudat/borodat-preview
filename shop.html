@@ -1361,6 +1361,49 @@ text-align:center
 
 </style>
 
+<link rel="stylesheet" href="fonts/fontawesome/all.min.css">
+
+<style>
+.mobile-bar .nav-icon i{
+  font-size:22px;
+  line-height:1;
+  display:block;
+  filter:drop-shadow(0 2px 1px rgba(0,0,0,.12));
+  transition:transform .2s ease,filter .2s ease;
+}
+
+.mobile-bar a:hover .nav-icon i{
+  transform:translateY(-2px);
+  filter:drop-shadow(0 3px 2px rgba(0,0,0,.16));
+}
+
+.mobile-bar .nav-home i{
+  color:#0879bd;
+}
+
+.mobile-bar .nav-services i,
+.mobile-bar .nav-categories i{
+  color:#53697b;
+}
+
+.mobile-bar .nav-shop i{
+  color:#8fb9c5;
+  text-shadow:1px 1px 0 #a8cbd2;
+}
+
+.mobile-bar .nav-products i{
+  color:#0879bd;
+}
+
+.mobile-bar .nav-phone i{
+  color:#53697b;
+}
+
+.mobile-bar a.active .nav-icon i{
+  filter:drop-shadow(0 2px 2px rgba(8,121,189,.22));
+}
+</style>
+
 </head>
 
 
@@ -2130,12 +2173,12 @@ dir="ltr"
 <div class="mobile-bar">
 
 <a href="/">
-<span>⌂</span>
+<span class="nav-icon nav-home"><i class="fa-solid fa-house"></i></span>
 خانه
 </a>
 
 <a href="#categories">
-<span>✦</span>
+<span class="nav-icon nav-categories"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
 دسته‌بندی
 </a>
 
@@ -2143,17 +2186,17 @@ dir="ltr"
 href="shop.html"
 class="active"
 >
-<span>🛒</span>
+<span class="nav-icon nav-shop"><i class="fa-solid fa-cart-shopping"></i></span>
 فروشگاه
 </a>
 
 <a href="#products">
-<span>▦</span>
+<span class="nav-icon nav-products"><i class="fa-solid fa-table-cells-large"></i></span>
 محصولات
 </a>
 
 <a href="tel:09197701790">
-<span>☎</span>
+<span class="nav-icon nav-phone"><i class="fa-solid fa-phone"></i></span>
 تماس
 </a>
 
