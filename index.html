@@ -3870,6 +3870,7 @@ body.db-menu-open .db-support-button{
 
         panel.classList.add("open");
         panel.setAttribute("aria-hidden","false");
+        startChatPolling();
 
     }
 
@@ -3877,6 +3878,7 @@ body.db-menu-open .db-support-button{
 
         panel.classList.remove("open");
         panel.setAttribute("aria-hidden","true");
+        stopChatPolling();
 
     }
 
@@ -4004,6 +4006,28 @@ body.db-menu-open .db-support-button{
 
         }
 
+    }
+
+    // Auto-refresh chat so admin replies appear without page reload
+    let chatPolling = null;
+
+    function startChatPolling(){
+        if(chatPolling){
+            clearInterval(chatPolling);
+        }
+
+        chatPolling = setInterval(() => {
+            if(customerPhone && chatScreen && !chatScreen.classList.contains("hidden")){
+                loadChat();
+            }
+        }, 3000);
+    }
+
+    function stopChatPolling(){
+        if(chatPolling){
+            clearInterval(chatPolling);
+            chatPolling = null;
+        }
     }
 
     async function sendMessage(text){
