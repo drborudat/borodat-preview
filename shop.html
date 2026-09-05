@@ -456,13 +456,33 @@ box-shadow:0 12px 30px rgba(7,27,49,.08)
 .category-icon{
 width:48px;
 height:48px;
-border-radius:10px;
-background:#edf7fb;
+border-radius:14px;
 display:flex;
 align-items:center;
 justify-content:center;
-font-size:23px;
-flex-shrink:0
+background:linear-gradient(145deg,#f4f9fc,#e3eef4);
+box-shadow:
+0 4px 9px rgba(0,0,0,.11),
+inset 0 1px 2px rgba(255,255,255,.95);
+color:#0879bd;
+font-size:22px;
+overflow:hidden;
+flex-shrink:0;
+transition:transform .2s ease,box-shadow .2s ease;
+}
+
+.category-icon i{
+display:block;
+font-size:22px;
+line-height:1;
+filter:drop-shadow(0 2px 1px rgba(0,0,0,.13));
+}
+
+.category:hover .category-icon{
+transform:translateY(-2px) scale(1.04);
+box-shadow:
+0 6px 12px rgba(0,0,0,.15),
+inset 0 1px 2px rgba(255,255,255,.95);
 }
 
 .category h3{
@@ -741,15 +761,33 @@ color:#071b31
 width:38px;
 height:34px;
 border:0;
-border-radius:7px;
-background:#071b31;
-color:#fff;
+border-radius:10px;
+display:flex;
+align-items:center;
+justify-content:center;
+background:linear-gradient(145deg,#f1f8fc,#dcecf3);
+color:#0879bd;
 cursor:pointer;
-font-size:16px
+font-size:16px;
+box-shadow:
+0 3px 7px rgba(0,0,0,.12),
+inset 0 1px 2px rgba(255,255,255,.95);
+transition:transform .2s ease,box-shadow .2s ease,background .2s ease;
+}
+
+.product-cart i{
+display:block;
+line-height:1;
+filter:drop-shadow(0 2px 1px rgba(0,0,0,.13));
 }
 
 .product-cart:hover{
-background:#0879bd
+background:linear-gradient(145deg,#e7f4fa,#cfe6ef);
+color:#075f93;
+transform:translateY(-2px) scale(1.04);
+box-shadow:
+0 6px 11px rgba(0,0,0,.15),
+inset 0 1px 2px rgba(255,255,255,.95);
 }
 
 .empty-products,
@@ -1708,7 +1746,7 @@ data-category="کولر گازی"
 >
 
 <div class="category-icon">
-❄️
+<i class="fa-solid fa-snowflake"></i>
 </div>
 
 <div>
@@ -1734,7 +1772,7 @@ data-category="قطعات کولر"
 >
 
 <div class="category-icon">
-🔧
+<i class="fa-solid fa-screwdriver-wrench"></i>
 </div>
 
 <div>
@@ -1760,7 +1798,7 @@ data-category="تجهیزات تهویه"
 >
 
 <div class="category-icon">
-⚙️
+<i class="fa-solid fa-gears"></i>
 </div>
 
 <div>
@@ -1786,7 +1824,7 @@ data-category=""
 >
 
 <div class="category-icon">
-📦
+<i class="fa-solid fa-boxes-stacked"></i>
 </div>
 
 <div>
@@ -1846,7 +1884,7 @@ aria-label="نصب کولر گازی در تهران"
 >
 
 <div class="category-icon">
-❄️
+<i class="fa-solid fa-snowflake"></i>
 </div>
 
 <div>
@@ -1872,7 +1910,7 @@ aria-label="سرویس کولر گازی در تهران"
 >
 
 <div class="category-icon">
-🔧
+<i class="fa-solid fa-wrench"></i>
 </div>
 
 <div>
@@ -1898,7 +1936,7 @@ aria-label="تعمیر کولر گازی در تهران"
 >
 
 <div class="category-icon">
-⚙️
+<i class="fa-solid fa-screwdriver-wrench"></i>
 </div>
 
 <div>
@@ -1924,7 +1962,7 @@ aria-label="شارژ گاز کولر گازی در تهران"
 >
 
 <div class="category-icon">
-🧊
+<i class="fa-solid fa-droplet"></i>
 </div>
 
 <div>
@@ -3010,7 +3048,7 @@ formatPrice(product.price)+
 '<button class="product-cart" type="button" onclick="addCart(\''+
 escapeJs(product.id)+
 '\')" aria-label="افزودن به سبد">'+
-'🛒'+
+'<i class="fa-solid fa-cart-shopping"></i>'+
 '</button>'+
 
 '</div>'+
