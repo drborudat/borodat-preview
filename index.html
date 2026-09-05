@@ -504,8 +504,38 @@ border-radius:9px
 }
 
 .why-icon{
-font-size:23px;
-margin-bottom:8px
+width:48px;
+height:48px;
+margin:0 auto 10px;
+border-radius:14px;
+display:flex;
+align-items:center;
+justify-content:center;
+background:linear-gradient(145deg,#f4f9fc,#e3eef4);
+box-shadow:
+0 4px 9px rgba(0,0,0,.11),
+inset 0 1px 2px rgba(255,255,255,.95);
+color:#0879bd;
+font-size:21px;
+transition:transform .2s ease,box-shadow .2s ease,background .2s ease;
+}
+
+.why-item:hover .why-icon{
+transform:translateY(-2px) scale(1.04);
+box-shadow:
+0 6px 12px rgba(0,0,0,.15),
+inset 0 1px 2px rgba(255,255,255,.95);
+}
+
+.why-icon i{
+display:block;
+filter:drop-shadow(0 2px 1px rgba(0,0,0,.13));
+transition:transform .2s ease,filter .2s ease;
+}
+
+.why-item:hover .why-icon i{
+transform:scale(1.08);
+filter:drop-shadow(0 3px 2px rgba(0,0,0,.16));
 }
 
 .why-item h3{
@@ -942,11 +972,23 @@ overflow:hidden
 
 .article-img{
 height:150px;
-background:#edf4f7;
+background:linear-gradient(145deg,#f3f8fa,#e4eef2);
 display:flex;
 align-items:center;
 justify-content:center;
-font-size:48px
+font-size:42px;
+color:#0879bd;
+box-shadow:inset 0 1px 2px rgba(255,255,255,.9);
+}
+
+.article-img i{
+filter:drop-shadow(0 3px 2px rgba(0,0,0,.14));
+transition:transform .2s ease,filter .2s ease;
+}
+
+.article:hover .article-img i{
+transform:translateY(-2px) scale(1.05);
+filter:drop-shadow(0 5px 3px rgba(0,0,0,.17));
 }
 
 .article-body{padding:20px}
@@ -1552,7 +1594,7 @@ WHY DR BORUDAT
 
 <div class="why-item">
 
-<div class="why-icon">⚙️</div>
+<div class="why-icon"><i class="fa-solid fa-gears"></i></div>
 
 <h3>تخصص فنی</h3>
 
@@ -1564,7 +1606,7 @@ WHY DR BORUDAT
 
 <div class="why-item">
 
-<div class="why-icon">⚡</div>
+<div class="why-icon"><i class="fa-solid fa-bolt"></i></div>
 
 <h3>پاسخگویی سریع</h3>
 
@@ -1576,7 +1618,7 @@ WHY DR BORUDAT
 
 <div class="why-item">
 
-<div class="why-icon">🛠️</div>
+<div class="why-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div>
 
 <h3>خدمات کامل</h3>
 
@@ -1588,7 +1630,7 @@ WHY DR BORUDAT
 
 <div class="why-item">
 
-<div class="why-icon">✓</div>
+<div class="why-icon"><i class="fa-solid fa-circle-check"></i></div>
 
 <h3>اعتماد و کیفیت</h3>
 
@@ -2158,7 +2200,7 @@ class="form-message"
 
 <article class="article">
 
-<div class="article-img">❄</div>
+<div class="article-img"><i class="fa-solid fa-snowflake"></i></div>
 
 <div class="article-body">
 
@@ -2178,7 +2220,7 @@ class="form-message"
 
 <article class="article">
 
-<div class="article-img">🔧</div>
+<div class="article-img"><i class="fa-solid fa-wrench"></i></div>
 
 <div class="article-body">
 
@@ -2198,7 +2240,7 @@ class="form-message"
 
 <article class="article">
 
-<div class="article-img">◌</div>
+<div class="article-img"><i class="fa-solid fa-circle-info"></i></div>
 
 <div class="article-body">
 
