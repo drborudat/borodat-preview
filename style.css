@@ -637,3 +637,9 @@ footer{padding:38px 5% 90px}
 
 /* Hide large footer snowflake */
 footer .trust .snow{display:none!important}
+
+/* اسلایدر خودکار و لمسی */
+.hero-arrow{display:none!important}
+.hero-track{overflow:hidden!important;touch-action:pan-y}
+.hero-slide{user-select:none}
+.hero-slide img{-webkit-user-drag:none}

@@ -22,9 +22,34 @@ function showSlide(i){
  [...dots.children].forEach((d,n)=>d.classList.toggle('active',n===slide));
 }
 
-$$('.hero-arrow').forEach(b=>b.onclick=()=>showSlide(slide+Number(b.dataset.dir)));
 
 showSlide(0);
+
+// تعویض خودکار اسلایدها
+const heroTrack = $('#heroTrack');
+let heroTimer;
+function restartHeroTimer(){
+  clearInterval(heroTimer);
+  heroTimer = setInterval(()=>showSlide(slide+1),5000);
+}
+restartHeroTimer();
+
+// جابه‌جایی با انگشت
+let heroStartX = 0;
+heroTrack.addEventListener('pointerdown', e => {
+  heroStartX = e.clientX;
+});
+heroTrack.addEventListener('pointerup', e => {
+  const distance = e.clientX - heroStartX;
+  if (Math.abs(distance) > 45) {
+    showSlide(slide + (distance > 0 ? 1 : -1));
+    restartHeroTimer();
+  }
+  heroStartX = 0;
+});
+heroTrack.addEventListener('pointercancel', () => {
+  heroStartX = 0;
+});
 
 $$('[data-scroll]').forEach(b=>b.onclick=()=>{
  const el=document.getElementById(b.dataset.scroll);
