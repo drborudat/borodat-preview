@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<link rel="stylesheet" href="style.css?v=4">
+<link rel="stylesheet" href="style.css?v=5">
 </head>
 <body>
 
@@ -163,6 +163,22 @@
   <div class="copyright">تمام حقوق این وب‌سایت متعلق به دکتر برودت است.</div>
 </footer>
 
+
+<div class="cart-overlay" id="cartOverlay">
+  <section class="cart-drawer" role="dialog" aria-modal="true">
+    <div class="cart-head">
+      <h2>سبد خرید شما</h2>
+      <button type="button" id="closeCart" aria-label="بستن">×</button>
+    </div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-empty" id="cartEmpty">سبد خرید شما خالی است.</div>
+    <div class="cart-footer" id="cartFooter">
+      <div class="cart-total"><span>مبلغ کل</span><strong id="cartTotal">۰ تومان</strong></div>
+      <button type="button" id="checkoutBtn">ادامه ثبت سفارش</button>
+    </div>
+  </section>
+</div>
+
 <nav class="bottom-nav">
   <a href="#"><i class="fa-regular fa-user"></i><small>حساب کاربری من</small></a>
   <a href="#"><i class="fa-solid fa-cart-shopping"></i><small>سبد خرید</small></a>
@@ -170,7 +186,7 @@
   <a href="#home"><i class="fa-solid fa-store"></i><small>فروشگاه</small></a>
 </nav>
 <button class="back-top" id="backTop"><i class="fa-solid fa-chevron-up"></i></button>
-<script src="script.js?v=4"></script>
+<script src="script.js?v=5"></script>
 <script>
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {

@@ -88,11 +88,132 @@ $$('.product-track,.blog-track').forEach(el=>{
  });
 });
 
-let count=0;
-$$('.add-cart').forEach(b=>b.onclick=()=>{
- count++;
- $('#cartCount').textContent=count.toLocaleString('fa-IR');
+/* Persistent shopping cart */
+const CART_KEY = 'drBorudatCart';
+let cart = [];
+try {
+  const saved = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
+  if (Array.isArray(saved)) cart = saved.filter(x =>
+    x && typeof x.name === 'string' &&
+    Number.isFinite(Number(x.price)) &&
+    Number.isInteger(Number(x.qty)) &&
+    Number(x.price) > 0 && Number(x.qty) > 0
+  ).map(x => ({name:x.name, price:Number(x.price), qty:Number(x.qty)}));
+} catch (_) { cart = []; }
+
+const normalizeDigits = value => String(value)
+  .replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d))
+  .replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+
+const readPrice = value => Number(normalizeDigits(value).replace(/[^\d]/g, '')) || 0;
+const formatMoney = value => Math.round(value).toLocaleString('fa-IR') + ' تومان';
+
+function saveCart() {
+  localStorage.setItem(CART_KEY, JSON.stringify(cart));
+}
+
+function renderCart() {
+  const count = cart.reduce((sum, item) => sum + item.qty, 0);
+  $('#cartCount').textContent = count.toLocaleString('fa-IR');
+
+  $('#cartItems').innerHTML = cart.map((item, index) => `
+    <article class="cart-row">
+      <div>
+        <h3>${item.name}</h3>
+        <div class="cart-price">${formatMoney(item.price)} برای هر عدد</div>
+        <div class="cart-line-total">${formatMoney(item.price * item.qty)}</div>
+      </div>
+      <div class="cart-controls">
+        <button type="button" data-cart-action="plus" data-index="${index}">+</button>
+        <b>${item.qty.toLocaleString('fa-IR')}</b>
+        <button type="button" data-cart-action="minus" data-index="${index}">−</button>
+        <button type="button" class="cart-remove" data-cart-action="remove" data-index="${index}" aria-label="حذف">×</button>
+      </div>
+    </article>
+  `).join('');
+
+  $('#cartEmpty').classList.toggle('show', cart.length === 0);
+  $('#cartFooter').style.display = cart.length ? 'block' : 'none';
+  $('#cartTotal').textContent = formatMoney(
+    cart.reduce((sum, item) => sum + item.price * item.qty, 0)
+  );
+}
+
+function openCart() {
+  $('#cartOverlay').classList.add('open');
+  document.body.classList.add('cart-open');
+}
+
+function closeCart() {
+  $('#cartOverlay').classList.remove('open');
+  document.body.classList.remove('cart-open');
+}
+
+$$('.add-cart').forEach(button => {
+  button.addEventListener('click', () => {
+    const card = button.closest('.product-card');
+    if (!card) return;
+
+    const name = card.querySelector('h3')?.textContent.trim();
+    const price = readPrice(card.querySelector('.price')?.textContent || '');
+
+    if (!name || !price) {
+      alert('نام یا قیمت این محصول مشخص نیست.');
+      return;
+    }
+
+    const existing = cart.find(item => item.name === name && item.price === price);
+    if (existing) existing.qty += 1;
+    else cart.push({name, price, qty:1});
+
+    saveCart();
+    renderCart();
+    openCart();
+  });
 });
+
+$('#cartItems').addEventListener('click', event => {
+  const button = event.target.closest('[data-cart-action]');
+  if (!button) return;
+
+  const index = Number(button.dataset.index);
+  const item = cart[index];
+  if (!item) return;
+
+  if (button.dataset.cartAction === 'plus') item.qty += 1;
+  if (button.dataset.cartAction === 'minus') item.qty -= 1;
+  if (button.dataset.cartAction === 'remove' || item.qty <= 0) {
+    cart.splice(index, 1);
+  }
+
+  saveCart();
+  renderCart();
+});
+
+$('.cart').addEventListener('click', openCart);
+
+$$('.bottom-nav a').forEach(link => {
+  if (link.textContent.includes('سبد خرید')) {
+    link.addEventListener('click', event => {
+      event.preventDefault();
+      openCart();
+    });
+  }
+});
+
+$('#closeCart').addEventListener('click', closeCart);
+$('#cartOverlay').addEventListener('click', event => {
+  if (event.target === $('#cartOverlay')) closeCart();
+});
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape') closeCart();
+});
+
+$('#checkoutBtn').addEventListener('click', () => {
+  alert('فرم مشخصات و ثبت سفارش در مرحله بعد اضافه می‌شود.');
+});
+
+renderCart();
 
 $$('.favorite').forEach(b=>b.onclick=()=>{
  b.classList.toggle('selected');
