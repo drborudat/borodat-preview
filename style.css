@@ -700,3 +700,64 @@ footer .trust .snow{display:none!important}
     height:9px!important;
   }
 }
+
+/* FINAL MOBILE HERO — compact reference proportions */
+@media (max-width:700px){
+  .hero-wrap{
+    width:100%!important;
+    padding:110px 0 38px!important;
+    overflow:visible!important;
+  }
+  .hero-slider{
+    width:88%!important;
+    max-width:none!important;
+    margin:0 auto!important;
+  }
+  .hero-track{
+    width:100%!important;
+    height:166px!important;
+    border-radius:18px!important;
+    overflow:hidden!important;
+    touch-action:pan-y!important;
+  }
+  .hero-slide{
+    height:166px!important;
+    box-sizing:border-box!important;
+    padding:14px 22px!important;
+    justify-content:center!important;
+    align-items:center!important;
+  }
+  .hero-slide .hero-copy{
+    width:100%!important;
+    max-width:100%!important;
+    flex:0 0 100%!important;
+    text-align:right!important;
+    padding:0!important;
+  }
+  .hero-copy h1,
+  .hero-copy h2{
+    font-size:16px!important;
+    line-height:1.6!important;
+    margin:0 0 5px!important;
+  }
+  .hero-copy p{
+    font-size:10px!important;
+    line-height:1.7!important;
+    margin:0 0 10px!important;
+  }
+  .hero-copy .red-btn{
+    font-size:10px!important;
+    padding:7px 15px!important;
+    border-radius:999px!important;
+  }
+  .hero-slide img{display:none!important}
+  .hero-arrow{display:none!important}
+  .hero-dots{
+    margin-top:9px!important;
+    gap:8px!important;
+  }
+  .hero-dots button{
+    width:9px!important;
+    height:9px!important;
+  }
+}
