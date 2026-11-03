@@ -643,3 +643,8 @@ footer .trust .snow{display:none!important}
 .hero-track{overflow:hidden!important;touch-action:pan-y}
 .hero-slide{user-select:none}
 .hero-slide img{-webkit-user-drag:none}
+
+/* اسلایدر متنی بدون تصویر */
+.hero-slide img{display:none!important}
+.hero-slide .hero-copy{width:100%!important;max-width:100%;text-align:center}
+.hero-track{touch-action:pan-y;cursor:grab}

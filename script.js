@@ -40,22 +40,33 @@ function restartHeroTimer() {
 }
 restartHeroTimer();
 
-let touchStartX = 0;
-let touchStartY = 0;
+let swipeStartX = 0;
+let swipeStartY = 0;
+let isSwiping = false;
 
-heroTrack.addEventListener('touchstart', e => {
-  touchStartX = e.changedTouches[0].clientX;
-  touchStartY = e.changedTouches[0].clientY;
-}, { passive: true });
+heroTrack.addEventListener('pointerdown', e => {
+  swipeStartX = e.clientX;
+  swipeStartY = e.clientY;
+  isSwiping = true;
+  heroTrack.setPointerCapture(e.pointerId);
+});
 
-heroTrack.addEventListener('touchend', e => {
-  const dx = e.changedTouches[0].clientX - touchStartX;
-  const dy = e.changedTouches[0].clientY - touchStartY;
+heroTrack.addEventListener('pointerup', e => {
+  if (!isSwiping) return;
+  isSwiping = false;
+
+  const dx = e.clientX - swipeStartX;
+  const dy = e.clientY - swipeStartY;
+
   if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
     showSlide(slide + (dx < 0 ? 1 : -1));
     restartHeroTimer();
   }
-}, { passive: true });
+});
+
+heroTrack.addEventListener('pointercancel', () => {
+  isSwiping = false;
+});
 
 $$('[data-scroll]').forEach(b=>b.onclick=()=>{
  const el=document.getElementById(b.dataset.scroll);
