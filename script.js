@@ -6,51 +6,56 @@ $('#menuBtn').onclick=()=>menu.classList.add('open');
 $('#closeMenu').onclick=()=>menu.classList.remove('open');
 $$('.mobile-menu a').forEach(a=>a.onclick=()=>menu.classList.remove('open'));
 
-let slide=0;
-const slides=$$('.hero-slide');
-const dots=$('#heroDots');
+let slide = 0;
+const slides = [...document.querySelectorAll('.hero-slide')];
+const dots = $('#heroDots');
+const heroTrack = $('#heroTrack');
 
-slides.forEach((_,i)=>{
- const b=document.createElement('button');
- b.onclick=()=>showSlide(i);
- dots.appendChild(b);
-});
-
-function showSlide(i){
- slide=(i+slides.length)%slides.length;
- slides.forEach((s,n)=>s.classList.toggle('active',n===slide));
- [...dots.children].forEach((d,n)=>d.classList.toggle('active',n===slide));
+function showSlide(i) {
+  if (!slides.length) return;
+  slide = (i + slides.length) % slides.length;
+  slides.forEach((item, n) => item.classList.toggle('active', n === slide));
+  [...dots.children].forEach((item, n) => item.classList.toggle('active', n === slide));
 }
 
+slides.forEach((_, i) => {
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.setAttribute('aria-label', 'اسلاید ' + (i + 1));
+  b.onclick = () => {
+    showSlide(i);
+    restartHeroTimer();
+  };
+  dots.appendChild(b);
+});
 
 showSlide(0);
 
-// تعویض خودکار اسلایدها
-const heroTrack = $('#heroTrack');
 let heroTimer;
-function restartHeroTimer(){
+function restartHeroTimer() {
   clearInterval(heroTimer);
-  heroTimer = setInterval(()=>showSlide(slide+1),5000);
+  if (slides.length > 1) {
+    heroTimer = setInterval(() => showSlide(slide + 1), 5000);
+  }
 }
 restartHeroTimer();
 
-// جابه‌جایی با انگشت
-let heroStartX = 0;
-heroTrack.addEventListener('pointerdown', e => {
-  heroStartX = e.clientX;
-  heroTrack.setPointerCapture(e.pointerId);
-});
-heroTrack.addEventListener('pointerup', e => {
-  const distance = e.clientX - heroStartX;
-  if (Math.abs(distance) > 45) {
-    showSlide(slide + (distance < 0 ? 1 : -1));
+let touchStartX = 0;
+let touchStartY = 0;
+
+heroTrack.addEventListener('touchstart', e => {
+  touchStartX = e.changedTouches[0].clientX;
+  touchStartY = e.changedTouches[0].clientY;
+}, { passive: true });
+
+heroTrack.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  const dy = e.changedTouches[0].clientY - touchStartY;
+  if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+    showSlide(slide + (dx < 0 ? 1 : -1));
     restartHeroTimer();
   }
-  heroStartX = 0;
-});
-heroTrack.addEventListener('pointercancel', () => {
-  heroStartX = 0;
-});
+}, { passive: true });
 
 $$('[data-scroll]').forEach(b=>b.onclick=()=>{
  const el=document.getElementById(b.dataset.scroll);
