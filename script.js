@@ -38,11 +38,12 @@ restartHeroTimer();
 let heroStartX = 0;
 heroTrack.addEventListener('pointerdown', e => {
   heroStartX = e.clientX;
+  heroTrack.setPointerCapture(e.pointerId);
 });
 heroTrack.addEventListener('pointerup', e => {
   const distance = e.clientX - heroStartX;
   if (Math.abs(distance) > 45) {
-    showSlide(slide + (distance > 0 ? 1 : -1));
+    showSlide(slide + (distance < 0 ? 1 : -1));
     restartHeroTimer();
   }
   heroStartX = 0;
