@@ -648,3 +648,55 @@ footer .trust .snow{display:none!important}
 .hero-slide img{display:none!important}
 .hero-slide .hero-copy{width:100%!important;max-width:100%;text-align:center}
 .hero-track{touch-action:pan-y;cursor:grab}
+
+/* Compact text-only hero — reference proportions */
+@media(max-width:700px){
+  .hero-wrap{
+    padding:40px 6% 28px!important;
+  }
+  .hero-slider{
+    width:100%;
+    margin:0 auto;
+  }
+  .hero-track{
+    height:166px!important;
+    border-radius:18px!important;
+    overflow:hidden!important;
+    touch-action:pan-y;
+  }
+  .hero-slide{
+    padding:14px 7%!important;
+    justify-content:center;
+    align-items:center;
+  }
+  .hero-slide .hero-copy{
+    width:100%!important;
+    max-width:100%!important;
+    flex:0 0 100%!important;
+    text-align:right!important;
+  }
+  .hero-copy h1,
+  .hero-copy h2{
+    font-size:16px!important;
+    line-height:1.6!important;
+    margin:0 0 5px!important;
+  }
+  .hero-copy p{
+    font-size:10px!important;
+    line-height:1.7!important;
+    margin:0 0 10px!important;
+  }
+  .hero-copy .red-btn{
+    font-size:10px!important;
+    padding:7px 15px!important;
+    border-radius:999px!important;
+  }
+  .hero-dots{
+    margin-top:9px!important;
+    gap:8px!important;
+  }
+  .hero-dots button{
+    width:9px!important;
+    height:9px!important;
+  }
+}
