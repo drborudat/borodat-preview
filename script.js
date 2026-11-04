@@ -304,7 +304,7 @@ checkoutForm.addEventListener('submit', event => {
     `توضیحات: ${notes || 'ندارد'}`
   ].join('\\n');
 
-  const whatsappUrl = 'https://wa.me/98917701790?text=' + encodeURIComponent(message);
+  const whatsappUrl = 'https://wa.me/989197701790?text=' + encodeURIComponent(message);
   const whatsappWindow = window.open(whatsappUrl, '_blank');
   if (!whatsappWindow) window.location.href = whatsappUrl;
 });
