@@ -1,6 +1,25 @@
 const $=s=>document.querySelector(s);
 const $$=s=>document.querySelectorAll(s);
 
+/* Independent cart open/close delegation */
+document.addEventListener('click', event => {
+  const overlay = document.getElementById('cartOverlay');
+  if (!overlay) return;
+
+  if (event.target.closest('.cart')) {
+    event.preventDefault();
+    overlay.classList.add('open');
+    document.body.classList.add('cart-open');
+  } else if (
+    event.target.closest('#closeCart') ||
+    event.target === overlay
+  ) {
+    overlay.classList.remove('open');
+    document.body.classList.remove('cart-open');
+  }
+});
+
+
 const menu=$('#mobileMenu');
 $('#menuBtn').onclick=()=>menu.classList.add('open');
 $('#closeMenu').onclick=()=>menu.classList.remove('open');

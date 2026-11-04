@@ -12,14 +12,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<link rel="stylesheet" href="style.css?v=5">
+<link rel="stylesheet" href="style.css?v=7">
 </head>
 <body>
 
 <header class="header">
   <button class="menu-btn" id="menuBtn"><i class="fa-solid fa-bars"></i> منو</button>
   <a href="#" class="logo"><span class="logo-caption"><span class="logo-name">دکتر برودت</span><small>تخصصی در لوازم کولر گازی</small></span></a>
-  <button class="cart"><i class="fa-solid fa-cart-shopping"></i><span id="cartCount">۰</span></button>
+  <button class="cart" type="button" onclick="document.getElementById('cartOverlay').classList.add('open');document.body.classList.add('cart-open')"><i class="fa-solid fa-cart-shopping"></i><span id="cartCount">۰</span></button>
 </header>
 
 <nav class="mobile-menu" id="mobileMenu">
@@ -37,6 +37,7 @@
   <div class="hero-slider">
     <div class="hero-track" id="heroTrack">
       <article class="hero-slide active">
+
         <div class="hero-copy">
           <h1>ارسال سریع به سراسر ایران!</h1>
           <p>خرید آسان قطعات و تجهیزات تخصصی کولر گازی</p>
@@ -44,6 +45,7 @@
         </div>
       </article>
       <article class="hero-slide">
+
         <div class="hero-copy">
           <h2>تجهیزات تخصصی نصب کولر گازی</h2>
           <p>ابزار حرفه‌ای، کیفیت مطمئن</p>
@@ -51,6 +53,7 @@
         </div>
       </article>
       <article class="hero-slide">
+<img src="images/hero-product.jpeg" alt="تجهیزات تخصصی کولر گازی" loading="eager">
         <div class="hero-copy">
           <h2>قطعات و لوازم کولر گازی</h2>
           <p>همه آنچه برای سرویس و تعمیر نیاز دارید</p>
@@ -168,7 +171,7 @@
   <section class="cart-drawer" role="dialog" aria-modal="true">
     <div class="cart-head">
       <h2>سبد خرید شما</h2>
-      <button type="button" id="closeCart" aria-label="بستن">×</button>
+      <button type="button" id="closeCart" aria-label="بستن" onclick="document.getElementById('cartOverlay').classList.remove('open');document.body.classList.remove('cart-open')">×</button>
     </div>
     <div class="cart-items" id="cartItems"></div>
     <div class="cart-empty" id="cartEmpty">سبد خرید شما خالی است.</div>
@@ -186,7 +189,7 @@
   <a href="#home"><i class="fa-solid fa-store"></i><small>فروشگاه</small></a>
 </nav>
 <button class="back-top" id="backTop"><i class="fa-solid fa-chevron-up"></i></button>
-<script src="script.js?v=5"></script>
+<script src="script.js?v=7"></script>
 <script>
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
