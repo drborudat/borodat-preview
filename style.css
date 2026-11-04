@@ -922,3 +922,63 @@ footer {
   .hero-slide img { width: 34% !important; height: 75% !important; }
   .hero-slide .hero-copy { max-width: 64% !important; }
 }
+
+
+/* Checkout form */
+.checkout-overlay {
+  position: fixed; inset: 0; z-index: 1100;
+  display: none; align-items: center; justify-content: center;
+  padding: 14px; background: #07142699; overflow-y: auto;
+}
+.checkout-overlay.open { display: flex; }
+.checkout-panel {
+  width: min(100%, 520px); max-height: 94vh; overflow-y: auto;
+  background: #fff; border-radius: 18px; padding: 20px;
+  box-shadow: 0 18px 55px #07142635; direction: rtl;
+}
+.checkout-head {
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid #e8edf3; padding-bottom: 12px; margin-bottom: 15px;
+}
+.checkout-head h2 { margin: 0; color: #0b1f3a; font-size: 18px; }
+.checkout-head button {
+  border: 0; border-radius: 50%; width: 34px; height: 34px;
+  background: #f1f4f8; color: #0b1f3a; font-size: 23px;
+}
+.checkout-summary {
+  background: #f5f8fc; border: 1px solid #e5ebf3;
+  border-radius: 12px; padding: 13px; margin-bottom: 17px;
+}
+.checkout-summary h3 { margin: 0 0 10px; color: #0b1f3a; font-size: 14px; }
+.checkout-item {
+  display: flex; justify-content: space-between; gap: 10px;
+  padding: 7px 0; border-bottom: 1px solid #e5ebf3;
+  font-size: 12px; color: #475467;
+}
+.checkout-item strong { white-space: nowrap; color: #0b1f3a; }
+.checkout-final-total {
+  display: flex; justify-content: space-between; gap: 10px;
+  padding-top: 12px; font-size: 14px; color: #0b1f3a;
+}
+.checkout-panel form { display: grid; gap: 12px; }
+.checkout-panel form label { display: grid; gap: 6px; color: #344054; font-size: 13px; font-weight: 600; }
+.checkout-panel input, .checkout-panel textarea {
+  width: 100%; box-sizing: border-box; border: 1px solid #d7e0eb;
+  border-radius: 9px; padding: 11px 12px; background: #fff;
+  color: #182b43; font: inherit; font-size: 13px; outline: none;
+}
+.checkout-panel input:focus, .checkout-panel textarea:focus {
+  border-color: #1e6fdb; box-shadow: 0 0 0 3px #1e6fdb18;
+}
+.checkout-panel textarea { resize: vertical; }
+.checkout-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.checkout-submit {
+  border: 0; border-radius: 10px; padding: 14px;
+  background: #1e6fdb; color: white; font: inherit; font-weight: 700;
+}
+.checkout-note { margin: 0; color: #7b8796; font-size: 11px; line-height: 1.8; }
+body.checkout-open { overflow: hidden; }
+@media(max-width:480px) {
+  .checkout-overlay { padding: 8px; }
+  .checkout-panel { padding: 15px; border-radius: 14px; }
+}

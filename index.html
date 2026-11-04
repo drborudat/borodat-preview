@@ -182,6 +182,48 @@
   </section>
 </div>
 
+
+<div class="checkout-overlay" id="checkoutOverlay">
+  <section class="checkout-panel" role="dialog" aria-modal="true" aria-labelledby="checkoutTitle">
+    <div class="checkout-head">
+      <h2 id="checkoutTitle">ثبت اطلاعات سفارش</h2>
+      <button type="button" id="closeCheckout" aria-label="بستن">×</button>
+    </div>
+    <div class="checkout-summary">
+      <h3>خلاصه سفارش</h3>
+      <div id="checkoutItems"></div>
+      <div class="checkout-final-total"><span>مبلغ نهایی</span><strong id="checkoutTotal">۰ تومان</strong></div>
+    </div>
+    <form id="checkoutForm">
+      <label>نام و نام خانوادگی
+        <input name="fullName" type="text" autocomplete="name" required maxlength="100" placeholder="نام کامل خریدار">
+      </label>
+      <label>شماره موبایل
+        <input name="mobile" type="tel" inputmode="numeric" autocomplete="tel" required maxlength="11" placeholder="مثلاً 09123456789">
+      </label>
+      <div class="checkout-fields">
+        <label>استان
+          <input name="province" type="text" required maxlength="50" placeholder="استان">
+        </label>
+        <label>شهر
+          <input name="city" type="text" required maxlength="50" placeholder="شهر">
+        </label>
+      </div>
+      <label>آدرس کامل
+        <textarea name="address" required rows="3" maxlength="500" autocomplete="street-address" placeholder="خیابان، کوچه، پلاک، واحد و ..."></textarea>
+      </label>
+      <label>کد پستی ۱۰ رقمی
+        <input name="postalCode" type="text" inputmode="numeric" required maxlength="10" placeholder="کد پستی">
+      </label>
+      <label>توضیحات سفارش (اختیاری)
+        <textarea name="notes" rows="2" maxlength="500" placeholder="توضیحات تکمیلی"></textarea>
+      </label>
+      <button type="submit" class="checkout-submit">تأیید و ارسال سفارش در واتساپ</button>
+      <p class="checkout-note">با تأیید سفارش، جزئیات آن برای فروشگاه دکتر برودت در واتساپ ارسال می‌شود.</p>
+    </form>
+  </section>
+</div>
+
 <nav class="bottom-nav">
   <a href="#"><i class="fa-regular fa-user"></i><small>حساب کاربری من</small></a>
   <a href="#"><i class="fa-solid fa-cart-shopping"></i><small>سبد خرید</small></a>

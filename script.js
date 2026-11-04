@@ -228,8 +228,85 @@ document.addEventListener('keydown', event => {
   if (event.key === 'Escape') closeCart();
 });
 
-$('#checkoutBtn').addEventListener('click', () => {
-  alert('فرم مشخصات و ثبت سفارش در مرحله بعد اضافه می‌شود.');
+const checkoutOverlay = $('#checkoutOverlay');
+const checkoutForm = $('#checkoutForm');
+
+function closeCheckout() {
+  checkoutOverlay.classList.remove('open');
+  document.body.classList.remove('checkout-open');
+}
+
+function showCheckout() {
+  if (!cart.length) return;
+  closeCart();
+  $('#checkoutItems').innerHTML = cart.map(item =>
+    `<div class="checkout-item"><span>${item.name} × ${item.qty.toLocaleString('fa-IR')}</span><strong>${formatMoney(item.price * item.qty)}</strong></div>`
+  ).join('');
+  $('#checkoutTotal').textContent = formatMoney(
+    cart.reduce((sum, item) => sum + item.price * item.qty, 0)
+  );
+  checkoutOverlay.classList.add('open');
+  document.body.classList.add('checkout-open');
+}
+
+$('#checkoutBtn').addEventListener('click', showCheckout);
+$('#closeCheckout').addEventListener('click', closeCheckout);
+checkoutOverlay.addEventListener('click', event => {
+  if (event.target === checkoutOverlay) closeCheckout();
+});
+
+checkoutForm.addEventListener('submit', event => {
+  event.preventDefault();
+
+  const data = new FormData(checkoutForm);
+  const fullName = String(data.get('fullName') || '').trim();
+  const mobile = normalizeDigits(data.get('mobile') || '').replace(/\s/g, '');
+  const province = String(data.get('province') || '').trim();
+  const city = String(data.get('city') || '').trim();
+  const address = String(data.get('address') || '').trim();
+  const postalCode = normalizeDigits(data.get('postalCode') || '').replace(/\s/g, '');
+  const notes = String(data.get('notes') || '').trim();
+
+  if (!/^09\d{9}$/.test(mobile)) {
+    alert('شماره موبایل باید ۱۱ رقم و با ۰۹ شروع شود.');
+    return;
+  }
+  if (!/^\d{10}$/.test(postalCode)) {
+    alert('کد پستی باید دقیقاً ۱۰ رقم باشد.');
+    return;
+  }
+  if (!cart.length) {
+    alert('سبد خرید خالی است.');
+    closeCheckout();
+    return;
+  }
+
+  const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+  const itemLines = cart.map((item, index) =>
+    `${index + 1}. ${item.name} | تعداد: ${item.qty} | مبلغ: ${formatMoney(item.price * item.qty)}`
+  );
+
+  const message = [
+    'سلام، سفارش جدید از فروشگاه دکتر برودت',
+    '',
+    'مشخصات خریدار:',
+    `نام: ${fullName}`,
+    `موبایل: ${mobile}`,
+    `استان: ${province}`,
+    `شهر: ${city}`,
+    `آدرس: ${address}`,
+    `کد پستی: ${postalCode}`,
+    '',
+    'محصولات سفارش:',
+    ...itemLines,
+    '',
+    `مبلغ نهایی: ${formatMoney(total)}`,
+    `توضیحات: ${notes || 'ندارد'}`
+  ].join('\\n');
+
+  const whatsappUrl = 'https://wa.me/98917701790?text=' + encodeURIComponent(message);
+  const whatsappWindow = window.open(whatsappUrl, '_blank');
+  if (!whatsappWindow) window.location.href = whatsappUrl;
 });
 
 renderCart();
