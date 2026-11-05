@@ -124,8 +124,8 @@ const normalizeDigits = value => String(value)
   .replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d))
   .replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
 
-const readPrice = value => Number(normalizeDigits(value).replace(/[^\d]/g, '')) || 0;
-const formatMoney = value => Math.round(value).toLocaleString('fa-IR') + ' تومان';
+const readPrice = value => Math.round((Number(normalizeDigits(value).replace(/[^\d]/g, '')) || 0) / 10);
+const formatMoney = value => Math.round(value * 10).toLocaleString('fa-IR') + ' ریال';
 
 function saveCart() {
   localStorage.setItem(CART_KEY, JSON.stringify(cart));
@@ -284,25 +284,35 @@ checkoutForm.addEventListener('submit', event => {
   const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
   const itemLines = cart.map((item, index) =>
     `${index + 1}. ${item.name} | تعداد: ${item.qty} | مبلغ: ${formatMoney(item.price * item.qty)}`
-  );
+    );
 
-  const message = [
-    'سلام، سفارش جدید از فروشگاه دکتر برودت',
-    '',
-    'مشخصات خریدار:',
-    `نام: ${fullName}`,
-    `موبایل: ${mobile}`,
-    `استان: ${province}`,
-    `شهر: ${city}`,
-    `آدرس: ${address}`,
-    `کد پستی: ${postalCode}`,
-    '',
-    'محصولات سفارش:',
-    ...itemLines,
-    '',
-    `مبلغ نهایی: ${formatMoney(total)}`,
-    `توضیحات: ${notes || 'ندارد'}`
-  ].join('\\n');
+    const orderCode = 'DB-' + Date.now();
+
+    const message = [
+      '❄️ فروشگاه دکتر برودت',
+      '━━━━━━━━━━━━━━━━━━',
+      `🧾 سفارش جدید | ${orderCode}`,
+      '━━━━━━━━━━━━━━━━━━',
+      '',
+      '👤 مشخصات خریدار',
+      `نام: ${fullName}`,
+      `موبایل: ${mobile}`,
+      `استان: ${province}`,
+      `شهر: ${city}`,
+      `آدرس: ${address}`,
+      `کد پستی: ${postalCode}`,
+      '',
+      '🛒 اقلام سفارش',
+      ...itemLines,
+      '',
+      '━━━━━━━━━━━━━━━━━━',
+      `💰 مبلغ نهایی: ${formatMoney(total)}`,
+      `📝 توضیحات: ${notes || 'ندارد'}`,
+      '━━━━━━━━━━━━━━━━━━',
+      `کد پیگیری: ${orderCode}`
+    ].join('\n');
+
+
 
   const whatsappUrl = 'https://wa.me/989197701790?text=' + encodeURIComponent(message);
   const whatsappWindow = window.open(whatsappUrl, '_blank');
