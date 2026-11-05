@@ -6,6 +6,8 @@ document.addEventListener('click', event => {
   const overlay = document.getElementById('cartOverlay');
   if (!overlay) return;
 
+  if (event.target.closest('.add-cart')) return;
+
   if (event.target.closest('.cart')) {
     event.preventDefault();
     overlay.classList.add('open');
