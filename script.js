@@ -187,7 +187,7 @@ $$('.add-cart').forEach(button => {
 
     saveCart();
     renderCart();
-    openCart();
+
   });
 });
 
