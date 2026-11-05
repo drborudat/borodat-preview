@@ -339,6 +339,11 @@ def shop_html():
     )
 
 
+@app.route("/about.html")
+def about_html():
+    return send_from_directory(BASE_DIR, "about.html")
+
+
 @app.route("/index.html")
 def index_html():
 
