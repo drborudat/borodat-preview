@@ -339,6 +339,26 @@ def shop_html():
     )
 
 
+@app.route("/privacy.html")
+def privacy_html():
+    return send_from_directory(BASE_DIR, "privacy.html")
+
+
+@app.route("/returns.html")
+def returns_html():
+    return send_from_directory(BASE_DIR, "returns.html")
+
+
+@app.route("/shipping.html")
+def shipping_html():
+    return send_from_directory(BASE_DIR, "shipping.html")
+
+
+@app.route("/terms.html")
+def terms_html():
+    return send_from_directory(BASE_DIR, "terms.html")
+
+
 @app.route("/about.html")
 def about_html():
     return send_from_directory(BASE_DIR, "about.html")
