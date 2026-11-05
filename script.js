@@ -171,7 +171,7 @@ function closeCart() {
 $$('.add-cart').forEach(button => {
   button.addEventListener('click', event => {
     event.preventDefault();
-    event.stopPropagation();
+    event.stopImmediatePropagation();
 
     const card = button.closest('.product-card');
     if (!card) return;
