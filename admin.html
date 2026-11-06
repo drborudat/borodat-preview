@@ -585,19 +585,33 @@ max-width:150px;
 
 <body>
 
-<header class="header">
+<div id="adminLogin" style="display:flex;min-height:100vh;align-items:center;justify-content:center;padding:20px;background:#f4f7fa">
+  <form id="adminLoginForm" style="width:100%;max-width:390px;background:#fff;border:1px solid #e1e7ec;border-radius:14px;padding:28px;box-shadow:0 12px 35px #071b3114">
+    <div style="font-weight:800;font-size:22px;color:#071b31;text-align:center;margin-bottom:8px;direction:ltr">Dr <span style="color:#0879bd">Borodat</span></div>
+    <h2 style="font-size:17px;text-align:center;margin:12px 0 22px">ورود به پنل مدیریت</h2>
+    <label for="adminUsername">نام کاربری</label>
+    <input id="adminUsername" name="username" autocomplete="username" required style="display:block;width:100%;padding:13px;margin:8px 0 16px;border:1px solid #d8e0e8;border-radius:8px">
+    <label for="adminPassword">رمز عبور</label>
+    <input id="adminPassword" name="password" type="password" autocomplete="current-password" required style="display:block;width:100%;padding:13px;margin:8px 0 16px;border:1px solid #d8e0e8;border-radius:8px">
+    <button id="adminLoginButton" type="submit" style="width:100%;padding:13px;border:0;border-radius:8px;background:#0879bd;color:white;font-weight:bold">ورود</button>
+    <div id="adminLoginMessage" role="alert" style="color:#b42318;font-size:13px;margin-top:14px"></div>
+  </form>
+</div>
+
+<header class="header" style="display:none">
 
 <div class="logo">
 Dr <span>Borodat</span>
 </div>
 
-<div class="status" id="status">
-در حال اتصال...
+<div style="display:flex;align-items:center;gap:14px">
+<div class="status" id="status">در حال اتصال...</div>
+<button id="adminLogout" type="button" style="display:none;background:#173b5c;color:white;border:1px solid #54718a;border-radius:7px;padding:8px 13px;cursor:pointer">خروج</button>
 </div>
 
 </header>
 
-<main class="container">
+<main class="container" style="display:none">
 
 <div class="cards">
 
@@ -938,9 +952,136 @@ onclick="sendReply()"
 const API_BASE = "https://borodat-panel.onrender.com";
 
 
+
+/* =====================================================
+   ADMIN AUTHENTICATION
+===================================================== */
+
+let currentAdminRole = null;
+
+async function authRequest(path, options = {}) {
+    const response = await fetch(API_BASE + path, {
+        credentials: "same-origin",
+        cache: "no-store",
+        ...options,
+        headers: {
+            "Accept": "application/json",
+            ...(options.headers || {})
+        }
+    });
+
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+        throw new Error(
+            data.error || data.message || "خطای ارتباط با سرور"
+        );
+    }
+
+    return data;
+}
+
+function showAdminLogin(message = "") {
+    document.getElementById("adminLogin").style.display = "flex";
+    document.querySelector(".header").style.display = "none";
+    document.querySelector(".container").style.display = "none";
+    document.getElementById("adminLoginMessage").textContent = message;
+}
+
+function activateAdmin(role, username) {
+    if (role !== "master" && role !== "admin2") {
+        throw new Error("سطح دسترسی معتبر نیست.");
+    }
+
+    currentAdminRole = role;
+
+    document.getElementById("adminLogin").style.display = "none";
+    document.querySelector(".header").style.display = "flex";
+    document.querySelector(".container").style.display = "block";
+    document.getElementById("adminLogout").style.display = "inline-block";
+
+    const status = document.getElementById("status");
+    status.textContent =
+        (role === "master" ? "مدیر کل: " : "مدیر محصولات: ") + username;
+
+    const panels = Array.from(document.querySelectorAll(".container > section.panel"));
+    const cards = document.querySelector(".container > .cards");
+
+    if (role === "admin2") {
+        if (cards) cards.style.display = "none";
+
+        panels.forEach((panel, index) => {
+            panel.style.display = (index === 1 || index === 2) ? "" : "none";
+        });
+
+        loadProductsOnly();
+    } else {
+        if (cards) cards.style.display = "";
+        panels.forEach(panel => panel.style.display = "");
+        loadDashboard();
+    }
+}
+
+async function initializeAdmin() {
+    showAdminLogin();
+
+    try {
+        const data = await authRequest("/api/auth/me");
+        if (data.authenticated) {
+            activateAdmin(data.role, data.username);
+        }
+    } catch (error) {
+        showAdminLogin();
+    }
+}
+
+document.getElementById("adminLoginForm").addEventListener("submit", async function(event) {
+    event.preventDefault();
+
+    const button = document.getElementById("adminLoginButton");
+    const message = document.getElementById("adminLoginMessage");
+
+    button.disabled = true;
+    button.textContent = "در حال ورود...";
+    message.textContent = "";
+
+    try {
+        const data = await authRequest("/api/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                username: document.getElementById("adminUsername").value.trim(),
+                password: document.getElementById("adminPassword").value
+            })
+        });
+
+        document.getElementById("adminPassword").value = "";
+        activateAdmin(data.role, data.username);
+    } catch (error) {
+        message.textContent = error.message || "ورود ناموفق بود.";
+    } finally {
+        button.disabled = false;
+        button.textContent = "ورود";
+    }
+});
+
+document.getElementById("adminLogout").addEventListener("click", async function() {
+    try {
+        await authRequest("/api/auth/logout", { method: "POST" });
+    } catch (error) {
+        console.error("Logout error:", error);
+    }
+
+    currentAdminRole = null;
+    document.getElementById("adminLogout").style.display = "none";
+    document.getElementById("adminPassword").value = "";
+    showAdminLogin("از پنل خارج شدید.");
+});
+
 /* =====================================================
    DATA
 ===================================================== */
+
 
 let dashboardData = {
 requests:[],
@@ -997,6 +1138,7 @@ if(!response.ok){
 
 throw new Error(
 data.message ||
+data.error ||
 ("خطای سرور: " + response.status)
 );
 
@@ -2768,9 +2910,7 @@ return String(value ?? "")
 document.addEventListener(
 "DOMContentLoaded",
 function(){
-
-loadDashboard();
-
+initializeAdmin();
 }
 );
 

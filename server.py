@@ -1,12 +1,13 @@
 import os
 import uuid
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import requests
 import psycopg
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory, session
 from flask_cors import CORS
+from werkzeug.security import check_password_hash
 
 
 # =====================================================
@@ -16,6 +17,13 @@ from flask_cors import CORS
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 app = Flask(__name__)
+app.secret_key = os.environ.get("FLASK_SECRET_KEY")
+app.config.update(
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SECURE=True,
+    SESSION_COOKIE_SAMESITE="Strict",
+    PERMANENT_SESSION_LIFETIME=timedelta(hours=12)
+)
 CORS(app)
 
 BALE_TOKEN = os.environ.get("BALE_TOKEN")
@@ -201,6 +209,35 @@ def init_database():
                     created_at TEXT NOT NULL
                 )
             """)
+
+
+            cur.execute(
+                "CREATE TABLE IF NOT EXISTS admin_users ("
+                "username TEXT PRIMARY KEY, "
+                "password_hash TEXT NOT NULL, "
+                "role TEXT NOT NULL, "
+                "created_at TEXT NOT NULL)"
+            )
+
+            admin_seeds = [
+                (os.environ.get("MASTER_USERNAME"),
+                 os.environ.get("MASTER_PASSWORD_HASH"), "master"),
+                (os.environ.get("ADMIN2_USERNAME"),
+                 os.environ.get("ADMIN2_PASSWORD_HASH"), "admin2")
+            ]
+
+            for username, password_hash, role in admin_seeds:
+                if username and password_hash:
+                    cur.execute(
+                        "INSERT INTO admin_users "
+                        "(username, password_hash, role, created_at) "
+                        "VALUES (%s, %s, %s, %s) "
+                        "ON CONFLICT (username) DO UPDATE SET "
+                        "password_hash = EXCLUDED.password_hash, "
+                        "role = EXCLUDED.role",
+                        (username, password_hash, role,
+                         datetime.utcnow().isoformat())
+                    )
 
         connection.commit()
 
@@ -3448,6 +3485,104 @@ def internal_error(error):
 # =====================================================
 # RUN
 # =====================================================
+
+
+
+@app.before_request
+def protect_admin_api():
+    if request.method == "OPTIONS":
+        return None
+
+    if not request.path.startswith("/api/admin/"):
+        return None
+
+    role = session.get("admin_role")
+
+    if role == "master":
+        return None
+
+    if role == "admin2":
+        path_parts = request.path.strip("/").split("/")
+        if request.path == "/api/admin/products" and request.method == "POST":
+            return None
+        if (
+            len(path_parts) == 4
+            and path_parts[:3] == ["api", "admin", "products"]
+            and request.method in ("PATCH", "DELETE")
+        ):
+            return None
+
+        return jsonify({"success": False,
+                        "error": "فقط بخش محصولات مجاز است."}), 403
+
+    return jsonify({"success": False,
+                    "error": "ابتدا وارد پنل شوید."}), 401
+
+
+@app.route("/api/auth/login", methods=["POST"])
+def admin_login():
+    if not app.secret_key:
+        return jsonify({"success": False,
+                        "error": "تنظیمات امنیتی کامل نیست."}), 503
+
+    data = request.get_json(silent=True) or {}
+    username = str(data.get("username", "")).strip()
+    password = str(data.get("password", ""))
+
+    if not username or not password:
+        return jsonify({"success": False,
+                        "error": "نام کاربری و رمز را وارد کنید."}), 400
+
+    try:
+        with get_connection() as connection:
+            with connection.cursor() as cur:
+                cur.execute(
+                    "SELECT username, password_hash, role "
+                    "FROM admin_users WHERE username = %s",
+                    (username,)
+                )
+                user = cur.fetchone()
+    except Exception:
+        app.logger.exception("Admin login database error")
+        return jsonify({"success": False,
+                        "error": "خطای پایگاه داده."}), 500
+
+    if not user or not check_password_hash(user[1], password):
+        return jsonify({"success": False,
+                        "error": "نام کاربری یا رمز اشتباه است."}), 401
+
+    if user[2] not in ("master", "admin2"):
+        return jsonify({"success": False,
+                        "error": "نقش نامعتبر است."}), 403
+
+    session.clear()
+    session.permanent = True
+    session["admin_username"] = user[0]
+    session["admin_role"] = user[2]
+
+    return jsonify({"success": True,
+                    "username": user[0], "role": user[2]})
+
+
+@app.route("/api/auth/me", methods=["GET"])
+def admin_me():
+    if session.get("admin_role") not in ("master", "admin2"):
+        return jsonify({"success": False,
+                        "authenticated": False}), 401
+
+    return jsonify({
+        "success": True,
+        "authenticated": True,
+        "username": session.get("admin_username"),
+        "role": session.get("admin_role")
+    })
+
+
+@app.route("/api/auth/logout", methods=["POST"])
+def admin_logout():
+    session.clear()
+    return jsonify({"success": True})
+
 
 if __name__ == "__main__":
 
