@@ -238,6 +238,9 @@ def init_database():
                         (username, password_hash, role,
                          datetime.utcnow().isoformat())
                     )
+                    app.logger.info(
+                        "ADMIN SEED: role=%s upserted", role
+                    )
 
         connection.commit()
 
@@ -3542,6 +3545,10 @@ def admin_login():
                     (username,)
                 )
                 user = cur.fetchone()
+                app.logger.info(
+                    "ADMIN LOGIN LOOKUP: found=%s role=%s",
+                    bool(user), user[2] if user else "none"
+                )
     except Exception:
         app.logger.exception("Admin login database error")
         return jsonify({"success": False,
