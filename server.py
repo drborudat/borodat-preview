@@ -219,6 +219,16 @@ def init_database():
                 "created_at TEXT NOT NULL)"
             )
 
+            print(
+                "ADMIN ENV CHECK: master_username=%s master_hash=%s "
+                "admin2_username=%s admin2_hash=%s" % (
+                    bool(os.environ.get("MASTER_USERNAME")),
+                    bool(os.environ.get("MASTER_PASSWORD_HASH")),
+                    bool(os.environ.get("ADMIN2_USERNAME")),
+                    bool(os.environ.get("ADMIN2_PASSWORD_HASH"))
+                )
+            )
+
             admin_seeds = [
                 (os.environ.get("MASTER_USERNAME"),
                  os.environ.get("MASTER_PASSWORD_HASH"), "master"),
@@ -3554,7 +3564,16 @@ def admin_login():
         return jsonify({"success": False,
                         "error": "خطای پایگاه داده."}), 500
 
-    if not user or not check_password_hash(user[1], password):
+    password_matches = bool(
+        user and check_password_hash(user[1], password)
+    )
+    print(
+        "ADMIN LOGIN CHECK: found=%s role=%s password_match=%s" % (
+            bool(user), user[2] if user else "none", password_matches
+        )
+    )
+
+    if not user or not password_matches:
         return jsonify({"success": False,
                         "error": "نام کاربری یا رمز اشتباه است."}), 401
 
