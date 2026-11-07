@@ -254,6 +254,29 @@ def init_database():
 
         connection.commit()
 
+        with connection.cursor() as cur:
+            cur.execute(
+                "SELECT COUNT(*) FROM admin_users WHERE role = %s",
+                ("master",)
+            )
+            master_count = cur.fetchone()[0]
+
+            cur.execute(
+                "SELECT COUNT(*) FROM admin_users WHERE role = %s",
+                ("admin2",)
+            )
+            admin2_count = cur.fetchone()[0]
+
+        print(
+            "ADMIN SEED VERIFY: master_name_is_admin=%s "
+            "admin2_name_is_admin2=%s master_rows=%s admin2_rows=%s" % (
+                os.environ.get("MASTER_USERNAME") == "admin",
+                os.environ.get("ADMIN2_USERNAME") == "admin2",
+                master_count,
+                admin2_count
+            )
+        )
+
     finally:
 
         connection.close()
