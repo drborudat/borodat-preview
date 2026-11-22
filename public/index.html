@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0B1F3A">
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Dr Borudat">
+<title>دکتر برودت | فروشگاه تخصصی قطعات کولر گازی</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="style.css?v=7">
+</head>
+<body>
+
+<header class="header">
+  <button class="menu-btn" id="menuBtn"><i class="fa-solid fa-bars"></i> منو</button>
+  <a href="#" class="logo"><span class="logo-caption"><span class="logo-name">دکتر برودت</span><small>تخصصی در لوازم کولر گازی</small></span></a>
+  <button class="cart" type="button" onclick="document.getElementById('cartOverlay').classList.add('open');document.body.classList.add('cart-open')"><i class="fa-solid fa-cart-shopping"></i><span id="cartCount">۰</span></button>
+</header>
+
+<nav class="mobile-menu" id="mobileMenu">
+  <button id="closeMenu"><i class="fa-solid fa-xmark"></i></button>
+  <a href="#home">صفحه اصلی</a>
+  <a href="#categories">دسته‌بندی محصولات</a>
+  <a href="#latest">جدیدترین محصولات</a>
+  <a href="#magazine">مجله فروشگاه</a>
+  <a href="#bestsellers">پرفروش‌ترین‌ها</a>
+  <a href="#footer">تماس با ما</a>
+</nav>
+
+<main>
+<section class="hero-wrap" id="home">
+  <div class="hero-slider">
+    <div class="hero-track" id="heroTrack">
+      <article class="hero-slide active">
+
+        <div class="hero-copy">
+          <h1>ارسال سریع به سراسر ایران!</h1>
+          <p>خرید آسان قطعات و تجهیزات تخصصی کولر گازی</p>
+          <a href="#latest" class="red-btn">خرید کنید</a>
+        </div>
+      </article>
+      <article class="hero-slide">
+
+        <div class="hero-copy">
+          <h2>تجهیزات تخصصی نصب کولر گازی</h2>
+          <p>ابزار حرفه‌ای، کیفیت مطمئن</p>
+          <a href="#categories" class="red-btn">مشاهده محصولات</a>
+        </div>
+      </article>
+      <article class="hero-slide">
+<img src="images/hero-product.jpeg" alt="تجهیزات تخصصی کولر گازی" loading="eager">
+        <div class="hero-copy">
+          <h2>قطعات و لوازم کولر گازی</h2>
+          <p>همه آنچه برای سرویس و تعمیر نیاز دارید</p>
+          <a href="#categories" class="red-btn">خرید کنید</a>
+        </div>
+      </article>
+    </div>
+    <button class="hero-arrow prev" data-dir="-1"><i class="fa-solid fa-chevron-right"></i></button>
+    <button class="hero-arrow next" data-dir="1"><i class="fa-solid fa-chevron-left"></i></button>
+    <div class="hero-dots" id="heroDots"></div>
+  </div>
+</section>
+
+<section class="filter-area">
+  <h3>فیلتر محصولات</h3>
+  <div class="filter-row">
+    <select id="categoryFilter"><option value="">دسته بندی ها</option><option>قطعات کولر گازی</option><option>ابزار نصب</option><option>گاز مبرد</option><option>قطعات الکترونیکی</option></select>
+    <select id="brandFilter"><option value="">برند محصول</option><option>عمومی</option><option>گری</option><option>ال جی</option><option>سامسونگ</option></select>
+    <select id="stockFilter"><option value="">وضعیت موجودی</option><option value="yes">موجود</option><option value="no">ناموجود</option></select>
+    <button class="filter-btn" id="filterBtn">فیلتر</button>
+  </div>
+</section>
+
+<section class="featured">
+  <div class="section-heading light-heading"><h2>محصولات ویژه</h2></div>
+  <div class="product-track" id="featuredTrack">
+    <article class="product-card"><div class="product-image"><img src="images/test-product.jpg" alt="تصویر آزمایشی محصول"></div><span class="discount">٪۱۵</span><div class="product-actions"><button class="add-cart"><i class="fa-solid fa-cart-shopping"></i></button><button class="favorite"><i class="fa-regular fa-heart"></i></button></div><h3>مجموعه ابزار نصب کولر گازی</h3><p class="price">۲۵,۰۰۰,۰۰۰ ریال</p><div class="timer">۰۵ : ۱۲ : ۳۸</div></article>
+    <article class="product-card"><div class="product-image"><img src="images/test-product.jpg" alt="تصویر آزمایشی محصول"></div><span class="discount">٪۱۰</span><div class="product-actions"><button class="add-cart"><i class="fa-solid fa-cart-shopping"></i></button><button class="favorite"><i class="fa-regular fa-heart"></i></button></div><h3>گیج فشار کولر گازی</h3><p class="price">۱۸,۰۰۰,۰۰۰ ریال</p><div class="timer">۰۵ : ۱۲ : ۳۸</div></article>
+    <article class="product-card"><div class="product-image"><img src="images/test-product.jpg" alt="تصویر آزمایشی محصول"></div><span class="discount">٪۲۰</span><div class="product-actions"><button class="add-cart"><i class="fa-solid fa-cart-shopping"></i></button><button class="favorite"><i class="fa-regular fa-heart"></i></button></div><h3>پمپ وکیوم مخصوص کولر گازی</h3><p class="price">۳۲,۰۰۰,۰۰۰ ریال</p><div class="timer">۰۵ : ۱۲ : ۳۸</div></article>
+    <article class="product-card"><div class="product-image"><img src="images/test-product.jpg" alt="تصویر آزمایشی محصول"></div><span class="discount">٪۱۲</span><div class="product-actions"><button class="add-cart"><i class="fa-solid fa-cart-shopping"></i></button><button class="favorite"><i class="fa-regular fa-heart"></i></button></div><h3>ابزار سرویس و تعمیر</h3><p class="price">۹,۵۰۰,۰۰۰ ریال</p><div class="timer">۰۵ : ۱۲ : ۳۸</div></article>
+  </div>
+</section>
+
+<section class="categories" id="categories">
+  <div class="section-heading"><h2>دسته بندی محصولات</h2></div>
+  <div class="category-grid">
+    <a href="#latest" class="category-banner"><div><small>زیرنویس عنوان بنر</small><h3>قطعات کولر گازی</h3><span>خرید کنید</span></div></a>
+    <a href="#latest" class="category-banner"><div><small>زیرنویس عنوان بنر</small><h3>ابزار نصب و تعمیر</h3><span>خرید کنید</span></div></a>
+    <a href="#latest" class="category-banner"><div><small>زیرنویس عنوان بنر</small><h3>گاز مبرد و اتصالات</h3><span>خرید کنید</span></div></a>
+  </div>
+</section>
+
+<section class="products-section" id="latest">
+  <div class="section-heading"><h2>جدیدترین محصولات</h2><div class="section-arrows"><button data-scroll="latestTrack" data-dir="-1"><i class="fa-solid fa-chevron-right"></i></button><button data-scroll="latestTrack" data-dir="1"><i class="fa-solid fa-chevron-left"></i></button></div></div>
+  <div class="product-track light-track" id="latestTrack">
+    <article class="product-card"><div class="product-image"><img src="images/test-product.jpg" alt="تصویر آزمایشی محصول"></div><span class="discount">٪۱۲</span><div class="product-actions"><button class="add-cart"><i class="fa-solid fa-cart-shopping"></i></button><button class="favorite"><i class="fa-regular fa-heart"></i></button></div><h3>مجموعه ابزار تخصصی نصب</h3><p class="price">۱۴,۵۰۰,۰۰۰ ریال</p></article>
+    <article class="product-card"><div class="product-image"><img src="images/test-product.jpg" alt="تصویر آزمایشی محصول"></div><div class="product-actions"><button class="add-cart"><i class="fa-solid fa-cart-shopping"></i></button><button class="favorite"><i class="fa-regular fa-heart"></i></button></div><h3>گیج فشار و شارژ گاز</h3><p class="price">۲۱,۰۰۰,۰۰۰ ریال</p></article>
+    <article class="product-card"><div class="product-image"><img src="images/test-product.jpg" alt="تصویر آزمایشی محصول"></div><span class="discount">٪۸</span><div class="product-actions"><button class="add-cart"><i class="fa-solid fa-cart-shopping"></i></button><button class="favorite"><i class="fa-regular fa-heart"></i></button></div><h3>پمپ وکیوم کولر گازی</h3><p class="price">۳۵,۰۰۰,۰۰۰ ریال</p></article>
+    <article class="product-card"><div class="product-image"><img src="images/test-product.jpg" alt="تصویر آزمایشی محصول"></div><div class="product-actions"><button class="add-cart"><i class="fa-solid fa-cart-shopping"></i></button><button class="favorite"><i class="fa-regular fa-heart"></i></button></div><h3>ابزار سرویس و نگهداری</h3><p class="price">۸,۵۰۰,۰۰۰ ریال</p></article>
+  </div>
+</section>
+
+<section class="magazine" id="magazine">
+  <div class="section-heading"><h2>مجله آنلاین فروشگاه</h2><div class="section-arrows"><button data-scroll="blogTrack" data-dir="-1"><i class="fa-solid fa-chevron-right"></i></button><button data-scroll="blogTrack" data-dir="1"><i class="fa-solid fa-chevron-left"></i></button></div></div>
+  <div class="blog-track" id="blogTrack">
+    <article class="blog-card"><span class="date">۲۸<br>مهر</span><label>آموزش و راهنما</label><h3>معرفی ابزارهای ضروری نصب کولر گازی</h3><div class="blog-meta"><span><i class="fa-regular fa-comment"></i> ۰</span><span><i class="fa-solid fa-share-nodes"></i></span><span>دکتر برودت</span></div><p>با ابزارهای تخصصی نصب و سرویس کولر گازی آشنا شوید و کاربرد هر کدام را بهتر بشناسید...</p><a href="#">ادامه مطلب</a></article>
+    <article class="blog-card"><span class="date">۲۵<br>مهر</span><label>معرفی محصولات</label><h3>راهنمای انتخاب گیج فشار مناسب</h3><div class="blog-meta"><span><i class="fa-regular fa-comment"></i> ۰</span><span><i class="fa-solid fa-share-nodes"></i></span><span>دکتر برودت</span></div><p>در انتخاب تجهیزات اندازه‌گیری فشار به چه نکاتی باید توجه کنیم؟...</p><a href="#">ادامه مطلب</a></article>
+    <article class="blog-card"><span class="date">۲۰<br>مهر</span><label>نکات فنی</label><h3>نکات مهم استفاده از پمپ وکیوم</h3><div class="blog-meta"><span><i class="fa-regular fa-comment"></i> ۰</span><span><i class="fa-solid fa-share-nodes"></i></span><span>دکتر برودت</span></div><p>آشنایی با روش صحیح استفاده و نگهداری از پمپ وکیوم...</p><a href="#">ادامه مطلب</a></article>
+  </div>
+</section>
+
+<section class="products-section bestsellers" id="bestsellers">
+  <div class="section-heading"><h2>ترین های فروشگاه</h2><div class="section-arrows"><button data-scroll="bestTrack" data-dir="-1"><i class="fa-solid fa-chevron-right"></i></button><button data-scroll="bestTrack" data-dir="1"><i class="fa-solid fa-chevron-left"></i></button></div></div>
+  <div class="tabs"><button class="active" data-tab="popular">پرفروش‌ترین‌ها</button><button data-tab="discounted">پرتخفیف‌ترین‌ها</button><button data-tab="newest">جدیدترین‌ها</button></div>
+  <div class="product-track light-track" id="bestTrack">
+    <article class="product-card"><div class="product-image"><img src="images/test-product.jpg" alt="تصویر آزمایشی محصول"></div><span class="discount">٪۱۵</span><div class="product-actions"><button class="add-cart"><i class="fa-solid fa-cart-shopping"></i></button><button class="favorite"><i class="fa-regular fa-heart"></i></button></div><h3>ابزار نصب کولر گازی</h3><p class="price">۱۴,۵۰۰,۰۰۰ ریال</p></article>
+    <article class="product-card"><div class="product-image"><img src="images/test-product.jpg" alt="تصویر آزمایشی محصول"></div><span class="discount">٪۲۰</span><div class="product-actions"><button class="add-cart"><i class="fa-solid fa-cart-shopping"></i></button><button class="favorite"><i class="fa-regular fa-heart"></i></button></div><h3>گیج فشار کولر گازی</h3><p class="price">۱۸,۰۰۰,۰۰۰ ریال</p></article>
+    <article class="product-card"><div class="product-image"><img src="images/test-product.jpg" alt="تصویر آزمایشی محصول"></div><div class="product-actions"><button class="add-cart"><i class="fa-solid fa-cart-shopping"></i></button><button class="favorite"><i class="fa-regular fa-heart"></i></button></div><h3>پمپ وکیوم</h3><p class="price">۳۲,۰۰۰,۰۰۰ ریال</p></article>
+    <article class="product-card"><div class="product-image"><img src="images/test-product.jpg" alt="تصویر آزمایشی محصول"></div><div class="product-actions"><button class="add-cart"><i class="fa-solid fa-cart-shopping"></i></button><button class="favorite"><i class="fa-regular fa-heart"></i></button></div><h3>لوازم سرویس و تعمیر</h3><p class="price">۹,۵۰۰,۰۰۰ ریال</p></article>
+  </div>
+</section>
+</main>
+
+<footer id="footer">
+  <div class="footer-about">
+    <h3>درباره دکتر برودت</h3>
+    <p>فروش تخصصی قطعات، لوازم و تجهیزات کولر گازی؛ همراه شما در انتخاب و تهیه محصولات مورد نیاز نصب، سرویس و تعمیر.</p>
+    <a href="/about.html">درباره ما</a>
+  </div>
+
+  <div class="footer-grid">
+    <div>
+      <h3>دسته‌بندی محصولات</h3>
+      <a href="#categories">قطعات کولر گازی</a>
+      <a href="#categories">ابزار نصب و تعمیر</a>
+      <a href="#categories">گاز مبرد و اتصالات</a>
+      <a href="#categories">قطعات الکترونیکی</a>
+    </div>
+    <div>
+      <h3>خدمات مشتریان</h3>
+      <a href="/terms.html">شرایط خرید و قوانین فروشگاه</a>
+      <a href="/shipping.html">شرایط ارسال سفارش</a>
+      <a href="/returns.html">ضمانت و مرجوعی</a>
+      <a href="/privacy.html">حریم خصوصی</a>
+      <a href="#">پیگیری سفارش</a>
+    </div>
+    <div class="footer-contact">
+      <h3>ارتباط با ما</h3>
+      <a href="tel:09197701790"><i class="fa-solid fa-phone"></i><span>۰۹۱۹۷۷۰۱۷۹۰</span></a>
+      <a href="tel:09120704028"><i class="fa-solid fa-phone"></i><span>۰۹۱۲۰۷۰۴۰۲۸</span></a>
+      <a href="tel:02177357498"><i class="fa-solid fa-phone"></i><span>۰۲۱۷۷۳۵۷۴۹۸</span></a>
+      <a href="https://instagram.com/dr_borudat" target="_blank" rel="noopener"><i class="fa-brands fa-instagram"></i><span dir="ltr">@dr_borudat</span></a>
+      <a href="https://www.google.com/maps/search/?api=1&query=استان+تهران+تهرانپارس+خیابان+۲۰+متری+همای+غربی+خیابان+شهید+موسی+رمضانی+فعال+پلاک+۱۷" target="_blank" rel="noopener"><i class="fa-solid fa-location-dot"></i><span>تهرانپارس، خیابان ۲۰ متری همای غربی، خیابان شهید موسی رمضانی فعال، پلاک ۱۷</span></a>
+    </div>
+  </div>
+
+  <div class="trust">
+    <span class="snow">❄</span>
+    <b dir="ltr">DB+❄️</b>
+    <p>تخصصی در لوازم کولر گازی</p>
+  </div>
+  <div class="copyright">تمام حقوق این وب‌سایت متعلق به دکتر برودت است.</div>
+</footer>
+
+
+<div class="cart-overlay" id="cartOverlay">
+  <section class="cart-drawer" role="dialog" aria-modal="true">
+    <div class="cart-head">
+      <h2>سبد خرید شما</h2>
+      <button type="button" id="closeCart" aria-label="بستن" onclick="document.getElementById('cartOverlay').classList.remove('open');document.body.classList.remove('cart-open')">×</button>
+    </div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-empty" id="cartEmpty">سبد خرید شما خالی است.</div>
+    <div class="cart-footer" id="cartFooter">
+      <div class="cart-total"><span>مبلغ کل</span><strong id="cartTotal">۰ ریال</strong></div>
+      <button type="button" id="checkoutBtn">ادامه ثبت سفارش</button>
+    </div>
+  </section>
+</div>
+
+
+<div class="checkout-overlay" id="checkoutOverlay">
+  <section class="checkout-panel" role="dialog" aria-modal="true" aria-labelledby="checkoutTitle">
+    <div class="checkout-head">
+      <h2 id="checkoutTitle">ثبت اطلاعات سفارش</h2>
+      <button type="button" id="closeCheckout" aria-label="بستن">×</button>
+    </div>
+    <div class="checkout-summary">
+      <h3>خلاصه سفارش</h3>
+      <div id="checkoutItems"></div>
+      <div class="checkout-final-total"><span>مبلغ نهایی</span><strong id="checkoutTotal">۰ ریال</strong></div>
+    </div>
+    <form id="checkoutForm">
+      <label>نام و نام خانوادگی
+        <input name="fullName" type="text" autocomplete="name" required maxlength="100" placeholder="نام کامل خریدار">
+      </label>
+      <label>شماره موبایل
+        <input name="mobile" type="tel" inputmode="numeric" autocomplete="tel" required maxlength="11" placeholder="مثلاً 09123456789">
+      </label>
+      <div class="checkout-fields">
+        <label>استان
+          <input name="province" type="text" required maxlength="50" placeholder="استان">
+        </label>
+        <label>شهر
+          <input name="city" type="text" required maxlength="50" placeholder="شهر">
+        </label>
+      </div>
+      <label>آدرس کامل
+        <textarea name="address" required rows="3" maxlength="500" autocomplete="street-address" placeholder="خیابان، کوچه، پلاک، واحد و ..."></textarea>
+      </label>
+      <label>کد پستی ۱۰ رقمی
+        <input name="postalCode" type="text" inputmode="numeric" required maxlength="10" placeholder="کد پستی">
+      </label>
+      <label>توضیحات سفارش (اختیاری)
+        <textarea name="notes" rows="2" maxlength="500" placeholder="توضیحات تکمیلی"></textarea>
+      </label>
+      <button type="submit" class="checkout-submit">تأیید و ارسال سفارش در واتساپ</button>
+      <p class="checkout-note">با تأیید سفارش، جزئیات آن برای فروشگاه دکتر برودت در واتساپ ارسال می‌شود.</p>
+    </form>
+  </section>
+</div>
+
+<nav class="bottom-nav">
+  <a href="#"><i class="fa-regular fa-user"></i><small>حساب کاربری من</small></a>
+  <a href="#"><i class="fa-solid fa-cart-shopping"></i><small>سبد خرید</small></a>
+  <a href="#"><i class="fa-regular fa-heart"></i><small>علاقه‌مندی</small></a>
+  <a href="#home"><i class="fa-solid fa-store"></i><small>فروشگاه</small></a>
+</nav>
+<button class="back-top" id="backTop"><i class="fa-solid fa-chevron-up"></i></button>
+<script src="script.js?v=10"></script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/service-worker.js")
+      .catch(error => console.error("PWA:", error));
+  });
+}
+</script>
+</body>
+</html>
