@@ -1,13 +1,20 @@
 import os
+import urllib.parse
+import hashlib
+import stat
+from pathlib import Path
 import uuid
 import json
+import hmac
+import secrets
 from datetime import datetime, timedelta
+from urllib.parse import urlsplit
 
 import requests
 import psycopg
-from flask import Flask, request, jsonify, send_from_directory, session
+from flask import Flask, request, jsonify, send_from_directory, session, Response
 from flask_cors import CORS
-from werkzeug.security import check_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash
 
 
 # =====================================================
@@ -17,14 +24,40 @@ from werkzeug.security import check_password_hash
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("FLASK_SECRET_KEY")
+
+# Public storefront APIs: allow read-only requests from the official store.
+CORS(
+    app,
+    resources={
+        r"/api/(products|categories|latest-products|store-best|slides|magazine)$": {
+            "origins": ["https://drborudat.ir"],
+            "methods": ["GET"],
+        }
+    },
+    supports_credentials=False,
+    vary_header=True,
+)
+
+LOCAL_PROXY_MODE = os.environ.get("LOCAL_ADMIN_PROXY") == "1"
+LOCAL_ADMIN_DEV = os.environ.get("LOCAL_ADMIN_DEV") == "1"
+
+if LOCAL_PROXY_MODE:
+    local_secret_file = os.path.join(BASE_DIR, ".local-flask-secret")
+    if not os.path.exists(local_secret_file):
+        with open(local_secret_file, "w") as secret_file:
+            secret_file.write(secrets.token_urlsafe(48))
+        os.chmod(local_secret_file, 0o600)
+    with open(local_secret_file) as secret_file:
+        app.secret_key = secret_file.read().strip()
+else:
+    app.secret_key = os.environ.get("FLASK_SECRET_KEY")
+
 app.config.update(
     SESSION_COOKIE_HTTPONLY=True,
-    SESSION_COOKIE_SECURE=True,
-    SESSION_COOKIE_SAMESITE="Strict",
+    SESSION_COOKIE_SECURE=not (LOCAL_PROXY_MODE or LOCAL_ADMIN_DEV),
+    SESSION_COOKIE_SAMESITE="Lax" if LOCAL_PROXY_MODE else "Strict",
     PERMANENT_SESSION_LIFETIME=timedelta(hours=12)
 )
-CORS(app)
 
 BALE_TOKEN = os.environ.get("BALE_TOKEN")
 ADMIN_ID = 746740194
@@ -34,6 +67,7 @@ DATABASE_URL = os.environ.get("DATABASE_URL")
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
 SUPABASE_BUCKET = os.environ.get("SUPABASE_BUCKET", "videos")
+SUPABASE_PRODUCT_BUCKET = os.environ.get("SUPABASE_PRODUCT_BUCKET", "products")
 
 
 # =====================================================
@@ -144,6 +178,12 @@ def init_database():
                 )
             """)
 
+            cur.execute("""
+                ALTER TABLE products
+                ADD COLUMN IF NOT EXISTS is_special BOOLEAN NOT NULL DEFAULT FALSE
+            """)
+
+
             # -----------------------------------------
             # ORDERS
             # -----------------------------------------
@@ -211,12 +251,35 @@ def init_database():
             """)
 
 
+            # -----------------------------------------
+            # HOMEPAGE SLIDES
+            # -----------------------------------------
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS homepage_slides (
+                    slot SMALLINT PRIMARY KEY
+                        CHECK (slot BETWEEN 1 AND 3),
+                    title TEXT NOT NULL DEFAULT '',
+                    description TEXT DEFAULT '',
+                    image_url TEXT DEFAULT '',
+                    button_text TEXT DEFAULT '',
+                    button_url TEXT DEFAULT '',
+                    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+                    updated_at TEXT NOT NULL
+                )
+            """)
+
             cur.execute(
                 "CREATE TABLE IF NOT EXISTS admin_users ("
                 "username TEXT PRIMARY KEY, "
                 "password_hash TEXT NOT NULL, "
                 "role TEXT NOT NULL, "
                 "created_at TEXT NOT NULL)"
+            )
+
+            cur.execute(
+                "ALTER TABLE admin_users "
+                "ADD COLUMN IF NOT EXISTS session_version "
+                "INTEGER NOT NULL DEFAULT 1"
             )
 
             print(
@@ -242,15 +305,140 @@ def init_database():
                         "INSERT INTO admin_users "
                         "(username, password_hash, role, created_at) "
                         "VALUES (%s, %s, %s, %s) "
-                        "ON CONFLICT (username) DO UPDATE SET "
-                        "password_hash = EXCLUDED.password_hash, "
-                        "role = EXCLUDED.role",
+                        "ON CONFLICT (username) DO NOTHING",
                         (username, password_hash, role,
                          datetime.utcnow().isoformat())
                     )
                     app.logger.info(
-                        "ADMIN SEED: role=%s upserted", role
+                        "ADMIN SEED: account preserved or created; role=%s", role
                     )
+
+            cur.execute(
+                "CREATE TABLE IF NOT EXISTS master_recovery_rate_limits ("
+                "source_hash TEXT PRIMARY KEY, "
+                "window_started_at TIMESTAMPTZ NOT NULL, "
+                "attempts INTEGER NOT NULL DEFAULT 0)"
+            )
+            cur.execute(
+                "CREATE TABLE IF NOT EXISTS admin_security_audit ("
+                "id BIGSERIAL PRIMARY KEY, "
+                "event_type TEXT NOT NULL, "
+                "account_username TEXT, "
+                "source_hash TEXT, "
+                "created_at TIMESTAMPTZ NOT NULL DEFAULT NOW())"
+            )
+
+
+            # FOUR NEW ADMIN FEATURES - DATABASE
+            cur.execute("""
+                ALTER TABLE products
+                ADD COLUMN IF NOT EXISTS original_price TEXT NOT NULL DEFAULT ''
+            """)
+            cur.execute("""
+                ALTER TABLE products
+                ADD COLUMN IF NOT EXISTS discount_percent INTEGER NOT NULL DEFAULT 0
+            """)
+
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS product_categories (
+                    id TEXT PRIMARY KEY,
+                    name TEXT NOT NULL UNIQUE,
+                    sort_order INTEGER NOT NULL DEFAULT 0,
+                    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+                    created_at TEXT NOT NULL
+                )
+            """)
+
+            cur.execute("""
+                ALTER TABLE product_categories
+                ADD COLUMN IF NOT EXISTS image_url TEXT NOT NULL DEFAULT ''
+            """)
+
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS latest_products_settings (
+                    singleton_id SMALLINT PRIMARY KEY CHECK (singleton_id = 1),
+                    mode TEXT NOT NULL DEFAULT 'auto'
+                        CHECK (mode IN ('auto', 'manual', 'mixed')),
+                    product_ids TEXT NOT NULL DEFAULT '[]',
+                    display_count INTEGER NOT NULL DEFAULT 8,
+                    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+                    updated_at TEXT NOT NULL
+                )
+            """)
+
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS store_best_sections (
+                    section_key TEXT PRIMARY KEY
+                        CHECK (section_key IN ('bestseller', 'discounted', 'newest')),
+                    title TEXT NOT NULL,
+                    mode TEXT NOT NULL DEFAULT 'auto'
+                        CHECK (mode IN ('auto', 'manual', 'mixed')),
+                    product_ids TEXT NOT NULL DEFAULT '[]',
+                    display_count INTEGER NOT NULL DEFAULT 8,
+                    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+                    updated_at TEXT NOT NULL
+                )
+            """)
+
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS online_magazine (
+                    id TEXT PRIMARY KEY,
+                    title TEXT NOT NULL,
+                    slug TEXT NOT NULL UNIQUE,
+                    excerpt TEXT NOT NULL DEFAULT '',
+                    content TEXT NOT NULL DEFAULT '',
+                    image_url TEXT NOT NULL DEFAULT '',
+                    status TEXT NOT NULL DEFAULT 'draft'
+                        CHECK (status IN ('draft', 'published')),
+                    created_at TEXT NOT NULL,
+                    updated_at TEXT NOT NULL
+                )
+            """)
+
+            cur.execute("""
+                ALTER TABLE online_magazine
+                ADD COLUMN IF NOT EXISTS video_url TEXT NOT NULL DEFAULT ''
+            """)
+
+            stamp = datetime.utcnow().isoformat()
+
+            cur.execute("""
+                INSERT INTO latest_products_settings
+                    (singleton_id, mode, product_ids, display_count,
+                     is_active, updated_at)
+                VALUES (1, 'auto', '[]', 8, TRUE, %s)
+                ON CONFLICT (singleton_id) DO NOTHING
+            """, (stamp,))
+
+            for key, title in (
+                ("bestseller", "پرفروش‌ترین‌ها"),
+                ("discounted", "پرتخفیف‌ترین‌ها"),
+                ("newest", "جدیدترین‌ها"),
+            ):
+                cur.execute("""
+                    INSERT INTO store_best_sections
+                        (section_key, title, mode, product_ids,
+                         display_count, is_active, updated_at)
+                    VALUES (%s, %s, 'auto', '[]', 8, TRUE, %s)
+                    ON CONFLICT (section_key) DO NOTHING
+                """, (key, title, stamp))
+
+            # Preserve existing product categories in the new manager.
+            cur.execute("""
+                SELECT DISTINCT TRIM(category)
+                FROM products
+                WHERE category IS NOT NULL AND TRIM(category) <> ''
+            """)
+            existing_categories = cur.fetchall()
+
+            for row in existing_categories:
+                category_name = row[0]
+                cur.execute("""
+                    INSERT INTO product_categories
+                        (id, name, sort_order, is_active, created_at)
+                    VALUES (%s, %s, 0, TRUE, %s)
+                    ON CONFLICT (name) DO NOTHING
+                """, (str(uuid.uuid4()), category_name, stamp))
 
         connection.commit()
 
@@ -1453,6 +1641,74 @@ def admin_dashboard():
         with connection.cursor() as cur:
 
             # -----------------------------------------
+            # PRODUCTS
+            # -----------------------------------------
+
+            cur.execute("""
+
+                SELECT
+                    id,
+                    name,
+                    price,
+                    stock,
+                    category,
+                    description,
+                    image,
+                    created_at,
+                    is_special,
+                    original_price,
+                    discount_percent
+
+                FROM products
+
+                ORDER BY created_at DESC
+
+            """)
+
+            product_rows = cur.fetchall()
+
+            products_data = [
+
+                {
+
+                    "id": row[0],
+
+                    "name": row[1],
+
+                    "price": row[2],
+
+                    "stock": row[3],
+
+                    "category": row[4],
+
+                    "description": row[5],
+
+                    "image": row[6],
+
+                    "created_at": row[7],
+                    "is_special": bool(row[8]),
+                    "original_price": row[9] or "",
+                    "discount_percent": row[10] or 0
+
+                }
+
+                for row in product_rows
+
+            ]
+
+            # Admin2 receives product data only.
+            if session.get("admin_role") == "admin2":
+                return jsonify({
+                    "success": True,
+                    "requests": [],
+                    "chats": [],
+                    "products": products_data,
+                    "orders": [],
+                    "reviews": []
+                })
+
+
+            # -----------------------------------------
             # REQUESTS
             # -----------------------------------------
 
@@ -1571,56 +1827,6 @@ def admin_dashboard():
                     "messages": messages
 
                 })
-
-            # -----------------------------------------
-            # PRODUCTS
-            # -----------------------------------------
-
-            cur.execute("""
-
-                SELECT
-                    id,
-                    name,
-                    price,
-                    stock,
-                    category,
-                    description,
-                    image,
-                    created_at
-
-                FROM products
-
-                ORDER BY created_at DESC
-
-            """)
-
-            product_rows = cur.fetchall()
-
-            products_data = [
-
-                {
-
-                    "id": row[0],
-
-                    "name": row[1],
-
-                    "price": row[2],
-
-                    "stock": row[3],
-
-                    "category": row[4],
-
-                    "description": row[5],
-
-                    "image": row[6],
-
-                    "created_at": row[7]
-
-                }
-
-                for row in product_rows
-
-            ]
 
             # -----------------------------------------
             # ORDERS
@@ -1930,9 +2136,11 @@ def admin_chat_reply():
 # SUPABASE STORAGE HELPERS
 # =====================================================
 
-def upload_to_supabase(file_storage, folder):
+def upload_to_supabase(file_storage, folder, bucket=None):
     if not SUPABASE_URL or not SUPABASE_KEY:
         raise RuntimeError("تنظیمات Supabase در Render کامل نیست.")
+
+    storage_bucket = bucket or SUPABASE_BUCKET
 
     filename = file_storage.filename or "file"
     safe_name = "".join(
@@ -1943,7 +2151,7 @@ def upload_to_supabase(file_storage, folder):
 
     url = (
         f"{SUPABASE_URL}/storage/v1/object/"
-        f"{SUPABASE_BUCKET}/{path}"
+        f"{storage_bucket}/{path}"
     )
 
     content_type = file_storage.mimetype or "application/octet-stream"
@@ -1967,432 +2175,690 @@ def upload_to_supabase(file_storage, folder):
 
     return (
         f"{SUPABASE_URL}/storage/v1/object/public/"
-        f"{SUPABASE_BUCKET}/{path}"
+        f"{storage_bucket}/{path}"
     )
 
 
-# VIDEOS
-# =====================================================
+def delete_storage_image(image_url, allowed_folder, local_prefix, local_dir, allowed_bucket=None):
+    """Delete only files belonging to the specified storage folder."""
+    if not image_url:
+        return True
 
-@app.route(
-    "/api/videos",
-    methods=["GET"]
-)
-def get_videos():
+    image_url = str(image_url).strip()
 
-    connection = get_connection()
+    if image_url.startswith(local_prefix):
+        filename = image_url[len(local_prefix):]
+        if (
+            not filename
+            or filename in (".", "..")
+            or "/" in filename
+            or "\\" in filename
+            or "\x00" in filename
+        ):
+            print("LOCAL MEDIA DELETE BLOCKED: unsafe path")
+            return False
 
-    try:
+        target = os.path.realpath(os.path.join(local_dir, filename))
+        base = os.path.realpath(local_dir)
 
-        with connection.cursor() as cur:
-
-            cur.execute("""
-                SELECT
-                    id,
-                    title,
-                    description,
-                    cover,
-                    video_url,
-                    created_at
-                FROM videos
-                ORDER BY created_at DESC
-            """)
-
-            rows = cur.fetchall()
-
-            videos = [
-                {
-                    "id": row[0],
-                    "title": row[1],
-                    "description": row[2],
-                    "cover": row[3],
-                    "video_url": row[4],
-                    "created_at": row[5]
-                }
-                for row in rows
-            ]
-
-        return jsonify({
-            "success": True,
-            "videos": videos
-        })
-
-    except Exception as e:
-
-        print(
-            "VIDEOS LOAD ERROR:",
-            e
-        )
-
-        return jsonify({
-            "success": False,
-            "message": "دریافت ویدیوها انجام نشد."
-        }), 500
-
-    finally:
-
-        connection.close()
-
-
-@app.route(
-    "/api/admin/videos",
-    methods=["POST"]
-)
-def add_video():
-
-    title = str(request.form.get("title", "")).strip()
-    description = str(request.form.get("description", "")).strip()
-
-    video_file = request.files.get("video")
-    cover_file = request.files.get("cover")
-
-    if not title or not video_file or not video_file.filename:
-        return jsonify({
-            "success": False,
-            "message": "عنوان و فایل ویدیو الزامی است."
-        }), 400
-
-    if not video_file.mimetype.startswith("video/"):
-        return jsonify({
-            "success": False,
-            "message": "فایل انتخاب‌شده ویدیو نیست."
-        }), 400
-
-    if cover_file and cover_file.filename:
-        if not cover_file.mimetype.startswith("image/"):
-            return jsonify({
-                "success": False,
-                "message": "فایل کاور باید تصویر باشد."
-            }), 400
-
-    try:
-        video_url = upload_to_supabase(video_file, "videos")
-
-        cover_url = ""
-        if cover_file and cover_file.filename:
-            cover_url = upload_to_supabase(cover_file, "covers")
-
-        video = {
-            "id": str(uuid.uuid4()),
-            "title": title,
-            "description": description,
-            "cover": cover_url,
-            "video_url": video_url,
-            "created_at": now()
-        }
-
-        connection = get_connection()
+        if os.path.dirname(target) != base:
+            return False
 
         try:
-            with connection.cursor() as cur:
-                cur.execute("""
-                    INSERT INTO videos
-                    (
-                        id,
-                        title,
-                        description,
-                        cover,
-                        video_url,
-                        created_at
-                    )
-                    VALUES
-                    (%s,%s,%s,%s,%s,%s)
-                """, (
-                    video["id"],
-                    video["title"],
-                    video["description"],
-                    video["cover"],
-                    video["video_url"],
-                    video["created_at"]
-                ))
+            if os.path.isfile(target):
+                os.remove(target)
+            return True
+        except OSError as exc:
+            print("LOCAL MEDIA DELETE ERROR:", exc)
+            return False
 
-            connection.commit()
+    if SUPABASE_URL:
+        buckets = {SUPABASE_PRODUCT_BUCKET, SUPABASE_BUCKET}
 
-        finally:
-            connection.close()
+        for bucket in buckets:
+            if not bucket:
+                continue
+            if allowed_bucket and bucket != allowed_bucket:
+                continue
+
+            public_prefix = (
+                f"{SUPABASE_URL}/storage/v1/object/public/{bucket}/"
+            )
+            if not image_url.startswith(public_prefix):
+                continue
+
+            file_path = urllib.parse.unquote(
+                image_url[len(public_prefix):]
+            )
+            parts = file_path.split("/")
+            expected_parts = str(allowed_folder).split("/")
+
+            if (
+                len(parts) <= len(expected_parts)
+                or parts[:len(expected_parts)] != expected_parts
+                or any(part in ("", ".", "..") for part in parts)
+                or "\\" in file_path
+                or "\x00" in file_path
+            ):
+                print("MEDIA DELETE BLOCKED: unsafe path")
+                return False
+
+            if not SUPABASE_KEY:
+                print("MEDIA DELETE ERROR: Supabase key is not configured")
+                return False
+
+            safe_path = urllib.parse.quote(file_path, safe="/-._~")
+            delete_url = (
+                f"{SUPABASE_URL}/storage/v1/object/{bucket}/{safe_path}"
+            )
+
+            try:
+                response = requests.delete(
+                    delete_url,
+                    headers={
+                        "Authorization": f"Bearer {SUPABASE_KEY}",
+                        "apikey": SUPABASE_KEY
+                    },
+                    timeout=30
+                )
+                if response.status_code in (200, 204, 404):
+                    return True
+
+                print(
+                    "SUPABASE MEDIA DELETE ERROR:",
+                    response.status_code,
+                    response.text
+                )
+                return False
+            except Exception as exc:
+                print("SUPABASE MEDIA DELETE ERROR:", exc)
+                return False
+
+    # External and unknown URLs are deliberately left untouched.
+    return True
+
+
+
+def delete_product_image(image_url):
+    return delete_storage_image(
+        image_url, "products", "/uploads/products/", PRODUCT_IMAGE_DIR
+    )
+
+
+def delete_category_image(image_url):
+    return delete_storage_image(
+        image_url, "categories", "/uploads/categories/", CATEGORY_IMAGE_DIR
+    )
+
+
+
+
+def delete_magazine_image(image_url):
+    return delete_storage_image(
+        image_url, "magazine/images",
+        "/uploads/magazine/images/", MAGAZINE_IMAGE_DIR,
+        SUPABASE_PRODUCT_BUCKET
+    )
+
+
+def delete_magazine_video(video_url):
+    return delete_storage_image(
+        video_url, "magazine/videos",
+        "/uploads/magazine/videos/", MAGAZINE_VIDEO_DIR,
+        SUPABASE_BUCKET
+    )
+
+
+# PRODUCT IMAGE STORAGE
+# =====================================================
+
+PRODUCT_IMAGE_DIR = os.path.join(BASE_DIR, "uploads", "products")
+os.makedirs(PRODUCT_IMAGE_DIR, exist_ok=True)
+
+@app.route("/uploads/products/<path:filename>")
+def product_image_file(filename):
+    return send_from_directory(PRODUCT_IMAGE_DIR, filename)
+
+
+def save_product_image(file_storage):
+    if not file_storage or not file_storage.filename:
+        return ""
+
+    if not (file_storage.mimetype or "").lower().startswith("image/"):
+        raise ValueError("فایل انتخاب‌شده تصویر معتبر نیست.")
+
+    try:
+        file_storage.stream.seek(0, os.SEEK_END)
+        file_size = file_storage.stream.tell()
+        file_storage.stream.seek(0)
+    except Exception:
+        file_size = 0
+
+    if file_size > 8 * 1024 * 1024:
+        raise ValueError("حجم تصویر نباید بیشتر از ۸ مگابایت باشد.")
+
+    original = os.path.basename(file_storage.filename)
+    safe_name = "".join(
+        c if c.isalnum() or c in "._-" else "_"
+        for c in original
+    ).strip("._")
+
+    if not safe_name:
+        safe_name = "product-image"
+
+    extension = os.path.splitext(safe_name)[1].lower()
+    allowed_extensions = {
+        ".jpg", ".jpeg", ".png", ".webp", ".gif", ".avif"
+    }
+
+    if extension not in allowed_extensions:
+        raise ValueError("فرمت تصویر باید JPG، PNG، WEBP، GIF یا AVIF باشد.")
+
+    if SUPABASE_URL and SUPABASE_KEY:
+        return upload_to_supabase(file_storage, "products", SUPABASE_PRODUCT_BUCKET)
+
+    filename = f"{uuid.uuid4().hex}_{safe_name}"
+    destination = os.path.join(PRODUCT_IMAGE_DIR, filename)
+
+    file_storage.save(destination)
+
+    return "/uploads/products/" + filename
+
+
+# CATEGORY IMAGE STORAGE
+CATEGORY_IMAGE_DIR = os.path.join(BASE_DIR, "uploads", "categories")
+os.makedirs(CATEGORY_IMAGE_DIR, exist_ok=True)
+
+@app.route("/uploads/categories/<path:filename>")
+def category_image_file(filename):
+    return send_from_directory(CATEGORY_IMAGE_DIR, filename)
+
+
+def save_category_image(file_storage):
+    if not file_storage or not file_storage.filename:
+        return ""
+
+    if not (file_storage.mimetype or "").lower().startswith("image/"):
+        raise ValueError("فایل انتخاب‌شده تصویر معتبر نیست.")
+
+    try:
+        file_storage.stream.seek(0, os.SEEK_END)
+        file_size = file_storage.stream.tell()
+        file_storage.stream.seek(0)
+    except Exception:
+        file_size = 0
+
+    if file_size > 8 * 1024 * 1024:
+        raise ValueError("حجم تصویر نباید بیشتر از ۸ مگابایت باشد.")
+
+    original = os.path.basename(file_storage.filename)
+    safe_name = "".join(
+        c if c.isalnum() or c in "._-" else "_"
+        for c in original
+    ).strip("._")
+
+    if not safe_name:
+        safe_name = "category-image"
+
+    extension = os.path.splitext(safe_name)[1].lower()
+    allowed_extensions = {".jpg", ".jpeg", ".png", ".webp", ".gif", ".avif"}
+
+    if extension not in allowed_extensions:
+        raise ValueError("فرمت تصویر باید JPG، PNG، WEBP، GIF یا AVIF باشد.")
+
+    if SUPABASE_URL and SUPABASE_KEY:
+        return upload_to_supabase(file_storage, "categories", SUPABASE_PRODUCT_BUCKET)
+
+    filename = f"{uuid.uuid4().hex}_{safe_name}"
+    destination = os.path.join(CATEGORY_IMAGE_DIR, filename)
+    file_storage.save(destination)
+    return "/uploads/categories/" + filename
+
+
+# =====================================================
+# PUBLIC PRODUCTS API
+# =====================================================
+
+
+# MAGAZINE MEDIA STORAGE
+MAGAZINE_IMAGE_DIR = os.path.join(BASE_DIR, "uploads", "magazine", "images")
+MAGAZINE_VIDEO_DIR = os.path.join(BASE_DIR, "uploads", "magazine", "videos")
+os.makedirs(MAGAZINE_IMAGE_DIR, exist_ok=True)
+os.makedirs(MAGAZINE_VIDEO_DIR, exist_ok=True)
+
+@app.route("/uploads/magazine/images/<path:filename>")
+def magazine_image_file(filename):
+    return send_from_directory(MAGAZINE_IMAGE_DIR, filename)
+
+@app.route("/uploads/magazine/videos/<path:filename>")
+def magazine_video_file(filename):
+    return send_from_directory(MAGAZINE_VIDEO_DIR, filename)
+
+def save_magazine_media(file_storage, media_type):
+    if not file_storage or not file_storage.filename:
+        return ""
+
+    original = os.path.basename(file_storage.filename)
+    safe_name = "".join(
+        c if c.isalnum() or c in "._-" else "_"
+        for c in original
+    ).strip("._")
+
+    if not safe_name:
+        raise ValueError("نام فایل معتبر نیست.")
+
+    extension = os.path.splitext(safe_name)[1].lower()
+    mime = (file_storage.mimetype or "").lower()
+
+    if media_type == "image":
+        allowed = {".jpg", ".jpeg", ".png", ".webp", ".gif", ".avif"}
+        max_size = 8 * 1024 * 1024
+        folder = "magazine/images"
+        bucket = SUPABASE_PRODUCT_BUCKET
+        local_dir = MAGAZINE_IMAGE_DIR
+        local_url = "/uploads/magazine/images/"
+        if extension not in allowed or not mime.startswith("image/"):
+            raise ValueError("فرمت عکس معتبر نیست. JPG، PNG، WEBP، GIF یا AVIF انتخاب کنید.")
+        size_message = "حجم عکس نباید بیشتر از ۸ مگابایت باشد."
+    elif media_type == "video":
+        allowed = {".mp4", ".mov", ".webm", ".m4v", ".ogv"}
+        max_size = 100 * 1024 * 1024
+        folder = "magazine/videos"
+        bucket = SUPABASE_BUCKET
+        local_dir = MAGAZINE_VIDEO_DIR
+        local_url = "/uploads/magazine/videos/"
+        if extension not in allowed or not mime.startswith("video/"):
+            raise ValueError("فرمت ویدئو معتبر نیست. MP4، MOV یا WEBM انتخاب کنید.")
+        size_message = "حجم ویدئو نباید بیشتر از ۱۰۰ مگابایت باشد."
+    else:
+        raise ValueError("نوع رسانه معتبر نیست.")
+
+    try:
+        file_storage.stream.seek(0, os.SEEK_END)
+        file_size = file_storage.stream.tell()
+        file_storage.stream.seek(0)
+    except Exception:
+        file_size = 0
+
+    if file_size <= 0:
+        raise ValueError("فایل انتخاب‌شده خالی یا غیرقابل‌خواندن است.")
+    if file_size > max_size:
+        raise ValueError(size_message)
+
+    if SUPABASE_URL and SUPABASE_KEY:
+        file_storage.stream.seek(0)
+        return upload_to_supabase(file_storage, folder, bucket)
+
+    filename = f"{uuid.uuid4().hex}_{safe_name}"
+    file_storage.stream.seek(0)
+    file_storage.save(os.path.join(local_dir, filename))
+    return local_url + filename
+
+
+
+@app.route("/api/magazine", methods=["GET"])
+def public_magazine():
+    connection = get_connection()
+    try:
+        with connection.cursor() as cur:
+            cur.execute("""
+                SELECT id, title, slug, excerpt, content,
+                       image_url, video_url, created_at, updated_at
+                FROM online_magazine
+                WHERE status = 'published'
+                ORDER BY created_at DESC
+            """)
+            columns = [item[0] for item in cur.description]
+            posts = [dict(zip(columns, row)) for row in cur.fetchall()]
+
+        return jsonify({"success": True, "posts": posts})
+    except Exception:
+        app.logger.exception("Public magazine API failed")
+        return jsonify({
+            "success": False,
+            "message": "دریافت مطالب مجله ناموفق بود."
+        }), 500
+    finally:
+        connection.close()
+
+
+@app.route("/api/products", methods=["GET"])
+def public_products():
+    connection = get_connection()
+    try:
+        with connection.cursor() as cur:
+            cur.execute("""
+                SELECT id, name, price, stock, category, description,
+                       image, created_at, is_special, original_price,
+                       discount_percent
+                FROM products
+                ORDER BY created_at DESC
+            """)
+            rows = cur.fetchall()
+
+        products = [{
+            "id": r[0], "name": r[1], "price": r[2], "stock": r[3],
+            "category": r[4], "description": r[5], "image": r[6],
+            "created_at": r[7], "is_special": bool(r[8]),
+            "original_price": r[9], "discount_percent": r[10]
+        } for r in rows]
+        return jsonify({"success": True, "products": products})
+    except Exception:
+        app.logger.exception("Public products API failed")
+        return jsonify({"success": False, "message": "دریافت محصولات ناموفق بود."}), 500
+    finally:
+        connection.close()
+
+
+# =====================================================
+
+
+# =====================================================
+# PUBLIC STORE FEATURE APIs
+# =====================================================
+
+def public_feature_rows(cur, query, params=None):
+    cur.execute(query, params or ())
+    rows = cur.fetchall()
+    if not rows:
+        return []
+    if isinstance(rows[0], dict):
+        return [dict(row) for row in rows]
+    columns = [column.name for column in cur.description]
+    return [dict(zip(columns, row)) for row in rows]
+
+
+def public_feature_order(products, mode, selected_ids, count, sort_key):
+    by_id = {str(item.get("id")): item for item in products}
+    selected = [by_id[x] for x in selected_ids if x in by_id]
+
+    if mode == "manual":
+        return selected[:count]
+
+    automatic = sorted(
+        products,
+        key=lambda item: item.get(sort_key) or 0,
+        reverse=True
+    )
+
+    if mode == "mixed":
+        selected_set = {str(item.get("id")) for item in selected}
+        automatic = selected + [
+            item for item in automatic
+            if str(item.get("id")) not in selected_set
+        ]
+
+    return automatic[:count]
+
+
+def public_feature_setting(cur, table, key=None):
+    if key is None:
+        cur.execute(f"SELECT * FROM {table} LIMIT 1")
+    else:
+        cur.execute(
+            f"SELECT * FROM {table} WHERE section_key=%s LIMIT 1",
+            (key,)
+        )
+    row = cur.fetchone()
+    return admin_feature_row_dict(cur, row) if row is not None else {}
+
+
+def public_feature_products(cur):
+    return public_feature_rows(cur, """
+        SELECT id, name, price, stock, category, description, image,
+               created_at, is_special, original_price, discount_percent
+        FROM products
+        ORDER BY created_at DESC
+    """)
+
+
+@app.route("/api/categories", methods=["GET"])
+def public_categories():
+    connection = get_connection()
+    try:
+        with connection.cursor() as cur:
+            categories = public_feature_rows(cur, """
+                SELECT id, name, sort_order, image_url
+                FROM product_categories
+                WHERE is_active=TRUE
+                ORDER BY sort_order ASC, name ASC
+            """)
+        return jsonify({"success": True, "categories": categories})
+    except Exception:
+        app.logger.exception("Public categories API failed")
+        return jsonify({"success": False, "categories": []}), 500
+    finally:
+        connection.close()
+
+
+@app.route("/api/latest-products", methods=["GET"])
+def public_latest_products():
+    connection = get_connection()
+    try:
+        with connection.cursor() as cur:
+            settings = public_feature_setting(cur, "latest_products_settings")
+            products = public_feature_products(cur)
+
+            active = bool(settings.get("is_active", False))
+            mode = settings.get("mode") or "auto"
+            count = max(1, min(50, int(settings.get("display_count") or 8)))
+            ids = [
+                str(x) for x in
+                admin_feature_product_ids(settings.get("product_ids", []))
+            ]
+
+            result = public_feature_order(
+                products, mode, ids, count, "created_at"
+            ) if active else []
 
         return jsonify({
             "success": True,
-            "message": "ویدیو با موفقیت آپلود و ثبت شد.",
-            "video": video
+            "active": active,
+            "mode": mode,
+            "display_count": count,
+            "products": result
         })
-
-    except Exception as e:
-        print("VIDEO UPLOAD ERROR:", e)
-
-        return jsonify({
-            "success": False,
-            "message": "آپلود ویدیو انجام نشد."
-        }), 500
-
-
-@app.route(
-    "/api/admin/videos/<video_id>",
-    methods=["PATCH"]
-)
-def update_video(video_id):
-
-    title = str(request.form.get("title", "")).strip()
-    description = str(request.form.get("description", "")).strip()
-
-    video_file = request.files.get("video")
-    cover_file = request.files.get("cover")
-
-    if not title:
-        return jsonify({
-            "success": False,
-            "message": "عنوان ویدیو الزامی است."
-        }), 400
-
-    connection = get_connection()
-
-    try:
-        with connection.cursor() as cur:
-
-            cur.execute("""
-                SELECT cover, video_url
-                FROM videos
-                WHERE id = %s
-            """, (video_id,))
-
-            old = cur.fetchone()
-
-            if not old:
-                return jsonify({
-                    "success": False,
-                    "message": "ویدیو پیدا نشد."
-                }), 404
-
-            old_cover = old[0] or ""
-            old_video_url = old[1] or ""
-
-            video_url = old_video_url
-            cover_url = old_cover
-
-            if video_file and video_file.filename:
-                if not video_file.mimetype.startswith("video/"):
-                    return jsonify({
-                        "success": False,
-                        "message": "فایل جدید باید ویدیو باشد."
-                    }), 400
-
-                video_url = upload_to_supabase(
-                    video_file,
-                    "videos"
-                )
-
-            if cover_file and cover_file.filename:
-                if not cover_file.mimetype.startswith("image/"):
-                    return jsonify({
-                        "success": False,
-                        "message": "فایل کاور باید تصویر باشد."
-                    }), 400
-
-                cover_url = upload_to_supabase(
-                    cover_file,
-                    "covers"
-                )
-
-            cur.execute("""
-                UPDATE videos
-                SET
-                    title = %s,
-                    description = %s,
-                    cover = %s,
-                    video_url = %s
-                WHERE id = %s
-            """, (
-                title,
-                description,
-                cover_url,
-                video_url,
-                video_id
-            ))
-
-        connection.commit()
-
-    except Exception as e:
-        connection.rollback()
-
-        print(
-            "VIDEO UPDATE ERROR:",
-            e
-        )
-
-        return jsonify({
-            "success": False,
-            "message": "ویرایش ویدیو انجام نشد."
-        }), 500
-
+    except Exception:
+        app.logger.exception("Public latest products API failed")
+        return jsonify({"success": False, "products": []}), 500
     finally:
         connection.close()
 
-    return jsonify({
-        "success": True,
-        "message": "ویدیو با موفقیت ویرایش شد."
-    })
 
-
-@app.route(
-    "/api/admin/videos/<video_id>",
-    methods=["DELETE"]
-)
-def delete_video(video_id):
-
+@app.route("/api/store-best", methods=["GET"])
+def public_store_best():
     connection = get_connection()
-
     try:
         with connection.cursor() as cur:
+            products = public_feature_products(cur)
 
-            cur.execute("""
-                SELECT cover, video_url
-                FROM videos
-                WHERE id = %s
-            """, (video_id,))
+            orders = public_feature_rows(cur, """
+                SELECT product_id, quantity, items
+                FROM orders
+                WHERE status='done'
+            """)
 
-            row = cur.fetchone()
+            sales = {}
+            for order in orders:
+                parsed = False
+                raw = order.get("items")
 
-            if not row:
-                return jsonify({
-                    "success": False,
-                    "message": "ویدیو پیدا نشد."
-                }), 404
+                if raw:
+                    try:
+                        items = raw if isinstance(raw, list) else json.loads(raw)
+                        if isinstance(items, list):
+                            for item in items:
+                                if not isinstance(item, dict):
+                                    continue
+                                pid = str(item.get("id") or "")
+                                qty = int(item.get("quantity") or 0)
+                                if pid and qty > 0:
+                                    sales[pid] = sales.get(pid, 0) + qty
+                                    parsed = True
+                    except (TypeError, ValueError):
+                        parsed = False
 
-            cover_url = row[0] or ""
-            video_url = row[1] or ""
+                if not parsed:
+                    pid = str(order.get("product_id") or "")
+                    try:
+                        qty = int(order.get("quantity") or 0)
+                    except (TypeError, ValueError):
+                        qty = 0
+                    if pid and qty > 0:
+                        sales[pid] = sales.get(pid, 0) + qty
 
-            cur.execute("""
-                DELETE FROM videos
-                WHERE id = %s
-            """, (video_id,))
+            valid_ids = {str(p.get("id")) for p in products}
+            sales = {k: v for k, v in sales.items() if k in valid_ids}
 
-        connection.commit()
+            definitions = (
+                ("bestseller", "sales_count"),
+                ("discounted", "discount_percent"),
+                ("newest", "created_at"),
+            )
+            sections = {}
 
-        for file_url in (video_url, cover_url):
-            if file_url and SUPABASE_URL in file_url:
-                try:
-                    prefix = (
-                        f"{SUPABASE_URL}/storage/v1/object/"
-                        f"public/{SUPABASE_BUCKET}/"
+            for key, sort_key in definitions:
+                settings = public_feature_setting(
+                    cur, "store_best_sections", key
+                )
+                active = bool(settings.get("is_active", False))
+                mode = settings.get("mode") or "auto"
+                count = max(
+                    1, min(50, int(settings.get("display_count") or 8))
+                )
+                ids = [
+                    str(x) for x in
+                    admin_feature_product_ids(settings.get("product_ids", []))
+                ]
+
+                source = []
+                for product in products:
+                    item = dict(product)
+                    item["sales_count"] = sales.get(str(item.get("id")), 0)
+                    source.append(item)
+
+                by_id = {
+                    str(item.get("id")): item for item in source
+                }
+                selected = [
+                    by_id[pid] for pid in ids if pid in by_id
+                ]
+
+                if not active:
+                    result = []
+                elif mode == "manual":
+                    result = selected[:count]
+                else:
+                    automatic_source = source
+
+                    if key == "discounted":
+                        automatic_source = [
+                            item for item in source
+                            if int(item.get("discount_percent") or 0) > 0
+                        ]
+                    elif key == "bestseller":
+                        automatic_source = [
+                            item for item in source
+                            if item.get("sales_count", 0) > 0
+                        ]
+
+                    automatic = public_feature_order(
+                        automatic_source, "auto", [], count, sort_key
                     )
 
-                    if file_url.startswith(prefix):
-                        file_path = file_url[len(prefix):]
+                    if mode == "mixed":
+                        selected_ids = {
+                            str(item.get("id")) for item in selected
+                        }
+                        result = (
+                            selected + [
+                                item for item in automatic
+                                if str(item.get("id")) not in selected_ids
+                            ]
+                        )[:count]
+                    else:
+                        result = automatic
 
-                        delete_url = (
-                            f"{SUPABASE_URL}/storage/v1/object/"
-                            f"{SUPABASE_BUCKET}/{file_path}"
-                        )
+                sections[key] = {
+                    "title": settings.get("title") or "",
+                    "active": active,
+                    "mode": mode,
+                    "display_count": count,
+                    "products": result
+                }
 
-                        requests.delete(
-                            delete_url,
-                            headers={
-                                "Authorization":
-                                    f"Bearer {SUPABASE_KEY}",
-                                "apikey": SUPABASE_KEY
-                            }
-                        )
-                except Exception as storage_error:
-                    print(
-                        "STORAGE DELETE ERROR:",
-                        storage_error
-                    )
-
-    except Exception as e:
-        connection.rollback()
-
-        print(
-            "VIDEO DELETE ERROR:",
-            e
-        )
-
-        return jsonify({
-            "success": False,
-            "message": "حذف ویدیو انجام نشد."
-        }), 500
-
+        return jsonify({"success": True, "sections": sections})
+    except Exception:
+        app.logger.exception("Public store best API failed")
+        return jsonify({"success": False, "sections": {}}), 500
     finally:
         connection.close()
 
-    return jsonify({
-        "success": True,
-        "message": "ویدیو و فایل‌های آن با موفقیت حذف شدند."
-    })
 
+# PRODUCTS - CREATE
+# =====================================================
 
 @app.route(
     "/api/admin/products",
     methods=["POST"]
 )
 def add_product():
+    if request.is_json:
+        data = request.get_json(silent=True) or {}
+    else:
+        data = request.form
 
-    data = request.get_json(
-        silent=True
-    ) or {}
-
-    name = str(
-        data.get("name", "")
-    ).strip()
-
-    price = str(
-        data.get("price", "")
-    ).strip()
-
-    stock = str(
-        data.get("stock", "0")
-    ).strip()
-
-    category = str(
-        data.get("category", "")
-    ).strip()
-
-    description = str(
-        data.get("description", "")
-    ).strip()
-
-    image = str(
-        data.get("image", "")
-    ).strip()
+    name = str(data.get("name", "")).strip()
+    price = str(data.get("price", "")).strip()
+    stock = str(data.get("stock", "0")).strip()
+    category = str(data.get("category", "")).strip()
+    description = str(data.get("description", "")).strip()
+    image = str(data.get("image", "")).strip()
+    original_price = str(data.get("original_price", "")).strip()
+    try:
+        discount_percent = int(str(data.get("discount_percent", "0")).strip() or "0")
+        if not 0 <= discount_percent <= 100:
+            raise ValueError
+    except (TypeError, ValueError):
+        return jsonify({"success": False, "message": "درصد تخفیف باید بین صفر تا صد باشد."}), 400
+    is_special = str(data.get("is_special", "")).strip().lower() in ("1", "true", "yes", "on")
 
     if not name or not price or not category:
-
         return jsonify({
-
             "success": False,
+            "message": "نام، قیمت و دسته‌بندی محصول الزامی است."
+        }), 400
 
-            "message":
-            "نام، قیمت و دسته‌بندی محصول الزامی است."
+    try:
+        image_file = request.files.get("image")
+        if image_file and image_file.filename:
+            image = save_product_image(image_file)
 
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "message": str(e) or "ذخیره تصویر محصول انجام نشد."
         }), 400
 
     product = {
-
         "id": str(uuid.uuid4()),
-
         "name": name,
-
         "price": price,
-
         "stock": stock,
-
         "category": category,
-
         "description": description,
-
         "image": image,
-
+        "original_price": original_price,
+        "discount_percent": discount_percent,
+        "is_special": is_special,
         "created_at": now()
-
     }
 
     connection = get_connection()
 
     try:
-
         with connection.cursor() as cur:
-
             cur.execute("""
-
                 INSERT INTO products
                 (
                     id,
@@ -2402,284 +2868,163 @@ def add_product():
                     category,
                     description,
                     image,
-                    created_at
+                    created_at,
+                    is_special,
+                    original_price,
+                    discount_percent
                 )
-
-                VALUES
-                (%s,%s,%s,%s,%s,%s,%s,%s)
-
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
             """, (
-
                 product["id"],
-
                 product["name"],
-
                 product["price"],
-
                 product["stock"],
-
                 product["category"],
-
                 product["description"],
-
                 product["image"],
-
-                product["created_at"]
-
+                product["created_at"],
+                product["is_special"],
+                product["original_price"],
+                product["discount_percent"]
             ))
 
         connection.commit()
 
     except Exception as e:
-
         connection.rollback()
-
-        print(
-            "PRODUCT SAVE ERROR:",
-            e
-        )
+        print("PRODUCT SAVE ERROR:", e)
 
         return jsonify({
-
             "success": False,
-
-            "message":
-            "ذخیره محصول انجام نشد."
-
+            "message": "ذخیره محصول انجام نشد."
         }), 500
 
     finally:
-
         connection.close()
 
     return jsonify({
-
         "success": True,
-
-        "message":
-        "محصول با موفقیت ثبت شد.",
-
-        "product":
-        product
-
+        "message": "محصول با موفقیت ثبت شد.",
+        "product": product
     })
-
-
-# =====================================================
-# PRODUCTS - GET
-# =====================================================
-
-@app.route(
-    "/api/products",
-    methods=["GET"]
-)
-def get_products():
-
-    connection = get_connection()
-
-    try:
-
-        with connection.cursor() as cur:
-
-            cur.execute("""
-
-                SELECT
-                    id,
-                    name,
-                    price,
-                    stock,
-                    category,
-                    description,
-                    image,
-                    created_at
-
-                FROM products
-
-                ORDER BY created_at DESC
-
-            """)
-
-            rows = cur.fetchall()
-
-            products = [
-
-                {
-
-                    "id": row[0],
-
-                    "name": row[1],
-
-                    "price": row[2],
-
-                    "stock": row[3],
-
-                    "category": row[4],
-
-                    "description": row[5],
-
-                    "image": row[6],
-
-                    "created_at": row[7]
-
-                }
-
-                for row in rows
-
-            ]
-
-            return jsonify({
-
-                "success": True,
-
-                "products": products,
-
-                "count": len(products)
-
-            })
-
-    finally:
-
-        connection.close()
 
 
 # =====================================================
 # PRODUCTS - UPDATE
 # =====================================================
 
+# =====================================================
+# PRODUCTS - UPDATE
+# =====================================================
+
+
 @app.route(
     "/api/admin/products/<product_id>",
     methods=["PATCH"]
 )
 def update_product(product_id):
-
-    data = request.get_json(
-        silent=True
-    ) or {}
-
+    data = request.get_json(silent=True) or {} if request.is_json else request.form
     allowed_fields = [
-
-        "name",
-        "price",
-        "stock",
-        "category",
-        "description",
-        "image"
-
+        "name", "price", "stock", "category",
+        "description", "image", "is_special",
+        "original_price", "discount_percent"
     ]
 
     connection = get_connection()
+    new_image = None
+    old_image = None
 
     try:
-
         with connection.cursor() as cur:
-
-            cur.execute("""
-
-                SELECT id
-
-                FROM products
-
-                WHERE id = %s
-
-                LIMIT 1
-
-            """, (product_id,))
-
+            cur.execute(
+                "SELECT id, image FROM products WHERE id = %s LIMIT 1",
+                (product_id,)
+            )
             product = cur.fetchone()
 
             if not product:
-
                 return jsonify({
-
                     "success": False,
-
-                    "message":
-                    "محصول پیدا نشد."
-
+                    "message": "محصول پیدا نشد."
                 }), 404
 
-            updates = []
+            old_image = product["image"] if isinstance(product, dict) else product[1]
 
+            image_file = request.files.get("image")
+            if image_file and image_file.filename:
+                new_image = save_product_image(image_file)
+                data = dict(data)
+                data["image"] = new_image
+
+            updates = []
             values = []
 
             for field in allowed_fields:
-
                 if field in data:
-
-                    updates.append(
-                        f"{field} = %s"
-                    )
-
-                    values.append(
-                        str(
-                            data[field]
-                        ).strip()
-                    )
+                    updates.append(f"{field} = %s")
+                    if field == "is_special":
+                        values.append(
+                            str(data[field]).strip().lower()
+                            in ("1", "true", "yes", "on")
+                        )
+                    elif field == "discount_percent":
+                        try:
+                            discount = int(str(data[field]).strip() or "0")
+                            if not 0 <= discount <= 100:
+                                raise ValueError
+                        except (TypeError, ValueError):
+                            if new_image:
+                                delete_product_image(new_image)
+                            return jsonify({
+                                "success": False,
+                                "message": "درصد تخفیف باید بین صفر تا صد باشد."
+                            }), 400
+                        values.append(discount)
+                    else:
+                        values.append(str(data[field]).strip())
 
             if updates:
-
-                values.append(
-                    product_id
-                )
-
-                query = """
-
-                    UPDATE products
-
-                    SET
-                        {fields}
-
-                    WHERE id = %s
-
-                """.format(
-
-                    fields=", ".join(
-                        updates
-                    )
-
-                )
-
+                values.append(product_id)
                 cur.execute(
-                    query,
+                    "UPDATE products SET " + ", ".join(updates) +
+                    " WHERE id = %s",
                     values
                 )
 
         connection.commit()
 
     except Exception as e:
-
         connection.rollback()
+        print("PRODUCT UPDATE ERROR:", e)
 
-        print(
-            "PRODUCT UPDATE ERROR:",
-            e
-        )
+        if new_image:
+            try:
+                delete_product_image(new_image)
+            except Exception as cleanup_error:
+                print("NEW PRODUCT IMAGE CLEANUP ERROR:", cleanup_error)
 
         return jsonify({
-
             "success": False,
-
-            "message":
-            "ذخیره تغییرات محصول انجام نشد."
-
+            "message": "ذخیره تغییرات محصول انجام نشد."
         }), 500
 
     finally:
-
         connection.close()
 
+    if new_image and old_image and old_image != new_image:
+        if not delete_product_image(old_image):
+            print("OLD PRODUCT IMAGE COULD NOT BE DELETED:", old_image)
+
     return jsonify({
-
         "success": True,
-
-        "message":
-        "محصول ویرایش شد.",
-
-        "product_id":
-        product_id
-
+        "message": "محصول ویرایش شد.",
+        "product_id": product_id
     })
 
+
+# =====================================================
+# PRODUCTS - DELETE
+# =====================================================
 
 # =====================================================
 # PRODUCTS - DELETE
@@ -2690,69 +3035,578 @@ def update_product(product_id):
     methods=["DELETE"]
 )
 def delete_product(product_id):
-
     connection = get_connection()
+    old_image = None
 
     try:
-
         with connection.cursor() as cur:
+            cur.execute(
+                "SELECT image FROM products WHERE id = %s LIMIT 1",
+                (product_id,)
+            )
+            product = cur.fetchone()
 
-            cur.execute("""
+            if not product:
+                return jsonify({
+                    "success": False,
+                    "message": "محصول پیدا نشد."
+                }), 404
 
-                DELETE FROM products
+            old_image = product["image"] if isinstance(product, dict) else product[0]
 
-                WHERE id = %s
-
-            """, (product_id,))
-
-            deleted = cur.rowcount
+            cur.execute(
+                "DELETE FROM products WHERE id = %s",
+                (product_id,)
+            )
 
         connection.commit()
 
     except Exception as e:
-
         connection.rollback()
-
-        print(
-            "PRODUCT DELETE ERROR:",
-            e
-        )
-
+        print("PRODUCT DELETE ERROR:", e)
         return jsonify({
-
             "success": False,
-
-            "message":
-            "حذف محصول ذخیره نشد."
-
+            "message": "حذف محصول ذخیره نشد."
         }), 500
 
     finally:
-
         connection.close()
 
-    if deleted == 0:
-
-        return jsonify({
-
-            "success": False,
-
-            "message":
-            "محصول پیدا نشد."
-
-        }), 404
+    if old_image and not delete_product_image(old_image):
+        print("PRODUCT IMAGE COULD NOT BE DELETED:", old_image)
 
     return jsonify({
-
         "success": True,
-
-        "message":
-        "محصول حذف شد."
-
+        "message": "محصول حذف شد."
     })
 
 
+
 # =====================================================
+# FOUR NEW ADMIN FEATURES - API
+# =====================================================
+
+def admin_feature_row_dict(cursor, row):
+    if isinstance(row, dict):
+        return dict(row)
+    return {
+        column.name: value
+        for column, value in zip(cursor.description, row)
+    }
+
+
+def admin_feature_product_ids(raw_ids):
+    if isinstance(raw_ids, str):
+        try:
+            raw_ids = json.loads(raw_ids)
+        except (TypeError, ValueError):
+            raw_ids = []
+    if not isinstance(raw_ids, list):
+        raise ValueError("فهرست محصولات معتبر نیست.")
+    ids = []
+    for value in raw_ids:
+        value = str(value).strip()
+        if value and value not in ids:
+            ids.append(value)
+    return ids
+
+
+def admin_feature_validate_products(cur, ids):
+    if not ids:
+        return
+    cur.execute("SELECT id FROM products WHERE id = ANY(%s)", (ids,))
+    found = {str(row[0]) for row in cur.fetchall()}
+    missing = [value for value in ids if value not in found]
+    if missing:
+        raise ValueError("یک یا چند محصول انتخاب‌شده وجود ندارد.")
+
+
+# CATEGORIES
+@app.route("/api/admin/categories", methods=["GET", "POST"])
+def admin_categories():
+    connection = get_connection()
+    try:
+        with connection.cursor() as cur:
+            if request.method == "GET":
+                cur.execute("""
+                    SELECT id, name, sort_order, is_active, created_at, image_url
+                    FROM product_categories
+                    ORDER BY sort_order, name
+                """)
+                rows = [admin_feature_row_dict(cur, row) for row in cur.fetchall()]
+                return jsonify({"success": True, "categories": rows})
+
+            data = request.form if request.form else (request.get_json(silent=True) or {})
+            name = str(data.get("name", "")).strip()
+            if not name:
+                return jsonify({"success": False, "message": "نام دسته‌بندی الزامی است."}), 400
+
+            image_url = save_category_image(request.files.get("image"))
+            category_id = str(uuid.uuid4())
+
+            cur.execute("""
+                INSERT INTO product_categories
+                    (id, name, sort_order, is_active, created_at, image_url)
+                VALUES (%s, %s, %s, TRUE, %s, %s)
+                RETURNING id, name, sort_order, is_active, created_at, image_url
+            """, (category_id, name, int(data.get("sort_order", 0)), now(), image_url))
+
+            category = admin_feature_row_dict(cur, cur.fetchone())
+            connection.commit()
+
+        return jsonify({"success": True, "category": category}), 201
+
+    except Exception as exc:
+        connection.rollback()
+        app.logger.exception("ADMIN CATEGORY ERROR")
+        message = str(exc) if isinstance(exc, ValueError) else "ذخیره دسته‌بندی انجام نشد."
+        return jsonify({"success": False, "message": message}), 400
+    finally:
+        connection.close()
+
+
+@app.route("/api/admin/categories/<category_id>", methods=["PATCH", "DELETE"])
+def admin_category_item(category_id):
+    connection = get_connection()
+    old_image_url = None
+    new_image_url = None
+
+    try:
+        with connection.cursor() as cur:
+            cur.execute(
+                "SELECT id, name, image_url FROM product_categories WHERE id = %s",
+                (category_id,)
+            )
+            category = cur.fetchone()
+
+            if not category:
+                return jsonify({
+                    "success": False,
+                    "message": "دسته‌بندی پیدا نشد."
+                }), 404
+
+            if isinstance(category, dict):
+                old_name = category["name"]
+                old_image_url = category.get("image_url")
+            else:
+                old_name = category[1]
+                old_image_url = category[2]
+
+            if request.method == "DELETE":
+                cur.execute(
+                    "SELECT COUNT(*) FROM products WHERE category = %s",
+                    (old_name,)
+                )
+                if cur.fetchone()[0]:
+                    return jsonify({
+                        "success": False,
+                        "message": "این دسته‌بندی به محصولات متصل است؛ ابتدا محصولات را به دسته دیگری منتقل کنید."
+                    }), 409
+
+                cur.execute(
+                    "DELETE FROM product_categories WHERE id = %s",
+                    (category_id,)
+                )
+
+            else:
+                data = (
+                    request.form if request.form
+                    else (request.get_json(silent=True) or {})
+                )
+                fields, values = [], []
+
+                if "name" in data:
+                    name = str(data["name"]).strip()
+                    if not name:
+                        return jsonify({
+                            "success": False,
+                            "message": "نام دسته‌بندی نمی‌تواند خالی باشد."
+                        }), 400
+
+                    if name != old_name:
+                        cur.execute(
+                            "UPDATE products SET category = %s WHERE category = %s",
+                            (name, old_name)
+                        )
+
+                    fields.append("name = %s")
+                    values.append(name)
+
+                if "sort_order" in data:
+                    fields.append("sort_order = %s")
+                    values.append(int(data["sort_order"]))
+
+                if "is_active" in data:
+                    active_value = data["is_active"]
+                    if isinstance(active_value, str):
+                        active_value = active_value.strip().lower() in (
+                            "1", "true", "yes", "on"
+                        )
+                    fields.append("is_active = %s")
+                    values.append(bool(active_value))
+
+                image = request.files.get("image")
+                if image and image.filename:
+                    new_image_url = save_category_image(image)
+                    fields.append("image_url = %s")
+                    values.append(new_image_url)
+
+                if fields:
+                    values.append(category_id)
+                    cur.execute(
+                        "UPDATE product_categories SET "
+                        + ", ".join(fields)
+                        + " WHERE id = %s",
+                        values
+                    )
+
+        connection.commit()
+
+    except Exception:
+        connection.rollback()
+
+        if new_image_url:
+            try:
+                delete_category_image(new_image_url)
+            except Exception as cleanup_error:
+                print("NEW CATEGORY IMAGE CLEANUP ERROR:", cleanup_error)
+
+        app.logger.exception("ADMIN CATEGORY UPDATE ERROR")
+        return jsonify({
+            "success": False,
+            "message": "ذخیره تغییر دسته‌بندی انجام نشد."
+        }), 400
+
+    finally:
+        connection.close()
+
+    if request.method == "DELETE":
+        if old_image_url and not delete_category_image(old_image_url):
+            print("OLD CATEGORY IMAGE COULD NOT BE DELETED:", old_image_url)
+
+    elif new_image_url and old_image_url and old_image_url != new_image_url:
+        if not delete_category_image(old_image_url):
+            print("OLD CATEGORY IMAGE COULD NOT BE DELETED:", old_image_url)
+
+    return jsonify({
+        "success": True,
+        "message": "انجام شد."
+    })
+
+
+# LATEST PRODUCTS
+@app.route("/api/admin/latest-products", methods=["GET", "PUT"])
+def admin_latest_products():
+    connection = get_connection()
+    try:
+        with connection.cursor() as cur:
+            if request.method == "GET":
+                cur.execute("SELECT * FROM latest_products_settings WHERE singleton_id = 1")
+                row = cur.fetchone()
+                return jsonify({"success": True, "settings": admin_feature_row_dict(cur, row)})
+
+            data = request.get_json(silent=True) or {}
+            mode = str(data.get("mode", "auto"))
+            if mode not in ("auto", "manual", "mixed"):
+                return jsonify({"success": False, "message": "حالت نمایش معتبر نیست."}), 400
+            ids = admin_feature_product_ids(data.get("product_ids", []))
+            count = int(data.get("display_count", 8))
+            if not 1 <= count <= 50:
+                return jsonify({"success": False, "message": "تعداد نمایش باید بین ۱ تا ۵۰ باشد."}), 400
+            admin_feature_validate_products(cur, ids)
+            cur.execute("""
+                UPDATE latest_products_settings
+                SET mode = %s, product_ids = %s, display_count = %s,
+                    is_active = %s, updated_at = %s
+                WHERE singleton_id = 1
+            """, (mode, json.dumps(ids), count, bool(data.get("is_active", True)), now()))
+        connection.commit()
+        return jsonify({"success": True, "message": "تنظیمات جدیدترین محصولات ذخیره شد."})
+    except Exception as exc:
+        connection.rollback()
+        app.logger.exception("ADMIN LATEST PRODUCTS ERROR")
+        return jsonify({"success": False, "message": str(exc) if isinstance(exc, ValueError) else "ذخیره تنظیمات انجام نشد."}), 400
+    finally:
+        connection.close()
+
+
+# STORE BEST SECTIONS
+@app.route("/api/admin/store-best", methods=["GET", "PUT"])
+def admin_store_best():
+    connection = get_connection()
+    try:
+        with connection.cursor() as cur:
+            if request.method == "GET":
+                cur.execute("SELECT * FROM store_best_sections ORDER BY section_key")
+                rows = [admin_feature_row_dict(cur, row) for row in cur.fetchall()]
+                return jsonify({"success": True, "sections": rows})
+
+            data = request.get_json(silent=True) or {}
+            sections = data.get("sections", [])
+            if not isinstance(sections, list):
+                return jsonify({"success": False, "message": "ساختار بخش‌ها معتبر نیست."}), 400
+            for section in sections:
+                key = str(section.get("section_key", ""))
+                if key not in ("bestseller", "discounted", "newest"):
+                    raise ValueError("شناسه بخش معتبر نیست.")
+                mode = str(section.get("mode", "auto"))
+                if mode not in ("auto", "manual", "mixed"):
+                    raise ValueError("حالت نمایش معتبر نیست.")
+                ids = admin_feature_product_ids(section.get("product_ids", []))
+                count = int(section.get("display_count", 8))
+                if not 1 <= count <= 50:
+                    raise ValueError("تعداد نمایش باید بین ۱ تا ۵۰ باشد.")
+                admin_feature_validate_products(cur, ids)
+                cur.execute("""
+                    UPDATE store_best_sections
+                    SET mode = %s, product_ids = %s, display_count = %s,
+                        is_active = %s, updated_at = %s
+                    WHERE section_key = %s
+                """, (mode, json.dumps(ids), count, bool(section.get("is_active", True)), now(), key))
+        connection.commit()
+        return jsonify({"success": True, "message": "تنظیمات ترین‌های فروشگاه ذخیره شد."})
+    except Exception as exc:
+        connection.rollback()
+        app.logger.exception("ADMIN STORE BEST ERROR")
+        return jsonify({"success": False, "message": str(exc) if isinstance(exc, ValueError) else "ذخیره تنظیمات انجام نشد."}), 400
+    finally:
+        connection.close()
+
+
+# ONLINE MAGAZINE
+
+# ONLINE MAGAZINE
+@app.route("/api/admin/magazine", methods=["GET", "POST"])
+def admin_magazine():
+    connection = get_connection()
+    image_url = ""
+    video_url = ""
+
+    def cleanup_new_media():
+        for url, deleter in (
+            (image_url, delete_magazine_image),
+            (video_url, delete_magazine_video),
+        ):
+            if url:
+                try:
+                    if not deleter(url):
+                        app.logger.error("NEW MAGAZINE MEDIA CLEANUP FAILED: %s", url)
+                except Exception:
+                    app.logger.exception("NEW MAGAZINE MEDIA CLEANUP ERROR")
+
+    try:
+        with connection.cursor() as cur:
+            if request.method == "GET":
+                cur.execute(
+                    "SELECT * FROM online_magazine ORDER BY created_at DESC"
+                )
+                rows = [
+                    admin_feature_row_dict(cur, row)
+                    for row in cur.fetchall()
+                ]
+                return jsonify({"success": True, "posts": rows})
+
+            title = str(request.form.get("title", "")).strip()
+            if not title:
+                return jsonify({
+                    "success": False,
+                    "message": "عنوان مطلب الزامی است."
+                }), 400
+
+            status = str(request.form.get("status", "draft"))
+            if status not in ("draft", "published"):
+                return jsonify({
+                    "success": False,
+                    "message": "وضعیت مطلب معتبر نیست."
+                }), 400
+
+            image_url = save_magazine_media(
+                request.files.get("image"), "image"
+            )
+            video_url = save_magazine_media(
+                request.files.get("video"), "video"
+            )
+
+            post_id = str(uuid.uuid4())
+            slug = str(request.form.get("slug", "")).strip() or post_id
+            stamp = now()
+
+            cur.execute("""
+                INSERT INTO online_magazine
+                    (id, title, slug, excerpt, content, image_url,
+                     video_url, status, created_at, updated_at)
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                RETURNING *
+            """, (
+                post_id,
+                title,
+                slug,
+                str(request.form.get("excerpt", "")),
+                str(request.form.get("content", "")),
+                image_url,
+                video_url,
+                status,
+                stamp,
+                stamp
+            ))
+            post = admin_feature_row_dict(cur, cur.fetchone())
+
+        connection.commit()
+        return jsonify({"success": True, "post": post}), 201
+
+    except ValueError as exc:
+        connection.rollback()
+        cleanup_new_media()
+        return jsonify({"success": False, "message": str(exc)}), 400
+
+    except Exception:
+        connection.rollback()
+        cleanup_new_media()
+        app.logger.exception("ADMIN MAGAZINE CREATE ERROR")
+        return jsonify({
+            "success": False,
+            "message": "ذخیره مطلب مجله انجام نشد."
+        }), 400
+
+    finally:
+        connection.close()
+
+
+@app.route("/api/admin/magazine/<post_id>", methods=["PATCH", "DELETE"])
+def admin_magazine_item(post_id):
+    connection = get_connection()
+    old_image_url = ""
+    old_video_url = ""
+    new_image_url = ""
+    new_video_url = ""
+
+    def cleanup_new_media():
+        for url, deleter in (
+            (new_image_url, delete_magazine_image),
+            (new_video_url, delete_magazine_video),
+        ):
+            if url:
+                try:
+                    if not deleter(url):
+                        app.logger.error("NEW MAGAZINE MEDIA CLEANUP FAILED: %s", url)
+                except Exception:
+                    app.logger.exception("NEW MAGAZINE MEDIA CLEANUP ERROR")
+
+    try:
+        with connection.cursor() as cur:
+            cur.execute(
+                "SELECT id, image_url, video_url FROM online_magazine WHERE id = %s",
+                (post_id,)
+            )
+            post = cur.fetchone()
+
+            if not post:
+                return jsonify({
+                    "success": False,
+                    "message": "مطلب پیدا نشد."
+                }), 404
+
+            if isinstance(post, dict):
+                old_image_url = post.get("image_url") or ""
+                old_video_url = post.get("video_url") or ""
+            else:
+                old_image_url = post[1] or ""
+                old_video_url = post[2] or ""
+
+            if request.method == "DELETE":
+                cur.execute(
+                    "DELETE FROM online_magazine WHERE id = %s",
+                    (post_id,)
+                )
+
+            else:
+                fields = []
+                values = []
+
+                for field in ("title", "slug", "excerpt", "content", "status"):
+                    if field in request.form:
+                        value = str(request.form.get(field, "")).strip()
+
+                        if field == "title" and not value:
+                            return jsonify({
+                                "success": False,
+                                "message": "عنوان مطلب الزامی است."
+                            }), 400
+
+                        if field == "status" and value not in ("draft", "published"):
+                            return jsonify({
+                                "success": False,
+                                "message": "وضعیت مطلب معتبر نیست."
+                            }), 400
+
+                        fields.append(field + " = %s")
+                        values.append(value)
+
+                image_file = request.files.get("image")
+                if image_file and image_file.filename:
+                    new_image_url = save_magazine_media(image_file, "image")
+                    fields.append("image_url = %s")
+                    values.append(new_image_url)
+
+                video_file = request.files.get("video")
+                if video_file and video_file.filename:
+                    new_video_url = save_magazine_media(video_file, "video")
+                    fields.append("video_url = %s")
+                    values.append(new_video_url)
+
+                if fields:
+                    fields.append("updated_at = %s")
+                    values.append(now())
+                    values.append(post_id)
+
+                    cur.execute(
+                        "UPDATE online_magazine SET "
+                        + ", ".join(fields)
+                        + " WHERE id = %s",
+                        values
+                    )
+
+        connection.commit()
+
+    except ValueError as exc:
+        connection.rollback()
+        cleanup_new_media()
+        return jsonify({"success": False, "message": str(exc)}), 400
+
+    except Exception:
+        connection.rollback()
+        cleanup_new_media()
+        app.logger.exception("ADMIN MAGAZINE UPDATE ERROR")
+        return jsonify({
+            "success": False,
+            "message": "ذخیره تغییرات مطلب انجام نشد."
+        }), 400
+
+    finally:
+        connection.close()
+
+    def cleanup_old_media(url, deleter, label):
+        if not url:
+            return
+        try:
+            if not deleter(url):
+                app.logger.error("%s MEDIA COULD NOT BE REMOVED: %s", label, url)
+        except Exception:
+            app.logger.exception("%s MEDIA CLEANUP ERROR: %s", label, url)
+
+    if request.method == "DELETE":
+        cleanup_old_media(old_image_url, delete_magazine_image, "DELETED MAGAZINE IMAGE")
+        cleanup_old_media(old_video_url, delete_magazine_video, "DELETED MAGAZINE VIDEO")
+    else:
+        if new_image_url and old_image_url and old_image_url != new_image_url:
+            cleanup_old_media(old_image_url, delete_magazine_image, "OLD MAGAZINE IMAGE")
+
+        if new_video_url and old_video_url and old_video_url != new_video_url:
+            cleanup_old_media(old_video_url, delete_magazine_video, "OLD MAGAZINE VIDEO")
+
+    return jsonify({"success": True, "message": "انجام شد."})
+
+
 # ORDERS - CREATE
 # =====================================================
 
@@ -3524,13 +4378,153 @@ def internal_error(error):
 
 
 
+def local_api_proxy():
+    upstream = "https://borodat-panel.onrender.com" + request.full_path
+    if upstream.endswith("?"):
+        upstream = upstream[:-1]
+
+    headers = {}
+    for name in ("Accept", "Content-Type"):
+        value = request.headers.get(name)
+        if value:
+            headers[name] = value
+
+    remote_cookie = session.get("upstream_cookie")
+    if remote_cookie:
+        headers["Cookie"] = remote_cookie
+
+    try:
+        remote = requests.request(
+            method=request.method,
+            url=upstream,
+            headers=headers,
+            data=request.get_data(),
+            timeout=45,
+            allow_redirects=False
+        )
+
+        if request.path == "/api/auth/login":
+            if remote.ok:
+                cookie_value = remote.cookies.get("session")
+                if cookie_value:
+                    session.clear()
+                    session.permanent = True
+                    session["upstream_cookie"] = "session=" + cookie_value
+                else:
+                    session.clear()
+            else:
+                session.clear()
+
+        if request.path == "/api/auth/logout":
+            session.clear()
+
+        response_headers = {}
+        for name in ("Content-Type", "Cache-Control", "Content-Disposition"):
+            value = remote.headers.get(name)
+            if value:
+                response_headers[name] = value
+
+        return Response(
+            remote.content,
+            status=remote.status_code,
+            headers=response_headers
+        )
+
+    except requests.RequestException:
+        app.logger.exception("Local API proxy connection failed")
+        return jsonify({
+            "success": False,
+            "error": "ارتباط با سرور آنلاین برقرار نشد."
+        }), 502
+
+
+def validate_admin_session():
+    username = session.get("admin_username")
+    role = session.get("admin_role")
+    version = session.get("admin_session_version")
+
+    if not username or role not in ("master", "admin2") or version is None:
+        session.clear()
+        return False
+
+    with get_connection() as connection:
+        with connection.cursor() as cur:
+            cur.execute(
+                "SELECT role, session_version "
+                "FROM admin_users WHERE username = %s",
+                (username,)
+            )
+            account = cur.fetchone()
+
+    if (
+        not account
+        or account[0] != role
+        or account[1] != version
+    ):
+        session.clear()
+        return False
+
+    return True
+
+
 @app.before_request
 def protect_admin_api():
+    if LOCAL_PROXY_MODE and request.path.startswith("/api/"):
+        return local_api_proxy()
+
     if request.method == "OPTIONS":
         return None
 
+    csrf_protected = (
+        request.path.startswith("/api/admin/")
+        or request.path in ("/api/auth/login", "/api/auth/logout", "/api/auth/master-recovery")
+    )
+
+    if csrf_protected and request.method in ("POST", "PUT", "PATCH", "DELETE"):
+        expected_token = session.get("csrf_token", "")
+        supplied_token = request.headers.get("X-CSRF-Token", "")
+
+        if not expected_token or not supplied_token or not hmac.compare_digest(
+            expected_token, supplied_token
+        ):
+            return jsonify({
+                "success": False,
+                "error": "درخواست امنیتی نامعتبر است. صفحه را تازه‌سازی کنید."
+            }), 403
+
+        origin = request.headers.get("Origin")
+        referer = request.headers.get("Referer")
+        source = origin or referer
+
+        if source:
+            try:
+                parsed_source = urlsplit(source)
+                if not parsed_source.netloc or parsed_source.netloc.lower() != request.host.lower():
+                    return jsonify({
+                        "success": False,
+                        "error": "مبدأ درخواست معتبر نیست."
+                    }), 403
+            except ValueError:
+                return jsonify({
+                    "success": False,
+                    "error": "مبدأ درخواست معتبر نیست."
+                }), 403
+
     if not request.path.startswith("/api/admin/"):
         return None
+
+    try:
+        if not validate_admin_session():
+            return jsonify({
+                "success": False,
+                "error": "نشست شما معتبر نیست؛ دوباره وارد شوید."
+            }), 401
+    except Exception:
+        app.logger.exception("Admin session validation failed")
+        return jsonify({
+            "success": False,
+            "error": "بررسی امنیت نشست موقتاً امکان‌پذیر نیست."
+        }), 503
 
     role = session.get("admin_role")
 
@@ -3539,6 +4533,11 @@ def protect_admin_api():
 
     if role == "admin2":
         path_parts = request.path.strip("/").split("/")
+
+        # Admin2 may load the dashboard, but receives products only.
+        if request.path == "/api/admin/dashboard" and request.method == "GET":
+            return None
+
         if request.path == "/api/admin/products" and request.method == "POST":
             return None
         if (
@@ -3553,6 +4552,258 @@ def protect_admin_api():
 
     return jsonify({"success": False,
                     "error": "ابتدا وارد پنل شوید."}), 401
+
+
+@app.route("/api/auth/csrf", methods=["GET"])
+def get_csrf_token():
+    token = session.get("csrf_token")
+    if not token:
+        token = secrets.token_urlsafe(32)
+        session["csrf_token"] = token
+    return jsonify({"success": True, "csrf_token": token})
+
+
+
+
+def get_master_recovery_connection():
+    return psycopg.connect(
+        get_database_url(),
+        connect_timeout=5,
+        options="-c statement_timeout=10000 -c lock_timeout=3000"
+    )
+
+
+@app.route("/api/auth/master-recovery", methods=["POST"])
+def master_recovery():
+    if not app.secret_key:
+        return jsonify({
+            "success": False,
+            "error": "سرویس بازیابی موقتاً در دسترس نیست."
+        }), 503
+
+    data = request.get_json(silent=True) or {}
+    recovery_code = data.get("recovery_code")
+    new_password = data.get("new_password")
+    confirm_password = data.get("confirm_password")
+
+    if not all(isinstance(value, str) for value in (
+        recovery_code, new_password, confirm_password
+    )):
+        return jsonify({
+            "success": False,
+            "error": "اطلاعات واردشده معتبر نیست."
+        }), 400
+
+    if not recovery_code or len(recovery_code) > 512:
+        return jsonify({
+            "success": False,
+            "error": "اطلاعات بازیابی معتبر نیست."
+        }), 400
+
+    if len(new_password) < 12 or len(new_password) > 128:
+        return jsonify({
+            "success": False,
+            "error": "رمز جدید باید حداقل ۱۲ و حداکثر ۱۲۸ نویسه باشد."
+        }), 400
+
+    if new_password != confirm_password:
+        return jsonify({
+            "success": False,
+            "error": "تکرار رمز جدید مطابقت ندارد."
+        }), 400
+
+    app.logger.info("Master recovery stage: request validated")
+    source = request.remote_addr or "unknown"
+    source_hash = hmac.new(
+        app.secret_key.encode("utf-8"),
+        source.encode("utf-8"),
+        hashlib.sha256
+    ).hexdigest()
+
+    try:
+        with get_master_recovery_connection() as connection:
+            with connection.cursor() as cur:
+                cur.execute(
+                    """
+                    INSERT INTO master_recovery_rate_limits
+                        (source_hash, window_started_at, attempts)
+                    VALUES (%s, NOW(), 1)
+                    ON CONFLICT (source_hash) DO UPDATE SET
+                        attempts = CASE
+                            WHEN master_recovery_rate_limits.window_started_at
+                                 < NOW() - INTERVAL '15 minutes'
+                            THEN 1
+                            ELSE master_recovery_rate_limits.attempts + 1
+                        END,
+                        window_started_at = CASE
+                            WHEN master_recovery_rate_limits.window_started_at
+                                 < NOW() - INTERVAL '15 minutes'
+                            THEN NOW()
+                            ELSE master_recovery_rate_limits.window_started_at
+                        END
+                    RETURNING attempts
+                    """,
+                    (source_hash,)
+                )
+                attempts = cur.fetchone()[0]
+
+                if attempts > 5:
+                    cur.execute(
+                        """
+                        INSERT INTO admin_security_audit
+                            (event_type, account_username, source_hash)
+                        VALUES (%s, %s, %s)
+                        """,
+                        ("master_recovery_rate_limited", None, source_hash)
+                    )
+                    connection.commit()
+                    return jsonify({
+                        "success": False,
+                        "error": "تعداد تلاش‌ها بیش از حد مجاز است؛ ۱۵ دقیقه دیگر دوباره تلاش کنید."
+                    }), 429
+
+            connection.commit()
+            app.logger.info("Master recovery stage: rate limit passed")
+
+    except Exception:
+        app.logger.exception("Master recovery rate-limit database error")
+        return jsonify({
+            "success": False,
+            "error": "سرویس بازیابی موقتاً در دسترس نیست."
+        }), 503
+
+    recovery_file = (
+        Path.home() / ".config" / "drborudat" / "master-recovery.hash"
+    )
+
+    try:
+        file_info = recovery_file.lstat()
+
+        if (
+            not stat.S_ISREG(file_info.st_mode)
+            or file_info.st_uid != os.getuid()
+            or (file_info.st_mode & 0o077) != 0
+        ):
+            raise RuntimeError("Recovery file permissions are not acceptable")
+
+        recovery_hash = recovery_file.read_text(
+            encoding="utf-8"
+        ).strip()
+
+        if not recovery_hash.startswith(("scrypt:", "pbkdf2:")):
+            raise RuntimeError("Recovery hash format is not acceptable")
+        app.logger.info("Master recovery stage: recovery file validated")
+
+    except Exception:
+        app.logger.exception("Master recovery secret unavailable or invalid")
+        return jsonify({
+            "success": False,
+            "error": "سرویس بازیابی موقتاً در دسترس نیست."
+        }), 503
+
+    try:
+        code_matches = check_password_hash(recovery_hash, recovery_code)
+        app.logger.info("Master recovery stage: hash verification completed")
+    except Exception:
+        app.logger.exception("Master recovery hash verification error")
+        return jsonify({
+            "success": False,
+            "error": "سرویس بازیابی موقتاً در دسترس نیست."
+        }), 503
+
+    if not code_matches:
+        try:
+            with get_master_recovery_connection() as connection:
+                with connection.cursor() as cur:
+                    cur.execute(
+                        """
+                        INSERT INTO admin_security_audit
+                            (event_type, account_username, source_hash)
+                        VALUES (%s, %s, %s)
+                        """,
+                        ("master_recovery_failed", None, source_hash)
+                    )
+                connection.commit()
+        except Exception:
+            app.logger.exception("Master recovery failure audit error")
+
+        return jsonify({
+            "success": False,
+            "error": "اطلاعات بازیابی معتبر نیست."
+        }), 401
+
+    app.logger.info("Master recovery stage: account transaction starting")
+    try:
+        new_password_hash = generate_password_hash(new_password)
+
+        with get_master_recovery_connection() as connection:
+            with connection.cursor() as cur:
+                cur.execute(
+                    """
+                    SELECT username
+                    FROM admin_users
+                    WHERE role = %s
+                    FOR UPDATE
+                    """,
+                    ("master",)
+                )
+                master_rows = cur.fetchall()
+
+                if len(master_rows) != 1:
+                    connection.rollback()
+                    app.logger.error(
+                        "Master recovery stopped: expected exactly one master account"
+                    )
+                    return jsonify({
+                        "success": False,
+                        "error": "بازیابی انجام نشد؛ وضعیت حساب مالک نیاز به بررسی دارد."
+                    }), 503
+
+                master_username = master_rows[0][0]
+
+                cur.execute(
+                    """
+                    UPDATE admin_users
+                    SET password_hash = %s,
+                        session_version = session_version + 1
+                    WHERE username = %s AND role = %s
+                    RETURNING username
+                    """,
+                    (new_password_hash, master_username, "master")
+                )
+
+                if cur.fetchone() is None:
+                    connection.rollback()
+                    return jsonify({
+                        "success": False,
+                        "error": "بازیابی انجام نشد."
+                    }), 503
+
+                cur.execute(
+                    """
+                    INSERT INTO admin_security_audit
+                        (event_type, account_username, source_hash)
+                    VALUES (%s, %s, %s)
+                    """,
+                    ("master_password_recovered", master_username, source_hash)
+                )
+
+            connection.commit()
+
+        session.clear()
+        app.logger.info("Master recovery stage: transaction committed")
+
+        return jsonify({
+            "success": True,
+            "message": "رمز حساب مالک با موفقیت تغییر کرد. اکنون با رمز جدید وارد شوید."
+        })
+
+    except Exception:
+        app.logger.exception("Master password recovery database error")
+        return jsonify({
+            "success": False,
+            "error": "بازیابی موقتاً انجام نشد؛ وضعیت حساب را دوباره بررسی کنید."
+        }), 503
 
 
 @app.route("/api/auth/login", methods=["POST"])
@@ -3573,15 +4824,11 @@ def admin_login():
         with get_connection() as connection:
             with connection.cursor() as cur:
                 cur.execute(
-                    "SELECT username, password_hash, role "
+                    "SELECT username, password_hash, role, session_version "
                     "FROM admin_users WHERE username = %s",
                     (username,)
                 )
                 user = cur.fetchone()
-                app.logger.info(
-                    "ADMIN LOGIN LOOKUP: found=%s role=%s",
-                    bool(user), user[2] if user else "none"
-                )
     except Exception:
         app.logger.exception("Admin login database error")
         return jsonify({"success": False,
@@ -3589,11 +4836,6 @@ def admin_login():
 
     password_matches = bool(
         user and check_password_hash(user[1], password)
-    )
-    print(
-        "ADMIN LOGIN CHECK: found=%s role=%s password_match=%s" % (
-            bool(user), user[2] if user else "none", password_matches
-        )
     )
 
     if not user or not password_matches:
@@ -3608,24 +4850,40 @@ def admin_login():
     session.permanent = True
     session["admin_username"] = user[0]
     session["admin_role"] = user[2]
+    session["admin_session_version"] = user[3]
+    session["csrf_token"] = secrets.token_urlsafe(32)
 
-    return jsonify({"success": True,
-                    "username": user[0], "role": user[2]})
+    return jsonify({
+        "success": True,
+        "username": user[0],
+        "role": user[2],
+        "csrf_token": session["csrf_token"]
+    })
 
 
 @app.route("/api/auth/me", methods=["GET"])
 def admin_me():
-    if session.get("admin_role") not in ("master", "admin2"):
-        return jsonify({"success": False,
-                        "authenticated": False}), 401
+    try:
+        if not validate_admin_session():
+            return jsonify({
+                "success": False,
+                "authenticated": False
+            }), 401
+    except Exception:
+        app.logger.exception("Admin identity validation failed")
+        return jsonify({
+            "success": False,
+            "authenticated": False,
+            "error": "بررسی حساب موقتاً امکان‌پذیر نیست."
+        }), 503
 
     return jsonify({
         "success": True,
         "authenticated": True,
         "username": session.get("admin_username"),
-        "role": session.get("admin_role")
+        "role": session.get("admin_role"),
+        "csrf_token": session.get("csrf_token")
     })
-
 
 @app.route("/api/auth/logout", methods=["POST"])
 def admin_logout():

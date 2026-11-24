@@ -1397,6 +1397,18 @@ text-align:center
 
 }
 
+
+.public-magazine{padding:48px 0;background:#f5faff}
+.public-magazine-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
+.public-magazine-card{min-width:0;overflow:hidden;background:#fff;border:1px solid #e2ebf3;border-radius:10px;box-shadow:0 5px 18px rgba(20,50,80,.05)}
+.public-magazine-card img,.public-magazine-card video{display:block;width:100%;height:190px;object-fit:cover;background:#eaf3fa}
+.public-magazine-card-body{padding:15px}
+.public-magazine-card h3{margin:0 0 9px;font-size:16px;color:#17324d;line-height:1.8}
+.public-magazine-card p{margin:0;color:#64748b;font-size:13px;line-height:2}
+.public-magazine-card .magazine-media-video{margin-top:12px}
+.public-magazine-empty{grid-column:1/-1;text-align:center;padding:24px;color:#718096}
+@media(max-width:600px){.public-magazine{padding:32px 0}.public-magazine-grid{grid-template-columns:1fr 1fr;gap:10px}.public-magazine-card img,.public-magazine-card video{height:125px}.public-magazine-card-body{padding:10px}.public-magazine-card h3{font-size:14px}}
+
 </style>
 
 <link rel="stylesheet" href="fonts/fontawesome/all.min.css">
@@ -2138,6 +2150,20 @@ id="productGrid"
 
 
 
+
+<section class="public-magazine" id="onlineMagazine">
+    <div class="container">
+        <div class="heading">
+            <small>DR BORUDAT MAGAZINE</small>
+            <h2>مجله آنلاین دکتر برودت</h2>
+            <p>آموزش، دانستنی‌ها و مطالب تخصصی سیستم‌های سرمایشی</p>
+        </div>
+        <div class="public-magazine-grid" id="publicMagazineGrid">
+            <div class="products-status">در حال دریافت مطالب مجله...</div>
+        </div>
+    </div>
+</section>
+
 <footer id="contact">
 
 <div class="container footer-grid">
@@ -2489,73 +2515,94 @@ menu.classList.toggle("open");
 
 
 /* SLIDER */
-
 let currentSlide=0;
 
-const slides=
-document.querySelectorAll(".slide");
-
-const dots=
-document.querySelectorAll(".slider-dot");
-
-
 function showSlide(index){
-
-if(!slides.length)
-return;
-
-if(index<0)
-index=slides.length-1;
-
-if(index>=slides.length)
-index=0;
-
-currentSlide=index;
-
-slides.forEach(
-(slide,i)=>{
-slide.classList.toggle(
-"active",
-i===currentSlide
-);
-}
-);
-
-dots.forEach(
-(dot,i)=>{
-dot.classList.toggle(
-"active",
-i===currentSlide
-);
-}
-);
-
+    const slides=document.querySelectorAll("#home .slide");
+    const dots=document.querySelectorAll("#home .slider-dot");
+    if(!slides.length) return;
+    if(index<0) index=slides.length-1;
+    if(index>=slides.length) index=0;
+    currentSlide=index;
+    slides.forEach((slide,i)=>slide.classList.toggle("active",i===currentSlide));
+    dots.forEach((dot,i)=>dot.classList.toggle("active",i===currentSlide));
 }
 
+function changeSlide(direction){ showSlide(currentSlide+direction); }
+function goToSlide(index){ showSlide(index); }
 
-function changeSlide(direction){
-
-showSlide(
-currentSlide+direction
-);
-
+function panelPublicUrl(value){
+    if(!value) return "";
+    try{
+        const url=new URL(String(value),API_BASE);
+        return ["http:","https:"].includes(url.protocol) ? url.href : "";
+    }catch(_){ return ""; }
 }
 
-
-function goToSlide(index){
-
-showSlide(index);
-
+function panelEscape(value){
+    return String(value??"").replace(/[&<>"']/g,char=>({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+    })[char]);
 }
 
+async function loadPanelSlides(){
+    try{
+        const response=await fetch(API_BASE+"/api/slides?ts="+Date.now(),{
+            method:"GET",cache:"no-store",headers:{"Accept":"application/json"}
+        });
+        if(!response.ok) return;
+        const data=await response.json();
+        if(!data.success || !Array.isArray(data.slides)) return;
 
-setInterval(
-()=>{
-changeSlide(1);
-},
-6000
-);
+        const validSlides=data.slides.filter(item=>
+            item && item.is_active && panelPublicUrl(item.image_url)
+        );
+        if(!validSlides.length) return;
 
+        const home=document.getElementById("home");
+        const dotsContainer=home?.querySelector(".slider-dots");
+        if(!home || !dotsContainer) return;
+
+        const slidesHTML=validSlides.map((item,index)=>{
+            const image=panelEscape(panelPublicUrl(item.image_url));
+            const title=panelEscape(item.title || "");
+            const description=panelEscape(item.description || "");
+            const buttonText=panelEscape(item.button_text || "");
+            const rawButtonUrl=String(item.button_url || "").trim();
+            const buttonUrl=/^(#|tel:|mailto:)/i.test(rawButtonUrl)
+                ? rawButtonUrl : panelPublicUrl(rawButtonUrl);
+            const button=buttonText && buttonUrl
+                ? `<a class="slide-button" href="${panelEscape(buttonUrl)}">${buttonText}</a>`
+                : "";
+
+            return `<div class="slide${index===0?" active":""}">
+                <img src="${image}" alt="${title}">
+                <div class="slide-overlay"></div>
+                <div class="slide-content">
+                    <div class="slide-text">
+                        <span class="slide-tag">DR BORUDAT SHOP</span>
+                        <h1>${title}</h1>
+                        <p>${description}</p>
+                        ${button}
+                    </div>
+                </div>
+            </div>`;
+        }).join("");
+
+        home.querySelectorAll(".slide").forEach(slide=>slide.remove());
+        home.insertAdjacentHTML("afterbegin",slidesHTML);
+        dotsContainer.innerHTML=validSlides.map((_,index)=>
+            `<button class="slider-dot${index===0?" active":""}"
+                type="button" onclick="goToSlide(${index})"
+                aria-label="اسلاید ${index+1}"></button>`
+        ).join("");
+        currentSlide=0;
+    }catch(error){
+        console.warn("Panel slides unavailable; keeping local slides.",error);
+    }
+}
+
+setInterval(()=>changeSlide(1),6000);
 
 /* COUNTDOWN */
 
@@ -2747,6 +2794,8 @@ product.description??
 product.desc??
 ""
 ).trim(),
+
+is_special: product.is_special === true || String(product.is_special).toLowerCase() === "true" || String(product.is_special) === "1",
 
 image:String(
 product.image??
@@ -3136,8 +3185,7 @@ return;
 
 
 box.innerHTML=
-products
-.slice(0,4)
+products.filter(product => product.is_special).slice(0,4)
 .map(product=>
 
 '<div class="deal-card">'+
@@ -3950,62 +3998,60 @@ behavior:"smooth"
 
 
 /* CATEGORY FILTER */
+document.addEventListener("click",function(e){
+    const category=e.target.closest("#categories .category[data-category]");
+    if(!category) return;
+    e.preventDefault();
 
-document
-.querySelectorAll(
-".category[data-category]"
-)
-.forEach(
-category=>{
+    document.querySelectorAll("#categories .category[data-category]")
+        .forEach(item=>item.classList.remove("active"));
 
-category.addEventListener(
-"click",
-function(e){
+    category.classList.add("active");
+    renderProducts(category.dataset.category||"");
 
-e.preventDefault();
-
-
-document
-.querySelectorAll(
-".category[data-category]"
-)
-.forEach(
-item=>
-item.classList.remove(
-"active"
-)
-);
-
-
-this.classList.add("active");
-
-
-renderProducts(
-this.dataset.category||""
-);
-
-
-const productsSection=
-document.getElementById(
-"products"
-);
-
-
-if(productsSection){
-
-productsSection.scrollIntoView({
-behavior:"smooth"
+    const productsSection=document.getElementById("products");
+    if(productsSection) productsSection.scrollIntoView({behavior:"smooth"});
 });
 
+async function loadPanelCategories(){
+    try{
+        const response=await fetch(API_BASE+"/api/categories?ts="+Date.now(),{
+            method:"GET",cache:"no-store",headers:{"Accept":"application/json"}
+        });
+        if(!response.ok) return;
+        const data=await response.json();
+        if(!data.success || !Array.isArray(data.categories)) return;
+
+        const validCategories=data.categories.filter(item=>
+            item && typeof item.name==="string" && item.name.trim()
+        );
+        if(!validCategories.length) return;
+
+        const grid=document.querySelector("#categories .category-grid");
+        if(!grid) return;
+
+        const cards=validCategories.map(item=>{
+            const name=panelEscape(item.name.trim());
+            const image=panelPublicUrl(item.image_url);
+            const icon=image
+                ? `<img src="${panelEscape(image)}" alt="" loading="lazy" style="width:38px;height:38px;object-fit:contain">`
+                : '<i class="fa-solid fa-snowflake"></i>';
+
+            return `<a class="category" href="#products" data-category="${name}">
+                <div class="category-icon">${icon}</div>
+                <div><h3>${name}</h3><p>مشاهده محصولات این دسته</p></div>
+            </a>`;
+        }).join("");
+
+        grid.innerHTML=cards+`
+            <a class="category" href="#products" data-category="">
+                <div class="category-icon"><i class="fa-solid fa-boxes-stacked"></i></div>
+                <div><h3>همه محصولات</h3><p>مشاهده همه محصولات</p></div>
+            </a>`;
+    }catch(error){
+        console.warn("Panel categories unavailable; keeping local categories.",error);
+    }
 }
-
-}
-
-);
-
-}
-);
-
 
 /* CLOSE CART WITH BACKDROP */
 
@@ -4098,11 +4144,80 @@ menu.classList.remove("open");
 );
 
 
+
+function magazineEscape(value) {
+    return String(value == null ? "" : value).replace(/[&<>"']/g, function(char) {
+        return {
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+        }[char];
+    });
+}
+
+function magazineMediaUrl(value) {
+    const url = String(value || "").trim();
+    if (!url) return "";
+    if (/^https?:\/\//i.test(url)) return url;
+    if (url.startsWith("/")) return API_BASE + url;
+    return "";
+}
+
+async function loadPublicMagazine() {
+    const root = document.getElementById("publicMagazineGrid");
+    if (!root) return;
+
+    try {
+        const response = await fetch(API_BASE + "/api/magazine", {
+            method: "GET",
+            cache: "no-store",
+            headers: { "Accept": "application/json" }
+        });
+        if (!response.ok) throw new Error("دریافت مجله ناموفق بود.");
+
+        const data = await response.json();
+        if (!data.success) throw new Error(data.message || "دریافت مجله ناموفق بود.");
+
+        const posts = Array.isArray(data.posts) ? data.posts : [];
+        if (!posts.length) {
+            root.innerHTML = '<div class="public-magazine-empty">مطالب جدید مجله به‌زودی منتشر می‌شوند.</div>';
+            return;
+        }
+
+        root.innerHTML = posts.map(function(post) {
+            const image = magazineMediaUrl(post.image_url);
+            const video = magazineMediaUrl(post.video_url);
+            const media = image
+                ? '<img loading="lazy" src="' + magazineEscape(image) + '" alt="' + magazineEscape(post.title) + '">'
+                : "";
+
+            const videoMarkup = video
+                ? '<video class="magazine-media-video" controls playsinline preload="metadata" src="' + magazineEscape(video) + '"></video>'
+                : "";
+
+            return '<article class="public-magazine-card">' +
+                media +
+                '<div class="public-magazine-card-body">' +
+                '<h3>' + magazineEscape(post.title) + '</h3>' +
+                '<p>' + magazineEscape(post.excerpt || "") + '</p>' +
+                videoMarkup +
+                '</div></article>';
+        }).join("");
+    } catch (error) {
+        root.innerHTML = '<div class="public-magazine-empty">در حال حاضر دریافت مطالب مجله امکان‌پذیر نیست.</div>';
+    }
+}
+
 /* INITIALIZE */
 
 updateCartCount();
 
 loadProducts();
+loadPublicMagazine();
+loadPanelSlides();
+loadPanelCategories();
 
 </script>
 
