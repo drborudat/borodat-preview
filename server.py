@@ -2309,6 +2309,153 @@ def delete_magazine_video(video_url):
     )
 
 
+# HOMEPAGE SLIDES API
+SLIDER_IMAGE_DIR = os.path.join(BASE_DIR, "uploads", "sliders")
+os.makedirs(SLIDER_IMAGE_DIR, exist_ok=True)
+
+
+@app.route("/uploads/sliders/<path:filename>")
+def slider_image_file(filename):
+    return send_from_directory(SLIDER_IMAGE_DIR, filename)
+
+
+def save_slider_image(file_storage):
+    if not file_storage or not file_storage.filename:
+        return ""
+    if not (file_storage.mimetype or "").lower().startswith("image/"):
+        raise ValueError("فایل انتخاب‌شده تصویر معتبر نیست.")
+    file_storage.stream.seek(0, os.SEEK_END)
+    size = file_storage.stream.tell()
+    file_storage.stream.seek(0)
+    if size <= 0:
+        raise ValueError("فایل تصویر خالی است.")
+    if size > 8 * 1024 * 1024:
+        raise ValueError("حجم تصویر نباید بیشتر از ۸ مگابایت باشد.")
+    safe = "".join(
+        c if c.isalnum() or c in "._-" else "_"
+        for c in os.path.basename(file_storage.filename)
+    ).strip("._")
+    ext = os.path.splitext(safe)[1].lower()
+    if ext not in {".jpg", ".jpeg", ".png", ".webp", ".gif", ".avif"}:
+        raise ValueError("فرمت تصویر باید JPG، PNG، WEBP، GIF یا AVIF باشد.")
+    if SUPABASE_URL and SUPABASE_KEY:
+        return upload_to_supabase(file_storage, "sliders", SUPABASE_PRODUCT_BUCKET)
+    name = uuid.uuid4().hex + "_" + (safe or "slide" + ext)
+    file_storage.save(os.path.join(SLIDER_IMAGE_DIR, name))
+    return "/uploads/sliders/" + name
+
+
+def slide_to_dict(r):
+    return {"slot": r[0], "title": r[1], "description": r[2],
+            "image_url": r[3], "button_text": r[4], "button_url": r[5],
+            "is_active": r[6], "updated_at": r[7]}
+
+
+SLIDE_COLS = ("slot, title, description, image_url, button_text, "
+              "button_url, is_active, updated_at")
+
+
+def load_slides(only_active):
+    connection = get_connection()
+    try:
+        with connection.cursor() as cur:
+            where = "WHERE is_active = TRUE AND image_url <> '' " if only_active else ""
+            cur.execute("SELECT " + SLIDE_COLS + " FROM homepage_slides "
+                        + where + "ORDER BY slot ASC")
+            return [slide_to_dict(r) for r in cur.fetchall()]
+    finally:
+        connection.close()
+
+
+@app.route("/api/slides", methods=["GET"])
+def get_public_slides():
+    try:
+        return jsonify({"success": True, "slides": load_slides(True)})
+    except Exception:
+        app.logger.exception("PUBLIC SLIDES LOAD ERROR")
+        return jsonify({"success": False, "slides": []}), 500
+
+
+@app.route("/api/admin/slides", methods=["GET"])
+def get_admin_slides():
+    try:
+        return jsonify({"success": True, "slides": load_slides(False)})
+    except Exception:
+        app.logger.exception("ADMIN SLIDES LOAD ERROR")
+        return jsonify({"success": False, "message": "دریافت اسلایدر انجام نشد."}), 500
+
+
+@app.route("/api/admin/slides/<int:slot>", methods=["POST"])
+def save_admin_slide(slot):
+    if slot not in (1, 2, 3):
+        return jsonify({"success": False, "message": "شماره اسلاید باید بین ۱ تا ۳ باشد."}), 400
+    form = request.form
+    title = str(form.get("title", "")).strip()
+    description = str(form.get("description", "")).strip()
+    button_text = str(form.get("button_text", "")).strip()
+    button_url = str(form.get("button_url", "")).strip()
+    is_active = str(form.get("is_active", "true")).lower() in ("1", "true", "yes", "on")
+    if not title:
+        return jsonify({"success": False, "message": "عنوان اسلاید الزامی است."}), 400
+    if button_url:
+        parsed = urlsplit(button_url)
+        ok_https = parsed.scheme == "https" and bool(parsed.netloc)
+        ok_rel = (button_url.startswith("/") and not button_url.startswith("//")
+                  and not parsed.scheme)
+        ok_anchor = button_url.startswith("#")
+        if not (ok_https or ok_rel or ok_anchor):
+            return jsonify({"success": False, "message": "لینک دکمه باید آدرس HTTPS یا مسیر داخلی سایت باشد."}), 400
+    connection = get_connection()
+    try:
+        with connection.cursor() as cur:
+            cur.execute("SELECT image_url FROM homepage_slides WHERE slot = %s", (slot,))
+            old = cur.fetchone()
+            image_url = old[0] if old else ""
+            image_file = request.files.get("image")
+            if image_file and image_file.filename:
+                image_url = save_slider_image(image_file)
+            cur.execute(
+                "INSERT INTO homepage_slides (slot, title, description, image_url, "
+                "button_text, button_url, is_active, updated_at) "
+                "VALUES (%s,%s,%s,%s,%s,%s,%s,%s) "
+                "ON CONFLICT (slot) DO UPDATE SET title=EXCLUDED.title, "
+                "description=EXCLUDED.description, image_url=EXCLUDED.image_url, "
+                "button_text=EXCLUDED.button_text, button_url=EXCLUDED.button_url, "
+                "is_active=EXCLUDED.is_active, updated_at=EXCLUDED.updated_at",
+                (slot, title, description, image_url, button_text, button_url,
+                 is_active, datetime.utcnow().isoformat()))
+        connection.commit()
+        return jsonify({"success": True, "message": "اسلاید با موفقیت ذخیره شد.",
+                        "slot": slot, "image_url": image_url})
+    except ValueError as error:
+        connection.rollback()
+        return jsonify({"success": False, "message": str(error)}), 400
+    except Exception:
+        connection.rollback()
+        app.logger.exception("ADMIN SLIDE SAVE ERROR")
+        return jsonify({"success": False, "message": "ذخیره اسلاید انجام نشد."}), 500
+    finally:
+        connection.close()
+
+
+@app.route("/api/admin/slides/<int:slot>", methods=["DELETE"])
+def delete_admin_slide(slot):
+    if slot not in (1, 2, 3):
+        return jsonify({"success": False, "message": "شماره اسلاید نامعتبر است."}), 400
+    connection = get_connection()
+    try:
+        with connection.cursor() as cur:
+            cur.execute("DELETE FROM homepage_slides WHERE slot = %s", (slot,))
+        connection.commit()
+        return jsonify({"success": True, "message": "اطلاعات اسلاید حذف شد."})
+    except Exception:
+        connection.rollback()
+        app.logger.exception("ADMIN SLIDE DELETE ERROR")
+        return jsonify({"success": False, "message": "حذف اسلاید انجام نشد."}), 500
+    finally:
+        connection.close()
+
+
 # PRODUCT IMAGE STORAGE
 # =====================================================
 
