@@ -32,6 +32,11 @@ CORS(
         r"/api/(products|categories|latest-products|store-best|slides|magazine)$": {
             "origins": ["https://drborudat.ir"],
             "methods": ["GET"],
+        },
+        r"/api/(order|request|reviews)$": {
+            "origins": ["https://drborudat.ir"],
+            "methods": ["GET", "POST"],
+            "allow_headers": ["Content-Type"],
         }
     },
     supports_credentials=False,
