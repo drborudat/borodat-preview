@@ -1,4 +1,4 @@
-const CACHE_NAME = "dr-borudat-v6";
+const CACHE_NAME = "dr-borudat-v7";
 const CORE_FILES = [
   "/",
   "/style.css",

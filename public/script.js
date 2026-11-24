@@ -1,4 +1,15 @@
 const $=s=>document.querySelector(s);
+const API_BASE = 'https://borodat-panel.onrender.com';
+const backendMediaUrl = value => {
+  const raw = String(value || '').trim();
+  if (!raw) return '';
+  try {
+    const url = new URL(raw, API_BASE);
+    return ['https:', 'http:'].includes(url.protocol) ? url.href : '';
+  } catch (_) {
+    return '';
+  }
+};
 const $$=s=>document.querySelectorAll(s);
 
 /* Independent cart open/close delegation */
@@ -28,7 +39,7 @@ $('#closeMenu').onclick=()=>menu.classList.remove('open');
 $$('.mobile-menu a').forEach(a=>a.onclick=()=>menu.classList.remove('open'));
 
 let slide = 0;
-const slides = [...document.querySelectorAll('.hero-slide')];
+let slides = [...document.querySelectorAll('.hero-slide')];
 const dots = $('#heroDots');
 const heroTrack = $('#heroTrack');
 
@@ -59,7 +70,66 @@ function restartHeroTimer() {
     heroTimer = setInterval(() => showSlide(slide + 1), 5000);
   }
 }
+
 restartHeroTimer();
+
+function renderPanelSlides(items) {
+  if (!Array.isArray(items) || !items.length || !heroTrack) return;
+
+  const escSlide = value => String(value ?? '').replace(/[&<>"']/g, ch => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  })[ch]);
+
+  const safeLink = value => {
+    const raw = String(value || '#latest').trim();
+    try {
+      const url = new URL(raw, window.location.origin);
+      return ['https:', 'http:'].includes(url.protocol) ? url.href : '#latest';
+    } catch (_) {
+      return '#latest';
+    }
+  };
+
+  heroTrack.innerHTML = items.map((item, index) => {
+    const image = backendMediaUrl(item.image_url);
+    const title = escSlide(item.title || 'فروشگاه دکتر برودت');
+    const description = escSlide(item.description || '');
+    const buttonText = escSlide(item.button_text || 'مشاهده محصولات');
+    const buttonUrl = escSlide(safeLink(item.button_url));
+    return `<article class="hero-slide${index === 0 ? ' active' : ''}">
+      ${image ? `<img src="${escSlide(image)}" alt="${title}" loading="lazy">` : ''}
+      <div class="hero-copy">
+        <h2>${title}</h2>
+        ${description ? `<p>${description}</p>` : ''}
+        <a href="${buttonUrl}" class="red-btn">${buttonText}</a>
+      </div>
+    </article>`;
+  }).join('');
+
+  slides = [...heroTrack.querySelectorAll('.hero-slide')];
+  if (dots) {
+    dots.innerHTML = '';
+    slides.forEach((_, index) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.setAttribute('aria-label', 'اسلاید ' + (index + 1));
+      button.onclick = () => {
+        showSlide(index);
+        restartHeroTimer();
+      };
+      dots.appendChild(button);
+    });
+  }
+  showSlide(0);
+  restartHeroTimer();
+}
+
+$$('.hero-arrow').forEach(button => {
+  button.addEventListener('click', () => {
+    showSlide(slide + (Number(button.dataset.dir) || 1));
+    restartHeroTimer();
+  });
+});
 
 let swipeStartX = 0;
 let swipeStartY = 0;
@@ -338,32 +408,29 @@ $$('.tabs button').forEach(b=>b.onclick=()=>{
  b.classList.add('active');
 });
 
-$('#filterBtn').onclick=()=>{
- const category=$('#categoryFilter').value;
- const stock=$('#stockFilter').value;
- alert('فیلتر انتخاب شد: '+(category||'همه دسته‌ها')+' | '+(stock||'همه وضعیت‌ها'));
-};
 
 $('#backTop').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
 
-/* DR BORUDAT - LIVE HOMEPAGE PRODUCTS */
+/* DR BORUDAT - PANEL CONNECTED HOMEPAGE */
 (() => {
-  const API = '/api/products';
   const featuredTrack = document.getElementById('featuredTrack');
   const latestTrack = document.getElementById('latestTrack');
   const bestTrack = document.getElementById('bestTrack');
   const categoryGrid = document.querySelector('.category-grid');
   const categoryFilter = document.getElementById('categoryFilter');
   const stockFilter = document.getElementById('stockFilter');
+  const blogTrack = document.getElementById('blogTrack');
 
   if (!featuredTrack || !latestTrack || !bestTrack) return;
 
   let homepageProducts = [];
-  let bestMode = 'popular';
+  let latestProducts = null;
+  let panelCategories = null;
+  let bestSections = {};
+  let bestMode = 'bestseller';
 
   const esc = value => String(value ?? '').replace(/[&<>"']/g, ch => ({
-    '&': '&amp;', '<': '&lt;', '>': '&gt;',
-    '"': '&quot;', "'": '&#39;'
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
   })[ch]);
 
   const toman = value => {
@@ -374,22 +441,23 @@ $('#backTop').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
   const rialText = value =>
     Math.round(toman(value) * 10).toLocaleString('fa-IR') + ' ریال';
 
-  const imageUrl = value => {
-    const raw = String(value || '').trim();
-    if (!raw) return '';
-    try {
-      const url = new URL(raw, window.location.origin);
-      return ['https:', 'http:'].includes(url.protocol) ? url.href : '';
-    } catch (_) {
-      return '';
-    }
-  };
+  const cleanText = value =>
+    String(value ?? '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+
+  async function getApi(path) {
+    const response = await fetch(API_BASE + path, { cache: 'no-store' });
+    if (!response.ok) throw new Error(path + ': HTTP ' + response.status);
+    const data = await response.json();
+    if (!data || data.success !== true) throw new Error(path + ': پاسخ نامعتبر');
+    return data;
+  }
 
   function productCard(product) {
     const name = esc(product.name);
-    const image = imageUrl(product.image);
+    const image = backendMediaUrl(product.image);
     const price = toman(product.price);
     const stock = Number(product.stock) || 0;
+    const discount = Number(product.discount_percent) || 0;
 
     return `
       <article class="product-card"
@@ -404,7 +472,9 @@ $('#backTop').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
                  onerror="this.remove();this.parentElement.classList.add('image-unavailable');this.parentElement.textContent='تصویر محصول در دسترس نیست';">`
             : `<div class="image-unavailable">تصویر محصول ثبت نشده است</div>`}
         </div>
-        ${product.is_special ? '<span class="discount">ویژه</span>' : ''}
+        ${discount > 0
+          ? `<span class="discount">${discount.toLocaleString('fa-IR')}٪ تخفیف</span>`
+          : (product.is_special ? '<span class="discount">ویژه</span>' : '')}
         <div class="product-actions">
           <button type="button" class="add-cart" aria-label="افزودن به سبد خرید">
             <i class="fa-solid fa-cart-shopping"></i>
@@ -416,13 +486,14 @@ $('#backTop').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
         <h3>${name}</h3>
         <p class="price">${price ? rialText(price) : 'تماس بگیرید'}</p>
         ${stock > 0
-          ? `<small class="product-stock">موجود</small>`
-          : `<small class="product-stock">ناموجود</small>`}
+          ? '<small class="product-stock">موجود</small>'
+          : '<small class="product-stock">ناموجود</small>'}
       </article>`;
   }
 
   function renderTrack(track, products, emptyMessage) {
-    if (!products.length) {
+    if (!track) return;
+    if (!Array.isArray(products) || !products.length) {
       track.innerHTML = `<p class="homepage-empty">${esc(emptyMessage)}</p>`;
       return;
     }
@@ -432,109 +503,189 @@ $('#backTop').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
   function renderLatest() {
     const category = categoryFilter?.value || '';
     const stock = stockFilter?.value || '';
+    let items = [...(latestProducts || homepageProducts)];
 
-    let items = [...homepageProducts];
-
-    if (category) items = items.filter(p => p.category === category);
+    if (category) items = items.filter(p => String(p.category || '') === category);
     if (stock === 'yes') items = items.filter(p => Number(p.stock) > 0);
     if (stock === 'no') items = items.filter(p => Number(p.stock) <= 0);
 
-    renderTrack(
-      latestTrack,
-      items.slice(0, 16),
-      'محصولی با این مشخصات پیدا نشد.'
-    );
+    renderTrack(latestTrack, items, 'محصولی با این مشخصات پیدا نشد.');
   }
 
   function renderBest() {
-    let items = [...homepageProducts];
+    const section = bestSections[bestMode];
+    const messages = {
+      bestseller: 'هنوز فروش تکمیل‌شده‌ای برای نمایش پرفروش‌ترین‌ها ثبت نشده است.',
+      discounted: 'در حال حاضر محصول تخفیف‌داری برای نمایش وجود ندارد.',
+      newest: 'هنوز محصولی برای نمایش ثبت نشده است.'
+    };
 
-    if (bestMode === 'newest') {
-      items.sort((a, b) =>
-        new Date(b.created_at || 0) - new Date(a.created_at || 0)
-      );
-    } else if (bestMode === 'popular') {
-      items = items.filter(p => Number(p.sales_count) > 0)
-        .sort((a, b) => Number(b.sales_count) - Number(a.sales_count));
-    } else if (bestMode === 'discounted') {
-      items = items.filter(p => Number(p.discount_percent) > 0)
-        .sort((a, b) => Number(b.discount_percent) - Number(a.discount_percent));
+    if (!section || section.active !== true) {
+      renderTrack(bestTrack, [], 'این بخش در حال حاضر از پنل غیرفعال است.');
+      return;
     }
 
-    const message = bestMode === 'popular'
-      ? 'هنوز اطلاعات فروش محصولات ثبت نشده است.'
-      : bestMode === 'discounted'
-        ? 'در حال حاضر محصول تخفیف‌دار ثبت نشده است.'
-        : 'هنوز محصولی ثبت نشده است.';
-
-    renderTrack(bestTrack, items.slice(0, 16), message);
+    renderTrack(bestTrack, section.products || [], messages[bestMode] || messages.newest);
   }
 
   function renderCategories() {
-    const categories = [...new Set(
-      homepageProducts.map(p => p.category).filter(Boolean)
-    )];
+    let categories = Array.isArray(panelCategories) ? panelCategories : [];
+
+    if (!categories.length) {
+      categories = [...new Set(
+        homepageProducts.map(p => String(p.category || '').trim()).filter(Boolean)
+      )].map(name => ({ name, image_url: '' }));
+    }
 
     if (categoryFilter) {
       const selected = categoryFilter.value;
       categoryFilter.innerHTML =
         '<option value="">همه دسته‌بندی‌ها</option>' +
-        categories.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join('');
-      if (categories.includes(selected)) categoryFilter.value = selected;
+        categories.map(item =>
+          `<option value="${esc(item.name)}">${esc(item.name)}</option>`
+        ).join('');
+      if (categories.some(item => item.name === selected)) {
+        categoryFilter.value = selected;
+      }
     }
 
     if (categoryGrid) {
       categoryGrid.innerHTML = categories.length
-        ? categories.map(category => `
-            <a href="#latest" class="category-banner"
-               data-home-category="${esc(category)}">
+        ? categories.map(item => {
+            const name = String(item.name || '');
+            const image = backendMediaUrl(item.image_url);
+            return `<a href="#latest" class="category-banner" data-home-category="${esc(name)}">
+              ${image ? `<img src="${esc(image)}" alt="${esc(name)}" loading="lazy">` : ''}
               <div>
                 <small>محصولات دکتر برودت</small>
-                <h3>${esc(category)}</h3>
+                <h3>${esc(name)}</h3>
                 <span>مشاهده محصولات</span>
               </div>
-            </a>`).join('')
-        : '<p class="homepage-empty">هنوز دسته‌بندی محصولی ثبت نشده است.</p>';
+            </a>`;
+          }).join('')
+        : '<p class="homepage-empty">هنوز دسته‌بندی فعالی در پنل ثبت نشده است.</p>';
     }
   }
 
-  async function loadHomepageProducts() {
-    featuredTrack.innerHTML = '<p class="homepage-empty">در حال دریافت محصولات...</p>';
-    latestTrack.innerHTML = '<p class="homepage-empty">در حال دریافت محصولات...</p>';
-    bestTrack.innerHTML = '<p class="homepage-empty">در حال دریافت محصولات...</p>';
+  function renderMagazine(posts) {
+    if (!blogTrack) return;
+    if (!Array.isArray(posts) || !posts.length) {
+      blogTrack.innerHTML = '<p class="homepage-empty">هنوز مطلب منتشرشده‌ای در مجله ثبت نشده است.</p>';
+      return;
+    }
 
-    try {
-      const response = await fetch(API, { cache: 'no-store' });
-      if (!response.ok) throw new Error('HTTP ' + response.status);
-
-      const data = await response.json();
-      if (!data || data.success !== true || !Array.isArray(data.products)) {
-        throw new Error('پاسخ نامعتبر از سرور محصولات');
+    blogTrack.innerHTML = posts.map(post => {
+      const title = esc(post.title || 'مطلب مجله');
+      const excerpt = esc(cleanText(post.excerpt || post.content).slice(0, 240));
+      const content = esc(cleanText(post.content));
+      const image = backendMediaUrl(post.image_url);
+      let date = '';
+      if (post.created_at) {
+        const parsed = new Date(post.created_at);
+        if (!Number.isNaN(parsed.getTime())) {
+          date = parsed.toLocaleDateString('fa-IR', { year: 'numeric', month: 'long', day: 'numeric' });
+        }
       }
 
-      homepageProducts = data.products.filter(p =>
-        p && p.id != null && String(p.name || '').trim()
-      );
+      return `<article class="blog-card">
+        ${image ? `<img src="${esc(image)}" alt="${title}" loading="lazy">` : ''}
+        ${date ? `<span class="date">${esc(date)}</span>` : ''}
+        <label>مجله دکتر برودت</label>
+        <h3>${title}</h3>
+        <div class="blog-meta"><span>دکتر برودت</span></div>
+        <p>${excerpt}</p>
+        ${content && content !== cleanText(post.excerpt)
+          ? `<details class="magazine-more"><summary>ادامه مطلب</summary><p>${content}</p></details>`
+          : ''}
+      </article>`;
+    }).join('');
+  }
 
-      renderTrack(
-        featuredTrack,
-        homepageProducts.filter(p =>
-          p.is_special === true || p.is_special === 1 || p.is_special === 'true'
-        ),
-        'هنوز محصول ویژه‌ای از پنل انتخاب نشده است.'
-      );
+  function updateBestTabs() {
+    const tabValues = {
+      popular: 'bestseller',
+      bestseller: 'bestseller',
+      discounted: 'discounted',
+      newest: 'newest'
+    };
 
-      renderCategories();
-      renderLatest();
-      renderBest();
+    document.querySelectorAll('.tabs button').forEach(tab => {
+      const key = tabValues[tab.dataset.tab] || tab.dataset.tab;
+      tab.classList.toggle('active', key === bestMode);
+    });
+  }
 
-    } catch (error) {
-      console.error('Homepage products:', error);
-      const message = 'دریافت محصولات از سرور انجام نشد. اتصال پنل را بررسی کنید.';
+  async function loadHomepage() {
+    [featuredTrack, latestTrack, bestTrack].forEach(track => {
+      track.innerHTML = '<p class="homepage-empty">در حال دریافت اطلاعات فروشگاه...</p>';
+    });
+
+    const paths = [
+      '/api/products',
+      '/api/categories',
+      '/api/latest-products',
+      '/api/store-best',
+      '/api/slides',
+      '/api/magazine'
+    ];
+
+    const results = await Promise.allSettled(paths.map(getApi));
+
+    if (results[0].status !== 'fulfilled' ||
+        !Array.isArray(results[0].value.products)) {
+      console.error('Homepage products API:', results[0].reason);
       [featuredTrack, latestTrack, bestTrack].forEach(track => {
-        track.innerHTML = `<p class="homepage-empty">${message}</p>`;
+        track.innerHTML = '<p class="homepage-empty">دریافت محصولات از سرور انجام نشد. اتصال پنل را بررسی کنید.</p>';
       });
+      return;
     }
+
+    const productsData = results[0].value;
+    homepageProducts = productsData.products.filter(p =>
+      p && p.id != null && String(p.name || '').trim()
+    );
+
+    renderTrack(
+      featuredTrack,
+      homepageProducts.filter(p =>
+        p.is_special === true || p.is_special === 1 || p.is_special === 'true'
+      ),
+      'هنوز محصول ویژه‌ای از پنل انتخاب نشده است.'
+    );
+
+    if (results[1].status === 'fulfilled' &&
+        Array.isArray(results[1].value.categories)) {
+      panelCategories = results[1].value.categories;
+    }
+
+    if (results[2].status === 'fulfilled' &&
+        Array.isArray(results[2].value.products)) {
+      latestProducts = results[2].value.products;
+    }
+
+    if (results[3].status === 'fulfilled' &&
+        results[3].value.sections) {
+      bestSections = results[3].value.sections;
+    } else {
+      console.warn('Store-best API is not available yet:', results[3].reason);
+    }
+
+    if (results[4].status === 'fulfilled' &&
+        Array.isArray(results[4].value.slides)) {
+      renderPanelSlides(results[4].value.slides);
+    }
+
+    if (results[5].status === 'fulfilled' &&
+        Array.isArray(results[5].value.posts)) {
+      renderMagazine(results[5].value.posts);
+    } else {
+      console.warn('Magazine API is not available yet:', results[5].reason);
+    }
+
+    renderCategories();
+    renderLatest();
+    updateBestTabs();
+    renderBest();
   }
 
   document.addEventListener('click', event => {
@@ -577,7 +728,16 @@ $('#backTop').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
   document.addEventListener('click', event => {
     const tab = event.target.closest('.tabs button');
     if (!tab) return;
-    bestMode = tab.dataset.tab || 'popular';
+
+    const map = {
+      popular: 'bestseller',
+      bestseller: 'bestseller',
+      discounted: 'discounted',
+      newest: 'newest'
+    };
+
+    bestMode = map[tab.dataset.tab] || 'bestseller';
+    updateBestTabs();
     renderBest();
   });
 
@@ -590,5 +750,5 @@ $('#backTop').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
     document.getElementById('latest')?.scrollIntoView({ behavior: 'smooth' });
   });
 
-  loadHomepageProducts();
+  loadHomepage();
 })();
