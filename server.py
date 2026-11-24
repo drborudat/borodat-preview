@@ -301,11 +301,20 @@ def init_database():
 
             for username, password_hash, role in admin_seeds:
                 if username and password_hash:
+                    if os.environ.get("RESET_ADMIN_PASSWORDS") == "1":
+                        conflict_sql = (
+                            "ON CONFLICT (username) DO UPDATE SET "
+                            "password_hash = EXCLUDED.password_hash, "
+                            "role = EXCLUDED.role, "
+                            "session_version = admin_users.session_version + 1"
+                        )
+                        print("ADMIN RESET: password reset requested for role=%s" % role)
+                    else:
+                        conflict_sql = "ON CONFLICT (username) DO NOTHING"
                     cur.execute(
                         "INSERT INTO admin_users "
                         "(username, password_hash, role, created_at) "
-                        "VALUES (%s, %s, %s, %s) "
-                        "ON CONFLICT (username) DO NOTHING",
+                        "VALUES (%s, %s, %s, %s) " + conflict_sql,
                         (username, password_hash, role,
                          datetime.utcnow().isoformat())
                     )
