@@ -433,8 +433,13 @@ $('#backTop').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
   })[ch]);
 
+  const latinDigits = value => String(value ?? '')
+    .replace(/[\u06F0-\u06F9]/g, d => String(d.charCodeAt(0) - 0x06F0))
+    .replace(/[\u0660-\u0669]/g, d => String(d.charCodeAt(0) - 0x0660))
+    .replace(/[\u066C\u060C,]/g, '');
+
   const toman = value => {
-    const n = Number(String(value ?? '').replace(/,/g, ''));
+    const n = Number(latinDigits(value));
     return Number.isFinite(n) && n > 0 ? n : 0;
   };
 
@@ -445,18 +450,33 @@ $('#backTop').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
     String(value ?? '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
 
   async function getApi(path) {
-    const response = await fetch(API_BASE + path, { cache: 'no-store' });
-    if (!response.ok) throw new Error(path + ': HTTP ' + response.status);
-    const data = await response.json();
-    if (!data || data.success !== true) throw new Error(path + ': پاسخ نامعتبر');
-    return data;
+    const cacheKey = 'drbApi:' + path;
+    let lastError;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const response = await fetch(API_BASE + path, { cache: 'no-store' });
+        if (!response.ok) throw new Error(path + ': HTTP ' + response.status);
+        const data = await response.json();
+        if (!data || data.success !== true) throw new Error(path + ': پاسخ نامعتبر');
+        try { localStorage.setItem(cacheKey, JSON.stringify(data)); } catch (_) {}
+        return data;
+      } catch (error) {
+        lastError = error;
+        if (attempt < 2) await new Promise(resolve => setTimeout(resolve, 2500 * (attempt + 1)));
+      }
+    }
+    try {
+      const saved = JSON.parse(localStorage.getItem(cacheKey) || 'null');
+      if (saved && saved.success === true) return saved;
+    } catch (_) {}
+    throw lastError;
   }
 
   function productCard(product) {
     const name = esc(product.name);
     const image = backendMediaUrl(product.image);
     const price = toman(product.price);
-    const stock = Number(product.stock) || 0;
+    const stock = Number(latinDigits(product.stock)) || 0;
     const discount = Number(product.discount_percent) || 0;
 
     return `
@@ -506,8 +526,8 @@ $('#backTop').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
     let items = [...(latestProducts || homepageProducts)];
 
     if (category) items = items.filter(p => String(p.category || '') === category);
-    if (stock === 'yes') items = items.filter(p => Number(p.stock) > 0);
-    if (stock === 'no') items = items.filter(p => Number(p.stock) <= 0);
+    if (stock === 'yes') items = items.filter(p => Number(latinDigits(p.stock)) > 0);
+    if (stock === 'no') items = items.filter(p => !(Number(latinDigits(p.stock)) > 0));
 
     renderTrack(latestTrack, items, 'محصولی با این مشخصات پیدا نشد.');
   }
