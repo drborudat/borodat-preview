@@ -982,3 +982,37 @@ body.checkout-open { overflow: hidden; }
   .checkout-overlay { padding: 8px; }
   .checkout-panel { padding: 15px; border-radius: 14px; }
 }
+
+/* ===== اسلایدر دکتر برودت ===== */
+.hero-wrap{padding:24px 5% 44px!important;overflow:visible!important}
+.hero-slider{position:relative!important;display:block!important;padding:0!important;border:0!important;background:none!important;box-shadow:none!important;border-radius:0!important;width:min(100%,1100px)!important;max-width:1100px!important;margin:0 auto!important;overflow:visible!important}
+.hero-track{
+  position:relative!important;aspect-ratio:3.55/1;height:auto!important;min-height:122px!important;
+  border:0!important;border-radius:3.2% / 11%!important;overflow:visible!important;
+  background:
+    radial-gradient(ellipse 70% 90% at 8% 108%,#8c8c8c 0%,transparent 65%),
+    linear-gradient(135deg,#1a1a1a 0%,#2a2a2a 55%,#4a4a4a 100%)!important;
+  box-shadow:0 10px 22px #0000003d!important;
+}
+.hero-slide{display:none!important;position:absolute!important;inset:0!important;width:auto!important;height:auto!important;min-height:0!important;padding:0!important;align-items:center!important;justify-content:flex-start!important;direction:rtl}
+.hero-slide.active{display:flex!important}
+.hero-slide img{
+  position:absolute!important;left:-4.5%!important;top:50%!important;transform:translateY(-50%)!important;
+  width:45%!important;height:100%!important;max-width:none!important;max-height:none!important;
+  object-fit:contain!important;object-position:center!important;filter:drop-shadow(0 10px 12px #0008)!important;z-index:1
+}
+.hero-slide .hero-copy{position:relative;z-index:2;width:42%!important;max-width:42%!important;flex:0 0 42%!important;margin:0 12% 0 0!important;padding:0!important;text-align:right!important}
+.hero-copy h1,.hero-copy h2{font-size:clamp(13px,min(2.9vw,32px),34px)!important;line-height:1.5!important;color:#fff!important;font-weight:500!important;margin:0 0 .35em!important}
+.hero-copy p{font-size:clamp(9px,min(1.45vw,15px),15px)!important;line-height:1.8!important;color:#ececec!important;margin:0 0 .9em!important}
+.hero-copy .red-btn{display:inline-block;background:#173f7a!important;color:#fff!important;border:1px solid #ffffff55!important;border-radius:999px!important;padding:.45em 1.7em!important;font-size:clamp(9.5px,min(1.4vw,15px),15px)!important;font-weight:700!important;box-shadow:none!important}
+.hero-arrow{
+  display:flex!important;align-items:center;justify-content:center;
+  width:clamp(30px,10.8%,100px)!important;aspect-ratio:1;height:auto!important;border-radius:50%!important;
+  background:rgba(11,31,58,.9)!important;border:1px solid #ffffff40!important;color:#fff!important;font-size:clamp(12px,2.2vw,24px);box-shadow:none!important;z-index:4;top:50%!important;transform:translateY(-50%)!important
+}
+.hero-arrow.prev{right:.5%!important;left:auto!important}
+.hero-arrow.next{left:2%!important;right:auto!important}
+.hero-dots{position:absolute!important;left:0;right:0;bottom:0;transform:translateY(55%);display:flex!important;justify-content:center!important;gap:clamp(7px,2.2%,22px)!important;margin:0!important;z-index:5}
+.hero-dots button{width:clamp(14px,4.5vw,46px)!important;max-width:46px;height:clamp(14px,4.5vw,46px)!important;max-height:46px;border-radius:50%!important;background:#c4c4c4!important;border:max(2.5px,.5vw) solid #ececec!important;padding:0!important;outline:0!important;box-shadow:0 1px 4px #0003}
+.hero-dots button.active{background:#173f7a!important}
+@media(min-width:900px){.hero-wrap{padding:30px 5% 60px!important}}
