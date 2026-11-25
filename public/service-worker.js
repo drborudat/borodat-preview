@@ -1,7 +1,8 @@
-const CACHE_NAME = "dr-borudat-v7";
+const CACHE_NAME = "dr-borudat-v8";
 const CORE_FILES = [
   "/",
   "/style.css",
+  "/theme.css",
   "/script.js",
   "/manifest.json",
   "/icons/icon-192.png",
