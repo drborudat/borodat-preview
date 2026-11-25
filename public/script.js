@@ -507,7 +507,7 @@ $('#backTop').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
         <p class="price">${price ? rialText(price) : 'تماس بگیرید'}</p>
         ${stock > 0
           ? '<small class="product-stock">موجود</small>'
-          : '<small class="product-stock out">ناموجود</small>'}
+          : '<small class="product-stock">ناموجود</small>'}
       </article>`;
   }
 
