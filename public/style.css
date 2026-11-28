@@ -1049,3 +1049,30 @@ body.checkout-open { overflow: hidden; }
 .header .cart:hover {
   background: #FFFFFF !important;
 }
+
+/* ===== Dr Borudat | Navy Hero Slider ===== */
+.hero-track {
+  background: linear-gradient(120deg, #0B1F3A 0%, #12365B 55%, #1B4770 100%) !important;
+  border: 1px solid #24496D !important;
+}
+
+.hero-copy .red-btn {
+  background: #EAF3FB !important;
+  color: #0B1F3A !important;
+  border: 1px solid #FFFFFF !important;
+}
+
+.hero-arrow {
+  background: #EAF3FB !important;
+  color: #0B1F3A !important;
+  border: 1px solid #FFFFFF !important;
+}
+
+.hero-dots button {
+  background: #9BB6D0 !important;
+}
+
+.hero-dots button.active {
+  background: #EAF3FB !important;
+}
+/* ===== End Navy Hero Slider ===== */
