@@ -1016,3 +1016,36 @@ body.checkout-open { overflow: hidden; }
 .hero-dots button{width:clamp(14px,4.5vw,46px)!important;max-width:46px;height:clamp(14px,4.5vw,46px)!important;max-height:46px;border-radius:50%!important;background:#c4c4c4!important;border:max(2.5px,.5vw) solid #ececec!important;padding:0!important;outline:0!important;box-shadow:0 1px 4px #0003}
 .hero-dots button.active{background:#173f7a!important}
 @media(min-width:900px){.hero-wrap{padding:30px 5% 60px!important}}
+
+
+
+/* ===== Dr Borudat | Navy Main Header ===== */
+.header {
+  background: #0B1F3A !important;
+  border-bottom: 1px solid #203D5D !important;
+  box-shadow: 0 3px 14px rgba(11,31,58,.16) !important;
+}
+
+.header .logo-name,
+.header .logo-caption small {
+  color: #FFFFFF !important;
+}
+
+.header .menu-btn,
+.header .cart {
+  background: #EAF3FB !important;
+  color: #0B1F3A !important;
+  border: 1px solid #D5E5F4 !important;
+  border-radius: 9px !important;
+  box-shadow: none !important;
+}
+
+.header .menu-btn i,
+.header .cart i {
+  color: #0B1F3A !important;
+}
+
+.header .menu-btn:hover,
+.header .cart:hover {
+  background: #FFFFFF !important;
+}
