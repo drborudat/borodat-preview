@@ -97,7 +97,7 @@ function renderPanelSlides(items) {
     const buttonText = escSlide(item.button_text || 'مشاهده محصولات');
     const buttonUrl = escSlide(safeLink(item.button_url));
     return `<article class="hero-slide${index === 0 ? ' active' : ''}">
-      ${image ? `<img src="${escSlide(image)}" alt="${title}" loading="lazy">` : ''}
+      ${image ? `<img src="${escSlide(image)}" alt="${title}" loading="eager" fetchpriority="high" decoding="async">` : ''}
       <div class="hero-copy">
         <h2>${title}</h2>
         ${description ? `<p>${description}</p>` : ''}
